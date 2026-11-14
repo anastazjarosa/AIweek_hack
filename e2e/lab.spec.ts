@@ -50,6 +50,71 @@ test("changing another slider prompts a fair test", async ({ page }) => {
   await expect(page.getByLabel("Concentration")).toHaveValue("1");
 });
 
+// The e2e server runs without an API key, so these cover the offline path the demo falls back to.
+test("asking a question offline opens the closest ready-made experiment", async ({ page }) => {
+  await page.goto("/lab");
+  await page.getByLabel("Ask for any experiment").fill("Why does milk go off faster when it's warm?");
+  await page.getByRole("button", { name: /Build it/ }).click();
+  await expect(page).toHaveURL(/\/lab\/new\?q=/);
+  await expect(page.getByRole("status")).toContainText("closest ready-made experiment");
+  await expect(page.getByRole("heading", { name: "Does heat speed up a reaction?" })).toBeVisible();
+  await expect(page.getByRole("radiogroup", { name: "Your prediction" })).toBeVisible();
+});
+
+test("an unrelated question explains what the lab can't do", async ({ page }) => {
+  await page.goto("/lab/new?q=" + encodeURIComponent("Who won the 1966 World Cup?"));
+  await expect(page.getByText("The lab can’t build that one yet.")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Ask something else" })).toHaveAttribute("href", "/lab");
+});
+
+test("the AI routes validate their input", async ({ request }) => {
+  const short = await request.post("/api/sim/generate", { data: { question: "x" } });
+  expect(short.status()).toBe(400);
+  const long = await request.post("/api/sim/generate", { data: { question: "x".repeat(301) } });
+  expect(long.status()).toBe(400);
+  const badSpec = await request.post("/api/sim/feedback", { data: { spec: { id: "nope" }, guess: "up", explanation: "because" } });
+  expect(badSpec.status()).toBe(400);
+  const ok = await request.post("/api/sim/generate", { data: { question: "Do heavier things fall faster?" } });
+  expect(await ok.json()).toMatchObject({ source: "library", spec: { id: "heavier-falls-faster" } });
+});
+
+// The live AI screens, with the two API responses stubbed in the browser (no key in CI).
+test("AI-built experiment and AI feedback render", async ({ page, request }) => {
+  const base = await (await request.post("/api/sim/generate", { data: { question: "Do heavier things fall faster?" } })).json();
+  const spec = { ...base.spec, id: "ai-heavy-light", title: "Heavy or light: who lands first?" };
+  await page.route("**/api/sim/generate", (r) => r.fulfill({ json: { source: "ai", spec } }));
+  await page.route("**/api/sim/feedback", (r) =>
+    r.fulfill({
+      json: {
+        source: "ai",
+        feedback: { ideas: [true, false, false], misconception: false, feedback: "You spotted that gravity pulls harder. What else is different about a heavier ball?" },
+      },
+    }),
+  );
+
+  await page.goto("/lab/new?q=" + encodeURIComponent("Do heavier things fall faster?"));
+  await expect(page.getByRole("status")).toContainText("Built for your question by the AI.");
+  await expect(page.getByRole("heading", { name: "Heavy or light: who lands first?" })).toBeVisible();
+
+  await page.getByRole("radio", { name: "Time to land goes down" }).click();
+  await page.getByRole("button", { name: /Run the experiment/ }).click();
+  await page.getByRole("button", { name: "Run", exact: true }).click();
+  await page.getByRole("button", { name: /Set it for me/ }).click();
+  await page.getByRole("button", { name: "Run again" }).click();
+  await page.getByRole("button", { name: /Explain it/ }).click();
+  await page.getByLabel(/why did that happen/).fill("Gravity pulls harder on it");
+  await page.getByRole("button", { name: "Compare with the explanation" }).click();
+
+  await expect(page.getByText("Feedback on your explanation")).toBeVisible();
+  await expect(page.getByText(/What else is different about a heavier ball\?/)).toBeVisible();
+  await expect(page.getByText("Ideas in your explanation")).toBeVisible();
+  await expect(page.getByText(": in your explanation", { exact: true })).toHaveCount(1);
+
+  // Editing the answer offers fresh feedback.
+  await page.getByLabel(/why did that happen/).fill("Gravity pulls harder but it is harder to speed up");
+  await expect(page.getByRole("button", { name: "Get feedback on my new answer" })).toBeVisible();
+});
+
 test("every library simulation page renders", async ({ page }) => {
   await page.goto("/lab");
   const hrefs = await page.locator('a[href^="/lab/"]').evaluateAll((as) => as.map((a) => a.getAttribute("href")!));

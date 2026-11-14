@@ -4,17 +4,25 @@ Hackathon demo: a study app that turns lecture slides and textbooks into notes, 
 quizzes and concept maps shaped around four learning needs: **Focus**, **Processing**,
 **Planning** and **Structure**. Any mix is allowed and adaptations stack. No labels.
 
-Front end only. No auth, no backend, no AI calls. The demo module lives in
-`lib/seed/biol0104-history-of-life.json`; other mock data is in `lib/data.ts`. Loading states are faked.
+No auth and no database. The Simulation Lab has two server routes that call Claude
+(`/api/sim/generate`, `/api/sim/feedback`); everything else runs in the browser. The demo module
+lives in `lib/seed/biol0104-history-of-life.json`; other mock data is in `lib/data.ts`. Lecture
+loading states are faked.
 
 ## Run it
 
 ```bash
 npm install
+cp .env.example .env.local   # optional: add ANTHROPIC_API_KEY for live AI
 npm run dev
 ```
 
-Open http://localhost:3000. Run tests with `npm test`.
+Open http://localhost:3000. Unit tests: `npm test`. Browser tests: `npm run test:e2e`.
+
+**AI and offline mode.** With `ANTHROPIC_API_KEY` set, "Ask for any experiment" on `/lab` has
+Claude (`claude-opus-5-5`) design a new simulation and gives AI feedback on explanations. Without a
+key, or with `MOSAIC_AI=off`, the app opens the closest ready-made experiment and uses a self-check
+instead. API failures fall back the same way, so the demo never gets stuck.
 
 ## Demo click path (about 3 minutes)
 
@@ -39,6 +47,8 @@ Open http://localhost:3000. Run tests with `npm test`.
    **Simulation Lab** (`/lab`, in the sidebar): 11 more experiments across physics, chemistry and
    biology, all predict → run → explain. Try "Heavy ball, light ball": guess that the heavy ball
    lands first, run 1 kg then **Set it for me** (10 kg), and both land at 2.02 s.
+   **Ask for any experiment** (top of `/lab`): type "Why don't heavier things fall faster?" and the
+   agent builds a new experiment. Write an explanation at the end for AI feedback.
 8. **How I like to learn** (`/preferences`): edit the four sliders, format (audio/visual/text),
    voice input and calm theme, or load a demo persona.
 
@@ -88,8 +98,10 @@ Next.js (App Router), TypeScript, Tailwind CSS v4, shadcn/ui-style components
 - `lib/lab/selection.ts`: the moth lab's illustrative natural-selection model and explanation word check.
 - `lib/sim/`: Simulation Lab. `templates.ts` holds six tested models (projectile, free fall, spring,
   reaction rate, population growth, predators and prey); `spec.ts` validates a simulation spec and
-  works out the right answer to its prediction; `library.ts` holds the ready-made simulations.
-  `components/sim/` renders any spec.
+  works out the right answer to its prediction; `library.ts` holds the ready-made simulations;
+  `match.ts` is the offline question matcher. `components/sim/` renders any spec.
+- `lib/ai/`: the simulation agent. `prompts.ts` (built from the templates), `sim-agent.ts` (ask,
+  check, retry; unit tested with a fake model), `claude.ts` (the real API calls, server only).
 - `lib/adapt.ts`: the skim signal (reading time vs text length) behind the Sprints suggestion.
 - `lib/screentime/`: screen-time rules (JSON), engine and tests, break planner, session store.
 - `components/session/`: focus ring, setup dialog, break overlay, recall screen.

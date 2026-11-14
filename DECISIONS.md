@@ -2,7 +2,7 @@
 
 ## Active decisions
 
-- [arch] Front-end-only demo with all data in `lib/data.ts` (2026-11-14)
+- [arch] Front-end-only demo with all data in `lib/data.ts` (2026-11-14; superseded for the Simulation Lab by the agent decision below)
 - [arch] Lecture written once, rendered in four layouts (2026-11-14)
 - [arch] Client state in small `useSyncExternalStore` stores, persisted to localStorage (2026-11-14)
 - [arch] Design foundations: Lexend, warm orange canvas + orange fills with dark text + deep orange text tokens, light mode only (2026-11-14, palette changed twice same day)
@@ -13,9 +13,10 @@
 - [arch] Screen-time session log kept client-side; `/summary` stands in for the API (2026-11-14)
 - [arch] Break planner is a deterministic function, not an AI agent (2026-11-14)
 - [arch] Simulations are specs over tested templates; the engine decides prediction answers (2026-11-14)
+- [arch] Simulation agent: Claude writes specs via structured outputs, checked and retried; offline fallback always available (2026-11-14)
 - Demo clock runs 20× by default (2026-11-14)
 - Product renamed Mosaic; logo is a four-tile pinwheel (see DESIGN.md) (2026-11-14)
-- Work lives on `feat/mosaic-demo` (pushed to origin); not merged to `main` yet (2026-11-14)
+- SimMind plan work continues on `feat/simmind` (branched from `feat/mosaic-demo` at the Simulation Lab commit); `feat/mosaic-demo` is left to its owner (2026-11-14)
 
 ---
 
@@ -155,6 +156,26 @@ carry a wrong answer key, and stage behaviour stays predictable.
 **Instead of:** Hand-building each lab like the moth lab, or letting a model generate simulation code.
 **To undo:** Cheap; specs are data. Rethink if a topic needs a model none of the templates cover
 (add a template).
+**By:** agent
+
+### [arch] Simulation agent
+**Decision:** `/api/sim/generate` sends the student's question to `claude-opus-5-5` (effort
+medium) with a system prompt built from the template registry, and gets a spec back through
+structured outputs (`lib/sim/ai-spec.ts`: sliders as a list and nulls, because structured outputs
+can't express maps or number limits). `designSim` (`lib/ai/sim-agent.ts`) converts it, runs
+`checkSpec`, and compares the agent's `expectedAnswer` with the engine's outcome; any problem goes
+back to the model with the previous answer, up to 3 attempts. `/api/sim/feedback` (effort low)
+returns which key ideas the student's explanation covers, a misconception flag and 2-3 sentences of
+feedback; never a mark. Both routes: server-side refusal fallbacks (`fallbacks: "default"`),
+prompt caching on the fixed system prompt, input limits, an in-memory rate limit, and the
+no-diagnosis guardrail in every prompt. Generated specs are cached in memory by question.
+**Why:** The agent picks and frames; tested code computes. A spec can't break the page, and the
+explanation can't contradict the graph. The offline path (`closestSim` word match, self-check)
+runs when there's no key, `MOSAIC_AI=off`, or any API error, so the demo can't get stuck.
+**Instead of:** Letting the model write simulation code or state the answer; a separate MCP server
+first (Part 3 will expose the same functions as MCP tools).
+**To undo:** Delete `app/api/sim` and the ask box; the library still works. Rethink when a real
+backend stores generated specs per student (the in-memory cache is per server instance).
 **By:** agent
 
 ### Demo clock runs 20× by default

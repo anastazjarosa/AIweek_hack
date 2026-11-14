@@ -1,6 +1,7 @@
 import { ArrowRight, Atom, FlaskConical, Leaf } from "lucide-react";
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
+import { AskBox } from "@/components/sim/ask-box";
 import { lecture } from "@/lib/data";
 import { library, subjects } from "@/lib/sim/library";
 import { templates, type Subject, type TemplateId } from "@/lib/sim/templates";
@@ -36,10 +37,14 @@ export default function LabGallery() {
     <AppShell crumb="Simulation Lab" showLayout={false}>
       <p className="mb-2 text-sm text-muted">Learn by doing</p>
       <h1 className="mb-3 text-4xl font-light tracking-[-0.02em]">Simulation Lab</h1>
-      <p className="mb-10 max-w-[62ch] text-ink/75">
+      <p className="mb-8 max-w-[62ch] text-ink/75">
         Every experiment works the same way: guess what will happen, run it, then explain why. The models are simple but
         follow the real science, so the results are worth arguing with.
       </p>
+
+      <div className="mb-12">
+        <AskBox />
+      </div>
 
       <div className="space-y-12">
         {subjects.map(({ id, label }) => {

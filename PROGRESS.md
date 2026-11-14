@@ -29,6 +29,16 @@
   templates, 11 ready-made simulations (6 physics, 3 chemistry, 2 biology) plus the moth lab,
   predict → run (guided fair test, dashed last-run comparison) → explain (explanation, key-idea
   self-check, misconception callout). Dashboard date and greeting use the real clock.
+- Simulation agent (Part 2, branch `feat/simmind`): "Ask for any experiment" on `/lab` →
+  `/lab/new?q=` → Claude designs a spec (checked, consistency-checked, retried) → the same lab UI.
+  AI feedback on the explanation ticks the key ideas covered. Offline fallback: closest library
+  experiment and the self-check.
+
+**Verified (2026-11-14, simulation agent):** 98 unit tests (agent logic with a scripted fake
+model: retry on checker errors, retry on answer mismatch, give up after 3, refusal, off-topic,
+unparseable; offline matcher; rate limiter; prompts list every template and carry the guardrail),
+typecheck, lint, build, 15 e2e (offline ask, unrelated question, route input validation, AI
+screens with stubbed responses). **Not verified: a live Claude call** (no API key on this machine).
 
 **Verified (2026-11-14, Simulation Lab):** 69 unit tests, typecheck, lint, build, 8 e2e tests
 (4 new: gallery, full heavier-falls-faster journey, fair-test prompt, every simulation renders).
@@ -55,8 +65,9 @@ preferences page, dashboard, lecture Structured and Standard (Map tab), Persona 
   lesson modes.
 - Idle trigger tested by unit test only.
 - The sidebar is hidden below 768px and there is no phone navigation yet.
-- The Simulation Lab explain step is a self-check; AI feedback comes in Part 2.
+- The live AI path has not run against the real API yet; run one question with a key before the
+  pitch. Generated specs live in server memory only (lost on restart).
 
-**Next (SimMind plan):** Part 2, AI agent: question → simulation spec and AI feedback on the
-explanation, with cached fallbacks. Then Part 3 MCP server, Part 4 behaviour-based profile and
-event log, Part 5 exam planner and procrastination coach, Part 6 consent, privacy and polish.
+**Next (SimMind plan):** live-test Part 2 with a key. Then Part 3 MCP server, Part 4
+behaviour-based profile and event log, Part 5 exam planner and procrastination coach, Part 6
+consent, privacy and polish.

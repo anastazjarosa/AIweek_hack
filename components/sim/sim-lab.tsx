@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, Equal, Play, RotateCcw, Wand2 } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, Equal, Loader2, MessageCircle, Play, RotateCcw, Wand2 } from "lucide-react";
 import Link from "next/link";
 import { useId, useMemo, useState } from "react";
 import { SimChart } from "@/components/sim/sim-chart";
@@ -18,12 +18,16 @@ import {
   type Direction,
   type SimSpec,
 } from "@/lib/sim/spec";
+import type { Feedback } from "@/lib/sim/ai-spec";
+import type { FeedbackResponse } from "@/lib/sim/api-types";
 import type { ParamDef, Result, Values } from "@/lib/sim/templates";
 import { cn } from "@/lib/utils";
 
 const steps = ["Predict", "Run", "Explain"] as const;
 type Step = (typeof steps)[number];
 type Run = { key: number; values: Values; result: Result };
+/** AI feedback on the explanation; "offline" falls back to the self-check. */
+type Coach = { status: "idle" } | { status: "loading"; text: string } | { status: "ai"; text: string; feedback: Feedback } | { status: "offline" };
 
 const subjectLabel = { physics: "Physics", chemistry: "Chemistry", biology: "Biology" } as const;
 const DirIcon = { up: ArrowUp, down: ArrowDown, same: Equal } satisfies Record<Direction, unknown>;
@@ -49,7 +53,29 @@ export function SimLab({ spec, backHref = "/lab" }: { spec: SimSpec; backHref?: 
   const [explain, setExplain] = useState("");
   const [revealed, setRevealed] = useState(false);
   const [ticked, setTicked] = useState<Set<number>>(new Set());
+  const [coach, setCoach] = useState<Coach>({ status: "idle" });
   const explainId = useId();
+
+  const askCoach = async (text: string) => {
+    setCoach({ status: "loading", text });
+    try {
+      const res = await fetch("/api/sim/feedback", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ spec, guess, explanation: text }),
+      });
+      const data = (await res.json()) as FeedbackResponse;
+      setCoach(data.source === "ai" ? { status: "ai", text, feedback: data.feedback } : { status: "offline" });
+    } catch {
+      setCoach({ status: "offline" });
+    }
+  };
+  const compare = () => {
+    setRevealed(true);
+    if (explain.trim()) void askCoach(explain.trim());
+  };
+  const aiIdeas = coach.status === "ai" ? coach.feedback.ideas : null;
+  const coachStale = (coach.status === "ai" || coach.status === "loading") && coach.text !== explain.trim();
 
   const current = runs.at(-1);
   const previous = runs.at(-2);
@@ -258,9 +284,11 @@ export function SimLab({ spec, backHref = "/lab" }: { spec: SimSpec; backHref?: 
             placeholder="Because…"
           />
           <div className="mt-4 flex flex-wrap gap-3">
-            <Button onClick={() => setRevealed(true)} disabled={!explain.trim()}>
-              Compare with the explanation
-            </Button>
+            {(!revealed || coachStale || (coach.status === "idle" && explain.trim())) && (
+              <Button onClick={compare} disabled={!explain.trim() || coach.status === "loading"}>
+                {revealed ? "Get feedback on my new answer" : "Compare with the explanation"}
+              </Button>
+            )}
             {!revealed && (
               <Button variant="ghost" onClick={() => setRevealed(true)}>
                 Show me the answer
@@ -270,21 +298,55 @@ export function SimLab({ spec, backHref = "/lab" }: { spec: SimSpec; backHref?: 
 
           {revealed && (
             <div className="mt-8 space-y-5" aria-live="polite">
+              {coach.status === "loading" && (
+                <p className="flex items-center gap-3 rounded-2xl bg-surface p-5 text-muted ring-1 ring-line">
+                  <Loader2 className="h-4 w-4 shrink-0 animate-spin motion-reduce:animate-none" /> Reading your explanation…
+                </p>
+              )}
+              {coach.status === "ai" && (
+                <div className={cn("rounded-2xl p-5 ring-1", coachStale ? "opacity-60 ring-line" : "bg-surface ring-accent/40")}>
+                  <p className="mb-1 flex items-center gap-2 text-sm font-medium text-accent">
+                    <MessageCircle className="h-4 w-4" aria-hidden /> Feedback on your explanation
+                  </p>
+                  <p className="text-[17px] leading-relaxed">{coach.feedback.feedback}</p>
+                  <p className="mt-3 text-xs text-muted">Written by AI. It&rsquo;s feedback, not a mark.</p>
+                </div>
+              )}
               <div className="rounded-2xl bg-accent-soft p-5">
                 <p className="mb-1 text-sm font-medium text-accent">What&rsquo;s going on</p>
                 <p className="leading-relaxed">{spec.explanation}</p>
               </div>
               <div>
-                <p className="mb-3 font-medium">{explain.trim() ? "Tick the ideas your answer included" : "The key ideas"}</p>
+                <p className="mb-3 font-medium">
+                  {aiIdeas ? "Ideas in your explanation" : explain.trim() && coach.status !== "loading" ? "Tick the ideas your answer included" : "The key ideas"}
+                </p>
                 <ul className="space-y-2">
                   {spec.keyIdeas.map((idea, i) => {
+                    if (aiIdeas) {
+                      return (
+                        <li key={idea} className="flex items-start gap-3 py-1">
+                          <span
+                            className={cn(
+                              "mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs",
+                              aiIdeas[i] ? "bg-brand text-brand-ink" : "bg-ink/5 text-muted",
+                            )}
+                          >
+                            {aiIdeas[i] ? <Check className="h-3.5 w-3.5" /> : "–"}
+                          </span>
+                          <span className={aiIdeas[i] ? "" : "text-muted"}>
+                            {idea}
+                            <span className="sr-only">{aiIdeas[i] ? ": in your explanation" : ": not in your explanation yet"}</span>
+                          </span>
+                        </li>
+                      );
+                    }
                     const on = ticked.has(i);
                     return (
                       <li key={idea}>
                         <button
                           role="checkbox"
                           aria-checked={on}
-                          disabled={!explain.trim()}
+                          disabled={!explain.trim() || coach.status === "loading"}
                           onClick={() =>
                             setTicked((t) => {
                               const n = new Set(t);
