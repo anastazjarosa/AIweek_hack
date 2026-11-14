@@ -9,10 +9,12 @@
     "lint": "eslint",
     "test": "vitest run",
     "typecheck": "next typegen && tsc --noEmit",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "mcp": "tsx mcp/server.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.8.0",
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "@radix-ui/react-slot": "^1",
     "class-variance-authority": "^0.7",
     "clsx": "^2",
@@ -33,6 +35,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
     "tailwindcss": "4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "^5",
     "vitest": "^3.2.7"
   }

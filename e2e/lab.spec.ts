@@ -115,6 +115,15 @@ test("AI-built experiment and AI feedback render", async ({ page, request }) => 
   await expect(page.getByRole("button", { name: "Get feedback on my new answer" })).toBeVisible();
 });
 
+test("shared links open the experiment, and broken links say so", async ({ page, request }) => {
+  const list = await (await request.post("/api/sim/generate", { data: { question: "How does a catalyst work?" } })).json();
+  const d = Buffer.from(JSON.stringify(list.spec)).toString("base64url");
+  await page.goto(`/lab/s?d=${d}`);
+  await expect(page.getByRole("heading", { name: list.spec.title, level: 1 })).toBeVisible();
+  await page.goto("/lab/s?d=broken");
+  await expect(page.getByText("This experiment link doesn’t work.")).toBeVisible();
+});
+
 test("every library simulation page renders", async ({ page }) => {
   await page.goto("/lab");
   const hrefs = await page.locator('a[href^="/lab/"]').evaluateAll((as) => as.map((a) => a.getAttribute("href")!));

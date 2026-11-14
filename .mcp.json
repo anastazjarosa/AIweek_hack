@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "mosaic-simulation-lab": {
+      "command": "npx",
+      "args": ["tsx", "mcp/server.ts"],
+      "env": { "MOSAIC_URL": "http://localhost:3000" }
+    }
+  }
+}

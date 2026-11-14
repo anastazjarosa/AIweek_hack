@@ -33,6 +33,8 @@
   `/lab/new?q=` → Claude designs a spec (checked, consistency-checked, retried) → the same lab UI.
   AI feedback on the explanation ticks the key ideas covered. Offline fallback: closest library
   experiment and the self-check.
+- MCP server (Part 3): `npm run mcp`, four tools over the same engine; share links `/lab/s?d=`.
+  Verified: tool unit tests and a stdio integration test (real client lists tools, calls them).
 
 **Verified (2026-11-14, simulation agent):** 98 unit tests (agent logic with a scripted fake
 model: retry on checker errors, retry on answer mismatch, give up after 3, refusal, off-topic,
@@ -68,6 +70,6 @@ preferences page, dashboard, lecture Structured and Standard (Map tab), Persona 
 - The live AI path has not run against the real API yet; run one question with a key before the
   pitch. Generated specs live in server memory only (lost on restart).
 
-**Next (SimMind plan):** live-test Part 2 with a key. Then Part 3 MCP server, Part 4
+**Next (SimMind plan):** live-test Part 2 with a key. Then Part 4
 behaviour-based profile and event log, Part 5 exam planner and procrastination coach, Part 6
 consent, privacy and polish.

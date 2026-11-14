@@ -24,6 +24,27 @@ Claude (`claude-opus-5-5`) design a new simulation and gives AI feedback on expl
 key, or with `MOSAIC_AI=off`, the app opens the closest ready-made experiment and uses a self-check
 instead. API failures fall back the same way, so the demo never gets stuck.
 
+**MCP server.** `npm run mcp` starts the Simulation Lab as an MCP server on stdio with four tools:
+`list_simulations`, `create_simulation` (question → experiment, via Claude when a key is set),
+`run_simulation` and `check_prediction`. Each experiment comes with an `open_url`
+(`/lab/s?d=…`) that opens it in the app. Claude Code picks it up from `.mcp.json`. For Claude
+Desktop, add to `claude_desktop_config.json` (use the absolute path to this folder):
+
+```json
+{
+  "mcpServers": {
+    "mosaic-simulation-lab": {
+      "command": "npx",
+      "args": ["tsx", "C:/path/to/AIweek_hack/mcp/server.ts"],
+      "env": { "ANTHROPIC_API_KEY": "…", "MOSAIC_URL": "http://localhost:3000" }
+    }
+  }
+}
+```
+
+Then ask Claude: "Build me an experiment about why heavier things don't fall faster, then check
+my guess that the heavy one lands first."
+
 ## Demo click path (about 3 minutes)
 
 1. **Landing** (`/`): in the hero, click Sprints → Listen → Structured → Standard. The same slide
@@ -102,6 +123,8 @@ Next.js (App Router), TypeScript, Tailwind CSS v4, shadcn/ui-style components
   `match.ts` is the offline question matcher. `components/sim/` renders any spec.
 - `lib/ai/`: the simulation agent. `prompts.ts` (built from the templates), `sim-agent.ts` (ask,
   check, retry; unit tested with a fake model), `claude.ts` (the real API calls, server only).
+- `mcp/server.ts` + `lib/mcp/tools.ts`: the MCP server and its tools; `lib/sim/share.ts` builds
+  the `/lab/s?d=…` links.
 - `lib/adapt.ts`: the skim signal (reading time vs text length) behind the Sprints suggestion.
 - `lib/screentime/`: screen-time rules (JSON), engine and tests, break planner, session store.
 - `components/session/`: focus ring, setup dialog, break overlay, recall screen.

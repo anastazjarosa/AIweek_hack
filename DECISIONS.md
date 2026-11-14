@@ -14,6 +14,7 @@
 - [arch] Break planner is a deterministic function, not an AI agent (2026-11-14)
 - [arch] Simulations are specs over tested templates; the engine decides prediction answers (2026-11-14)
 - [arch] Simulation agent: Claude writes specs via structured outputs, checked and retried; offline fallback always available (2026-11-14)
+- [arch] MCP server over stdio exposes the same simulation functions; specs travel in share links, no database (2026-11-14)
 - Demo clock runs 20× by default (2026-11-14)
 - Product renamed Mosaic; logo is a four-tile pinwheel (see DESIGN.md) (2026-11-14)
 - SimMind plan work continues on `feat/simmind` (branched from `feat/mosaic-demo` at the Simulation Lab commit); `feat/mosaic-demo` is left to its owner (2026-11-14)
@@ -176,6 +177,20 @@ runs when there's no key, `MOSAIC_AI=off`, or any API error, so the demo can't g
 first (Part 3 will expose the same functions as MCP tools).
 **To undo:** Delete `app/api/sim` and the ask box; the library still works. Rethink when a real
 backend stores generated specs per student (the in-memory cache is per server instance).
+**By:** agent
+
+### [arch] MCP server and share links
+**Decision:** `mcp/server.ts` (stdio, `@modelcontextprotocol/sdk`, run with `tsx`) registers four
+tools from `lib/mcp/tools.ts`: `list_simulations`, `create_simulation`, `run_simulation`,
+`check_prediction`. They call the same engine and `designSim` as the app. Experiments are returned
+with an `open_url` whose query string carries the spec (`lib/sim/share.ts`, base64url JSON);
+`/lab/s` decodes and `checkSpec`s it.
+**Why:** "The agent builds a simulation through MCP" is real: any MCP client can build, run and
+check experiments, and hand the student a link that opens in the app, with no database.
+**Instead of:** An HTTP MCP endpoint inside Next (more moving parts for a demo), or storing specs
+server-side.
+**To undo:** Delete `mcp/` and `lib/mcp/`. Rethink when specs need ids that outlive a link (a
+database), or when a remote MCP endpoint is needed (Streamable HTTP transport).
 **By:** agent
 
 ### Demo clock runs 20× by default

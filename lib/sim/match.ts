@@ -6,7 +6,7 @@ import type { SimSpec } from "@/lib/sim/spec";
 import { templates, type TemplateId } from "@/lib/sim/templates";
 
 const STOP = new Set(
-  "a an and are as at be but by can do does did for from has have how i if in is it its me my of on or so that the then this to was we what when where which who why will with you your about into than more less make makes made happen happens go goes going up down get gets work works really thing things fast faster slow slower quick quicker".split(
+  "a an and are as at be but by can do does did for from has have how i if in is it its me my of on or so that the then this to was we what when where which who why will with you your about into than more less make makes made happen happens go goes going up down get gets work works really thing things fast faster slow slower quick quicker best better good most many much big bigger small smaller".split(
     " ",
   ),
 );
