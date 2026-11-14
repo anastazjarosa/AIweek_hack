@@ -42,6 +42,10 @@
   coach suggested from behaviour, 2-minute first step, weekly check-in.
   Verified: 128 unit tests, 20 e2e (event log from a real experiment, profile demo and Use this,
   planner demo, no label words); screenshots of profile and planner, no phone overflow.
+- Consent, privacy and polish (Part 6): consent gate, `/privacy` (what's kept, what goes to the
+  AI, download, delete), phone navigation under the header, dashboard plan driven by the planner.
+  Verified: 128 unit tests, 25 e2e (consent for under-18s and adults, privacy export and delete,
+  dashboard plan, phone navigation without overflow).
 
 **Verified (2026-11-14, simulation agent):** 98 unit tests (agent logic with a scripted fake
 model: retry on checker errors, retry on answer mismatch, give up after 3, refusal, off-topic,
@@ -73,8 +77,8 @@ preferences page, dashboard, lecture Structured and Standard (Map tab), Persona 
 - Out of scope by choice (from the SimMind brief): teacher/parent views, topic canvas, extra
   lesson modes.
 - Idle trigger tested by unit test only.
-- The sidebar is hidden below 768px and there is no phone navigation yet.
 - The live AI path has not run against the real API yet; run one question with a key before the
   pitch. Generated specs live in server memory only (lost on restart).
 
-**Next (SimMind plan):** live-test Part 2 with a key. Then Part 6 consent, privacy and polish.
+**Next:** live-test the AI path with a key; rehearse the pitch path. Pip can overlap content at
+the bottom left on phones (owner's component, untouched).

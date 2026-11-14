@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Clock, Flame, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { UploadZone } from "@/components/upload-zone";
 import { Card } from "@/components/ui/card";
@@ -12,8 +12,14 @@ import { ScoreBars } from "@/components/score-bars";
 import { lecture, modules, todaysPlan, user } from "@/lib/data";
 import { views } from "@/lib/dimensions";
 import { useHydrated, useProfile } from "@/lib/profile";
+import { useEvents } from "@/lib/learner/events";
+import { computeProfile } from "@/lib/learner/profile";
+import { topics } from "@/lib/learner/topics";
+import { buildPlan, localToday } from "@/lib/planner/plan";
+import { usePlanner } from "@/lib/planner/store";
 import { rules } from "@/lib/screentime/engine";
 import { useSession } from "@/lib/screentime/session";
+import { useNow } from "@/lib/use-now";
 
 type Added = { id: number; title: string };
 
@@ -26,9 +32,26 @@ export default function Dashboard() {
   const { scores, view } = useProfile();
   const session = useSession();
   const [added, setAdded] = useState<Added[]>([]);
-  const total = todaysPlan.reduce((n, s) => n + s.minutes, 0);
   const layout = views.find((v) => v.id === view)!;
   const now = useHydrated() ? new Date() : null;
+
+  // Today's plan comes from the planner once exams are added; until then, the sample sprints.
+  const clock = useNow();
+  const events = useEvents();
+  const planner = usePlanner();
+  const planned = useMemo(() => {
+    if (!clock || !planner.exams.length) return null;
+    const p = computeProfile(events);
+    const today = buildPlan({ exams: planner.exams, today: localToday(new Date(clock)), focusMinutes: p.focusMinutes, topicStats: p.topicStats, dailyMinutes: planner.dailyMinutes, habit: planner.habit })[0];
+    return today?.sessions.map((s) => ({
+      title: `${{ learn: "Learn", practice: "Practise", review: "Review" }[s.kind]}: ${topics[s.topic].label}`,
+      module: topics[s.topic].subject,
+      minutes: s.minutes,
+      href: s.href,
+    }));
+  }, [clock, events, planner]);
+  const items = planned ?? todaysPlan.map((s) => ({ ...s, href: `/lecture/${lecture.slug}` }));
+  const total = items.reduce((n, s) => n + s.minutes, 0);
 
   const onDone = useCallback((name: string) => {
     const title = name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim();
@@ -50,14 +73,14 @@ export default function Dashboard() {
             <div className="mb-5 flex items-baseline justify-between">
               <p className="font-medium">Today&rsquo;s plan</p>
               <p className="text-sm text-muted">
-                {todaysPlan.length} sprints, {total} minutes total
+                {items.length} sprints, {total} minutes total
               </p>
             </div>
             <ol className="space-y-2">
-              {todaysPlan.map((s, i) => (
-                <li key={s.title}>
+              {items.map((s, i) => (
+                <li key={`${s.title}-${i}`}>
                   <Link
-                    href={`/lecture/${lecture.slug}`}
+                    href={s.href}
                     className="flex items-center gap-4 rounded-2xl px-3 py-2.5 transition-colors duration-150 hover:bg-canvas"
                   >
                     <span className="grid h-8 w-8 place-items-center rounded-full bg-accent-soft text-sm font-medium text-accent">
@@ -75,6 +98,9 @@ export default function Dashboard() {
                 </li>
               ))}
             </ol>
+            <Link href="/planner" className="mt-4 inline-flex items-center gap-1.5 px-3 text-sm font-medium text-accent underline-offset-4 hover:underline">
+              {planned ? "Open the study planner" : "Add exam dates for a plan built around you"} <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </Card>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-1 lg:pt-[76px]">

@@ -17,6 +17,7 @@
 - [arch] MCP server over stdio exposes the same simulation functions; specs travel in share links, no database (2026-11-14)
 - [arch] Learning profile computed from a browser-only event log; every finding shows its evidence; suggestions apply only when the student accepts (2026-11-14)
 - [arch] Planner is a deterministic function of exams, profile and habit; procrastination coach is the full one, the others are tips (2026-11-14)
+- [arch] Consent gate (age band, guardian confirmation under 18) and a privacy page with export and delete; all data browser-only (2026-11-14)
 - Demo clock runs 20× by default (2026-11-14)
 - Product renamed Mosaic; logo is a four-tile pinwheel (see DESIGN.md) (2026-11-14)
 - SimMind plan work continues on `feat/simmind` (branched from `feat/mosaic-demo` at the Simulation Lab commit); `feat/mosaic-demo` is left to its owner (2026-11-14)
@@ -224,6 +225,19 @@ functions keep it testable and identical every run.
 **Instead of:** An LLM writing the plan (non-deterministic, harder to trust on stage).
 **To undo:** Delete `/planner` and `lib/planner`. Rethink for real calendars (iCal export) and
 reminders (needs notifications and a backend).
+**By:** agent
+
+### [arch] Consent and privacy
+**Decision:** `components/consent-gate.tsx` blocks app pages (not `/privacy`) until the student
+picks an age band; under 18 needs a "parent or guardian agrees" confirmation. It says in plain words
+what's kept (this browser only), what goes to Anthropic (the lab question and explanation text,
+never the name or profile) and that Mosaic never diagnoses. `/privacy` lists every stored key
+(`lib/privacy.ts`), downloads them as JSON and deletes all `mosaic-` keys. e2e starts from a
+pre-consented state (`e2e/consented-state.json`); `e2e/privacy.spec.ts` tests the gate.
+**Why:** Users are under 18; the brief requires parental consent and strong data privacy.
+**Instead of:** Collecting a parent's email (more personal data for a demo).
+**To undo:** Remove `<ConsentGate />` from the app shell. Rethink for a school rollout: signed
+consent collected by the school, a data processing agreement with the AI provider, retention rules.
 **By:** agent
 
 ### Demo clock runs 20× by default

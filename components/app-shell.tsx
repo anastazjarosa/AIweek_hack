@@ -3,6 +3,7 @@
 import { Activity, BarChart3, BookOpen, CalendarDays, FlaskConical, LayoutGrid, Shirt, Timer, Upload, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ConsentGate } from "@/components/consent-gate";
 import { Logo } from "@/components/logo";
 import { ViewSwitcher } from "@/components/view-switcher";
 import { PipBuddy } from "@/components/pip/pip-buddy";
@@ -46,12 +47,7 @@ export function AppShell({
         </div>
         <nav className="space-y-1">
           {nav.map(({ href, label, icon: Icon }, i) => {
-            const active =
-              i === 0
-                ? pathname === "/dashboard" || pathname.startsWith("/lecture")
-                : href === "/lab"
-                  ? pathname === "/lab" || pathname.startsWith("/lab/")
-                  : pathname === href;
+            const active = isActive(pathname, href, i);
             return (
               <Link
                 key={label}
@@ -76,6 +72,9 @@ export function AppShell({
             <p className="text-muted">Year 1 · Biology</p>
           </div>
         </div>
+        <Link href="/privacy" className="px-2 text-xs text-muted underline-offset-4 hover:text-ink hover:underline">
+          Privacy and your data
+        </Link>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="sticky top-0 z-30 border-b border-line bg-canvas/90 backdrop-blur">
@@ -98,11 +97,35 @@ export function AppShell({
               )}
             </div>
           </div>
+          {/* Phones: the sidebar is hidden, so the same links scroll sideways under the header. */}
+          <nav aria-label="Main" className="flex gap-2 overflow-x-auto px-4 pb-3 md:hidden">
+            {nav.map(({ href, label, icon: Icon }, i) => (
+              <Link
+                key={label}
+                href={href}
+                aria-current={isActive(pathname, href, i) ? "page" : undefined}
+                className={cn(
+                  "inline-flex h-10 shrink-0 items-center gap-2 rounded-full px-3 text-sm",
+                  isActive(pathname, href, i) ? "bg-surface font-medium text-ink ring-1 ring-line" : "text-muted ring-1 ring-line/60",
+                )}
+              >
+                <Icon className="h-4 w-4" aria-hidden />
+                {label}
+              </Link>
+            ))}
+          </nav>
         </div>
-        <main className="mx-auto w-full max-w-[1120px] flex-1 px-6 py-10 pb-32">{children}</main>
+        <main className="mx-auto w-full max-w-[1120px] flex-1 px-4 py-10 pb-32 sm:px-6">{children}</main>
         <SessionLayer />
         <PipBuddy />
+        {pathname !== "/privacy" && <ConsentGate />}
       </div>
     </div>
   );
+}
+
+function isActive(pathname: string, href: string, i: number) {
+  if (i === 0) return pathname === "/dashboard" || pathname.startsWith("/lecture");
+  if (href === "/lab") return pathname === "/lab" || pathname.startsWith("/lab/");
+  return pathname === href;
 }

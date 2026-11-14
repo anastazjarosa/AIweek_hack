@@ -47,6 +47,10 @@ my guess that the heavy one lands first."
 
 ## Demo click path (about 3 minutes)
 
+The first app page asks for consent once (age band; under-18s confirm a parent or guardian
+agrees). `/privacy` shows what's stored, downloads it and deletes it.
+
+
 1. **Landing** (`/`): in the hero, click Sprints → Listen → Structured → Standard. The same slide
    reshapes live. Then **Set up my layout**.
 2. **Sign in** (`/signin`): click **Sign in** or **Continue with Google**. No validation.

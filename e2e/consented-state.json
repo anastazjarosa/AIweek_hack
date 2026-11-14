@@ -1,0 +1,9 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:3100",
+      "localStorage": [{ "name": "mosaic-consent-v1", "value": "{\"ageBand\":\"16-17\",\"guardian\":true,\"at\":1767225600000,\"version\":1}" }]
+    }
+  ]
+}

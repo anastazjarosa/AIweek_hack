@@ -13,6 +13,8 @@ async function startBlock(page: Page) {
     if (!sessionStorage.getItem("seeded")) {
       localStorage.clear();
       localStorage.setItem("mosaic-profile-v1", JSON.stringify(p));
+      // Consent is given up front, as in every other spec (the gate has its own tests).
+      localStorage.setItem("mosaic-consent-v1", JSON.stringify({ ageBand: "16-17", guardian: true, at: 1767225600000, version: 1 }));
       sessionStorage.setItem("seeded", "1");
     }
   }, DEMO_PROFILE);
