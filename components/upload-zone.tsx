@@ -33,7 +33,7 @@ export function UploadZone({ onDone }: { onDone: (fileName: string) => void }) {
   const start = (name?: string) => {
     if (file) return;
     setStep(0);
-    setFile(name || "Lecture 7 - Valve disease.pdf");
+    setFile(name || "Lecture 4 - How new species form.pdf");
   };
 
   const label = views.find((v) => v.id === view)?.label;

@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, BookOpen, LayoutGrid, Shirt, Timer, Upload, UserRound } from "lucide-react";
+import { BarChart3, BookOpen, FlaskConical, LayoutGrid, Shirt, Timer, Upload, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/logo";
@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 
 const nav = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutGrid },
+  { href: "/lab", label: "Simulation Lab", icon: FlaskConical },
   { href: "/dashboard#modules", label: "My modules", icon: BookOpen },
   { href: "/dashboard#upload", label: "Upload", icon: Upload },
   { href: "/summary", label: "Screen time", icon: BarChart3 },
@@ -43,7 +44,12 @@ export function AppShell({
         </div>
         <nav className="space-y-1">
           {nav.map(({ href, label, icon: Icon }, i) => {
-            const active = i === 0 ? pathname === "/dashboard" || pathname.startsWith("/lecture") : pathname === href;
+            const active =
+              i === 0
+                ? pathname === "/dashboard" || pathname.startsWith("/lecture")
+                : href === "/lab"
+                  ? pathname === "/lab" || pathname.startsWith("/lab/")
+                  : pathname === href;
             return (
               <Link
                 key={label}

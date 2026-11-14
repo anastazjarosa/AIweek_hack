@@ -25,6 +25,15 @@
   colour. Saved in the profile store (no MongoDB: no backend in this demo).
 - Adaptive screen time: blocks, warnings, struggle-triggered breaks, off-screen tasks from the
   seed, recall quiz, daily cap, `/summary`.
+- Simulation Lab (`/lab`, Part 1 of the SimMind plan): spec-driven engine with six tested
+  templates, 11 ready-made simulations (6 physics, 3 chemistry, 2 biology) plus the moth lab,
+  predict → run (guided fair test, dashed last-run comparison) → explain (explanation, key-idea
+  self-check, misconception callout). Dashboard date and greeting use the real clock.
+
+**Verified (2026-11-14, Simulation Lab):** 69 unit tests, typecheck, lint, build, 8 e2e tests
+(4 new: gallery, full heavier-falls-faster journey, fair-test prompt, every simulation renders).
+Screenshots checked: gallery, projectile run and explain, predators and prey, catalyst on a phone
+(no horizontal overflow).
 
 **Verified (2026-11-14, Pip + theme):** `./scripts/check` passes: 41 unit tests, tsc, lint, build,
 7 e2e incl. Pip journey, chat and reduced motion. Screenshots of every Pip state with the demo profile.
@@ -42,8 +51,12 @@ preferences page, dashboard, lecture Structured and Standard (Map tab), Persona 
 - Untracked `AGENTS.md` appeared during the Pip session; not authored by the agent, left uncommitted.
 - The skim card and the focus-session break card share the bottom-right spot; both showing at
   once is possible but unlikely.
-- Out of scope by choice (from the SimMind brief): teacher/parent views, topic canvas, MCP,
-  exam planner, extra lesson modes.
+- Out of scope by choice (from the SimMind brief): teacher/parent views, topic canvas, extra
+  lesson modes.
 - Idle trigger tested by unit test only.
+- The sidebar is hidden below 768px and there is no phone navigation yet.
+- The Simulation Lab explain step is a self-check; AI feedback comes in Part 2.
 
-**Next:** Rehearse the pitch path in a normal browser.
+**Next (SimMind plan):** Part 2, AI agent: question → simulation spec and AI feedback on the
+explanation, with cached fallbacks. Then Part 3 MCP server, Part 4 behaviour-based profile and
+event log, Part 5 exam planner and procrastination coach, Part 6 consent, privacy and polish.

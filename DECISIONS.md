@@ -12,9 +12,10 @@
 - [arch] Demo module loaded from one JSON seed: BIOL0104 History of Life only (2026-11-14)
 - [arch] Screen-time session log kept client-side; `/summary` stands in for the API (2026-11-14)
 - [arch] Break planner is a deterministic function, not an AI agent (2026-11-14)
+- [arch] Simulations are specs over tested templates; the engine decides prediction answers (2026-11-14)
 - Demo clock runs 20× by default (2026-11-14)
 - Product renamed Mosaic; logo is a four-tile pinwheel (see DESIGN.md) (2026-11-14)
-- Not pushed to GitHub; local commits on `feat/mosaic-demo` only (owner instruction, 2026-11-14)
+- Work lives on `feat/mosaic-demo` (pushed to origin); not merged to `main` yet (2026-11-14)
 
 ---
 
@@ -32,7 +33,7 @@ Rethink when real uploads or generated content are needed.
 **Decision:** Each lecture section stores `body` (transcript), `points` (short, literal
 sentences), `terms` and a `check` question. `components/lecture/*-view.tsx` choose which fields
 to show: Standard (notes, flashcards, quiz, map), Sprints (timed cards and checks), Listen
-(audio-first, cream, terms), Structured (fixed numbered layout, interest examples).
+(audio-first, pale blue page, terms), Structured (fixed numbered layout, interest examples).
 **Why:** Shows the core idea honestly: the same content, adapted, not four different lectures.
 **Instead of:** Separate content per layout.
 **To undo:** Cheap; the views are independent components. Rethink when content is generated
@@ -142,11 +143,25 @@ only; nothing is captured or stored.
 **To undo:** Replace `planTask` with a model call behind the same `BreakTask` type.
 **By:** agent
 
+### [arch] Simulations are specs over tested templates
+**Decision:** `lib/sim/templates.ts` holds six models (projectile, free fall with drag, spring,
+Arrhenius reaction rate, logistic growth, Lotka–Volterra), each unit tested against textbook
+formulas. A simulation is a JSON spec (`lib/sim/spec.ts`, zod schema plus template checks): title,
+intro, which sliders show and their ranges, the prediction ("change X from a to b: does metric Y go
+up, down or stay the same?"), explanation and key ideas. The correct answer is never stored in the
+spec: `predictionOutcome` runs both conditions and compares them (within 5% counts as the same).
+**Why:** The AI agent (next part) will write specs, not code. A spec can't break the renderer or
+carry a wrong answer key, and stage behaviour stays predictable.
+**Instead of:** Hand-building each lab like the moth lab, or letting a model generate simulation code.
+**To undo:** Cheap; specs are data. Rethink if a topic needs a model none of the templates cover
+(add a template).
+**By:** agent
+
 ### Demo clock runs 20× by default
 A 10-minute block takes 30 seconds, a 5-minute break 15 seconds; idle is 6 real seconds in demo
 mode (90 s at real time). The setup dialog can switch to real time. Tune in `demo` in the
 rules file.
 
 ### Block content mapping
-Block N studies section N of the lecture (wrapping after 5). Good enough for the demo; a real
+Block N studies section N of the lecture (wrapping after the last section). Good enough for the demo; a real
 build would track what the student actually viewed.

@@ -23,6 +23,8 @@
   /* Dark surfaces (walk-and-listen break) and the light accent used on them. */
   --night: #1e1813;
   --glow: #f7b27a;
+  /* Second line on simulation charts (e.g. foxes next to rabbits): teal, apart from the orange accent. 5.6:1 on white. */
+  --series-2: #1d6b80;
 }
 
 /* Calm theme (student setting): same palette, quieter accents, no CSS transitions or animations. */
@@ -56,6 +58,7 @@
   --color-clay-soft: var(--clay-soft);
   --color-night: var(--night);
   --color-glow: var(--glow);
+  --color-series-2: var(--series-2);
   --font-sans: var(--font-lexend);
 }
 

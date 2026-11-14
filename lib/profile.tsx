@@ -21,8 +21,15 @@ function read(): State {
   if (state) return state;
   try {
     OLD_KEYS.forEach((k) => localStorage.removeItem(k));
-    const saved = JSON.parse(localStorage.getItem(KEY) ?? "{}");
-    state = { ...DEFAULT, ...saved, pip: { ...DEFAULT_PIP, ...saved.pip } };
+    const saved = JSON.parse(localStorage.getItem(KEY) ?? "{}") as Partial<State>;
+    // Nested objects merge too, so a profile saved by an older build still gets new defaults.
+    state = {
+      ...DEFAULT,
+      ...saved,
+      scores: { ...DEFAULT.scores, ...saved.scores },
+      prefs: { ...DEFAULT.prefs, ...saved.prefs },
+      pip: { ...DEFAULT_PIP, ...saved.pip },
+    };
   } catch {
     state = DEFAULT;
   }

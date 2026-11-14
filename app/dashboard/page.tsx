@@ -11,11 +11,16 @@ import { Progress, ProgressRing } from "@/components/ui/progress";
 import { ScoreBars } from "@/components/score-bars";
 import { lecture, modules, todaysPlan, user } from "@/lib/data";
 import { views } from "@/lib/dimensions";
-import { useProfile } from "@/lib/profile";
+import { useHydrated, useProfile } from "@/lib/profile";
 import { rules } from "@/lib/screentime/engine";
 import { useSession } from "@/lib/screentime/session";
 
 type Added = { id: number; title: string };
+
+function greeting(d: Date) {
+  const h = d.getHours();
+  return h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+}
 
 export default function Dashboard() {
   const { scores, view } = useProfile();
@@ -23,6 +28,7 @@ export default function Dashboard() {
   const [added, setAdded] = useState<Added[]>([]);
   const total = todaysPlan.reduce((n, s) => n + s.minutes, 0);
   const layout = views.find((v) => v.id === view)!;
+  const now = useHydrated() ? new Date() : null;
 
   const onDone = useCallback((name: string) => {
     const title = name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim();
@@ -33,8 +39,13 @@ export default function Dashboard() {
     <AppShell crumb="Dashboard">
       <section className="mb-12 grid gap-6 lg:grid-cols-12">
         <div className="lg:col-span-7">
-          <p className="mb-2 text-muted">Saturday 14 November</p>
-          <h1 className="mb-6 text-4xl font-light tracking-[-0.02em]">Good afternoon, {user.name}.</h1>
+          {/* Date and greeting need the viewer's clock, so they appear after hydration. */}
+          <p className="mb-2 min-h-6 text-muted">
+            {now?.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" })}
+          </p>
+          <h1 className="mb-6 text-4xl font-light tracking-[-0.02em]">
+            {now ? greeting(now) : "Welcome back"}, {user.name}.
+          </h1>
           <Card className="p-6">
             <div className="mb-5 flex items-baseline justify-between">
               <p className="font-medium">Today&rsquo;s plan</p>
@@ -124,7 +135,7 @@ export default function Dashboard() {
                       <Sparkles className="h-3 w-3" /> Ready · {layout.label} layout
                     </span>
                     <p className="mb-1 font-medium">{a.title}</p>
-                    <p className="text-sm text-muted">Notes · 18 flashcards · 8-question quiz</p>
+                    <p className="text-sm text-muted">Notes · {lecture.flashcards.length} flashcards · {lecture.sections.length}-question quiz</p>
                   </Card>
                 </Link>
               </motion.div>

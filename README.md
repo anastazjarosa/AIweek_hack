@@ -36,6 +36,9 @@ Open http://localhost:3000. Run tests with `npm test`.
 7. **Moth lab** (`/lecture/history-of-life/lab`, "Try it" card at the top of every layout):
    predict how many peppered moths will be dark after 50 generations on sooty bark, run it
    (bark darkness, birds on or off), then explain why. Sooty bark: 2% → 99% dark. No birds: stays 2%.
+   **Simulation Lab** (`/lab`, in the sidebar): 11 more experiments across physics, chemistry and
+   biology, all predict → run → explain. Try "Heavy ball, light ball": guess that the heavy ball
+   lands first, run 1 kg then **Set it for me** (10 kg), and both land at 2.02 s.
 8. **How I like to learn** (`/preferences`): edit the four sliders, format (audio/visual/text),
    voice input and calm theme, or load a demo persona.
 
@@ -83,6 +86,10 @@ Next.js (App Router), TypeScript, Tailwind CSS v4, shadcn/ui-style components
 - `lib/data.ts`: other mock data and the adapter from the seed to the lecture views.
 - `components/lecture/`: the four lecture layouts.
 - `lib/lab/selection.ts`: the moth lab's illustrative natural-selection model and explanation word check.
+- `lib/sim/`: Simulation Lab. `templates.ts` holds six tested models (projectile, free fall, spring,
+  reaction rate, population growth, predators and prey); `spec.ts` validates a simulation spec and
+  works out the right answer to its prediction; `library.ts` holds the ready-made simulations.
+  `components/sim/` renders any spec.
 - `lib/adapt.ts`: the skim signal (reading time vs text length) behind the Sprints suggestion.
 - `lib/screentime/`: screen-time rules (JSON), engine and tests, break planner, session store.
 - `components/session/`: focus ring, setup dialog, break overlay, recall screen.
