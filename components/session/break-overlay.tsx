@@ -33,13 +33,13 @@ export function BreakOverlay() {
       transition={{ duration: 0.4, ease: "easeOut" }}
       className={cn(
         "fixed inset-0 z-50 overflow-y-auto transition-colors duration-700",
-        dim ? "bg-[#0B1626] text-white/80" : "bg-canvas text-ink",
+        dim ? "bg-night text-white/80" : "bg-canvas text-ink",
       )}
     >
       <div className="mx-auto flex min-h-full max-w-[760px] flex-col justify-center px-6 py-16">
         <div className="mb-10 flex items-center justify-between gap-6">
           <div>
-            <p className={cn("mb-2 text-sm font-medium", dim ? "text-[#A8D5F7]" : "text-accent")}>
+            <p className={cn("mb-2 text-sm font-medium", dim ? "text-glow" : "text-accent")}>
               {kindLabel[br.kind]} · {br.plannedMin} min
             </p>
             {br.reason !== "scheduled" && (

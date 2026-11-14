@@ -2,15 +2,16 @@
 
 import { useSyncExternalStore } from "react";
 import type { Interest } from "@/lib/data";
+import { DEFAULT_PIP, type PipPrefs } from "@/lib/pip";
 import { DEFAULT_PREFS, ZERO, defaultView, needsFromScores, type Prefs, type Scores, type ViewId } from "@/lib/dimensions";
 
 /** scores drive every adaptation; view is the lecture layout (the student can override it). */
-type State = { scores: Scores; prefs: Prefs; view: ViewId; interest: Interest };
+type State = { scores: Scores; prefs: Prefs; view: ViewId; interest: Interest; pip: PipPrefs };
 
 const KEY = "mosaic-profile-v1";
 // Keys from earlier builds (label-based profiles, old app name). Removed on first load.
 const OLD_KEYS = ["neura-profile-v1", "neura-session-v1", "neura-profile-v2", "neura-session-v2"];
-const DEFAULT: State = { scores: ZERO, prefs: DEFAULT_PREFS, view: "standard", interest: "trains" };
+const DEFAULT: State = { scores: ZERO, prefs: DEFAULT_PREFS, view: "standard", interest: "trains", pip: DEFAULT_PIP };
 
 // Tiny external store. localStorage is demo persistence only: it survives a refresh mid-pitch.
 let state: State | null = null;
@@ -20,7 +21,8 @@ function read(): State {
   if (state) return state;
   try {
     OLD_KEYS.forEach((k) => localStorage.removeItem(k));
-    state = { ...DEFAULT, ...JSON.parse(localStorage.getItem(KEY) ?? "{}") };
+    const saved = JSON.parse(localStorage.getItem(KEY) ?? "{}");
+    state = { ...DEFAULT, ...saved, pip: { ...DEFAULT_PIP, ...saved.pip } };
   } catch {
     state = DEFAULT;
   }
@@ -47,6 +49,8 @@ export function useProfile() {
     needs: needsFromScores(s.scores),
     setView: (view: ViewId) => write({ view }),
     setInterest: (interest: Interest) => write({ interest }),
+    /** Pip's look and wardrobe. Demo persistence: in the real product this is the user profile document. */
+    setPip: (patch: Partial<PipPrefs>) => write({ pip: { ...read().pip, ...patch } }),
     /** Changing scores or preferences re-picks the layout from them. */
     setScores: (scores: Scores) => write({ scores, view: defaultView(scores, read().prefs) }),
     setPrefs: (patch: Partial<Prefs>) => {

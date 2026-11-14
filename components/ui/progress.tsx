@@ -10,7 +10,7 @@ export function Progress({ value, className }: { value: number; className?: stri
       className={cn("h-1.5 w-full overflow-hidden rounded-full bg-ink/8", className)}
     >
       <div
-        className="h-full origin-left rounded-full bg-accent transition-transform duration-500 ease-out"
+        className="h-full origin-left rounded-full bg-brand transition-transform duration-500 ease-out"
         style={{ transform: `scaleX(${Math.max(0, Math.min(100, value)) / 100})` }}
       />
     </div>
@@ -39,7 +39,7 @@ export function ProgressRing({
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="var(--accent)"
+          stroke="var(--brand)"
           strokeWidth={stroke}
           strokeLinecap="round"
           strokeDasharray={c}

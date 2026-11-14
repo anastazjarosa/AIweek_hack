@@ -1,32 +1,37 @@
 @import "tailwindcss";
 
 :root {
-  --canvas: #f3f8fd;
+  /* Warm orange canvas, white reading surfaces, near-black text. */
+  --canvas: #ffe8d6;
   --surface: #ffffff;
-  --ink: #14243b;
-  --muted: #4f6079;
-  --line: #c9daea;
-  /* Baby blue fills (buttons, selected pills) carry navy text. */
-  --brand: #a8d5f7;
-  --brand-hover: #92c8f2;
-  --brand-ink: #0f2440;
-  /* Deeper blue for text, strokes, borders and data, where baby blue is too light to read. */
-  --accent: #2867a6;
+  --ink: #2b2b2b;
+  --muted: #5e4a3c;
+  --line: #f0cdb2;
+  /* Orange fills (buttons, selected pills, progress) carry dark text: #E07A2E fails as text (3:1 on white). */
+  --brand: #e07a2e;
+  --brand-hover: #eb8c46;
+  --brand-ink: #2b2b2b;
+  /* Deeper orange for text, links, numbers and focus ring, where #E07A2E is too light to read. */
+  --accent: #9a4710;
   --accent-ink: #ffffff;
-  --accent-soft: #e1f0fc;
-  --paper: #dcedfb;
-  --mark: #fbe7a1;
-  --clay: #9c4a28;
-  --clay-soft: #f6e6dd;
+  --accent-soft: #fddcc2;
+  --paper: #fff4ea;
+  --mark: #ffe08a;
+  /* Wrong-answer feedback: berry red, so it never reads as the orange accent. */
+  --clay: #b42318;
+  --clay-soft: #fde6e3;
+  /* Dark surfaces (walk-and-listen break) and the light accent used on them. */
+  --night: #1e1813;
+  --glow: #f7b27a;
 }
 
-/* Calm theme (student setting): softer accent, no CSS transitions or animations. */
+/* Calm theme (student setting): same palette, quieter accents, no CSS transitions or animations. */
 [data-calm] {
-  --brand: #bcdcf3;
-  --brand-hover: #a9d1ee;
-  --accent: #3b6a96;
-  --accent-soft: #e8f1f9;
-  --clay: #8a5a43;
+  --brand: #f2a66b;
+  --brand-hover: #f5b582;
+  --accent: #8f4a22;
+  --accent-soft: #fce3cf;
+  --line: #f4dccb;
 }
 [data-calm] * {
   transition: none !important;
@@ -49,6 +54,8 @@
   --color-mark: var(--mark);
   --color-clay: var(--clay);
   --color-clay-soft: var(--clay-soft);
+  --color-night: var(--night);
+  --color-glow: var(--glow);
   --font-sans: var(--font-lexend);
 }
 
@@ -66,4 +73,103 @@ body {
 
 ::selection {
   background: var(--accent-soft);
+}
+
+/* Pip, the study buddy. Moves only at transitions; never moves under reduced motion. */
+.pip-svg {
+  --pip-amp: 1;
+}
+.pip-svg[data-motion="minimal"] {
+  --pip-amp: 0.45;
+}
+.pip-svg g {
+  transform-box: view-box;
+}
+.pip-whole {
+  transform-origin: 40px 80px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pip-breathe .pip-whole {
+    animation: pip-breathe 5s ease-in-out infinite;
+  }
+  .pip-move-hop .pip-whole {
+    animation: pip-hop 0.7s ease-out 1;
+  }
+  .pip-move-stretch .pip-whole {
+    animation: pip-stretch-body 1.6s ease-in-out 1;
+  }
+  .pip-move-stretch .pip-arm-l {
+    animation: pip-stretch-l 1.6s ease-in-out 1;
+  }
+  .pip-move-stretch .pip-arm-r {
+    animation: pip-stretch-r 1.6s ease-in-out 1;
+  }
+  .pip-move-wave .pip-arm-r {
+    animation: pip-wave 0.45s ease-in-out 4 alternate;
+  }
+}
+@keyframes pip-breathe {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(calc(1 + 0.012 * var(--pip-amp)), calc(1 + 0.03 * var(--pip-amp)));
+  }
+}
+@keyframes pip-hop {
+  0% {
+    transform: translateY(0) scale(1, 1);
+  }
+  20% {
+    transform: translateY(0) scale(1.05, 0.94);
+  }
+  50% {
+    transform: translateY(calc(-10px * var(--pip-amp))) scale(0.97, 1.04);
+  }
+  80% {
+    transform: translateY(0) scale(1.03, 0.97);
+  }
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+}
+@keyframes pip-stretch-body {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  40% {
+    transform: scale(0.97, calc(1 + 0.07 * var(--pip-amp)));
+  }
+}
+@keyframes pip-stretch-l {
+  0% {
+    transform: rotate(-28deg);
+  }
+  40% {
+    transform: rotate(calc(75deg * var(--pip-amp)));
+  }
+  100% {
+    transform: rotate(14deg);
+  }
+}
+@keyframes pip-stretch-r {
+  0% {
+    transform: rotate(28deg);
+  }
+  40% {
+    transform: rotate(calc(-75deg * var(--pip-amp)));
+  }
+  100% {
+    transform: rotate(32deg);
+  }
+}
+@keyframes pip-wave {
+  from {
+    transform: rotate(calc(-40deg * var(--pip-amp)));
+  }
+  to {
+    transform: rotate(calc(-85deg * var(--pip-amp)));
+  }
 }

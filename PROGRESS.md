@@ -1,9 +1,9 @@
 # Progress
 
 **Objective:** Clickable hackathon demo of Mosaic: study material adapted to four learning needs
-(Focus, Processing, Planning, Structure). Content is History of Life only; baby blue theme.
+(Focus, Processing, Planning, Structure). Content is History of Life only; warm orange theme with Pip, a study-buddy body double.
 
-**Branch:** `feat/mosaic-demo`, local commits only. Owner said not to push or open a PR.
+**Branch:** `feat/mosaic-demo`, pushed with a draft PR at the owner's request (2026-11-14).
 
 **Done**
 - Landing, sign in, onboarding (8 statements, 0-4), "How I like to learn" sliders and
@@ -16,21 +16,30 @@
   explanation. Linked from every layout.
 - Skim suggestion: in Standard notes, reading time vs text length; when 3+ recent sections are
   mostly skimmed (score ≥ 0.7) a card offers Sprints with the evidence. Student decides.
+- Orange theme (`#FFE8D6` canvas, `#E07A2E` fills with dark text, `#9A4710` text accent); AA
+  contrast audited on every page and Pip state, default and calm themes.
+- Pip (`components/pip/`, `lib/pip.ts`): original bean character, corner body double. Reacts only to
+  block start (hop), break (stretch, point away, rest), return (wave), urge (first idle or tab return:
+  Pop names it, Pip gives a strategy) and struggle (offers another explanation). Chat panel with
+  scripted replies; full off-screen break unlocks a blind-box outfit; `/wardrobe` for outfit and
+  colour. Saved in the profile store (no MongoDB: no backend in this demo).
 - Adaptive screen time: blocks, warnings, struggle-triggered breaks, off-screen tasks from the
   seed, recall quiz, daily cap, `/summary`.
 
-**Verified (2026-11-14):** `npm test` (33 tests: rules, dimensions, moth model, skim signal),
+**Verified (2026-11-14, Pip + theme):** `./scripts/check` passes: 41 unit tests, tsc, lint, build,
+7 e2e incl. Pip journey, chat and reduced motion. Screenshots of every Pip state with the demo profile.
+**Earlier:** `npm test` (33 tests: rules, dimensions, moth model, skim signal),
 `tsc`, lint, build, `npm run test:e2e` (4 tests incl. lab journey and skim → Sprints).
 Browser: onboarding to Structured layout for high focus + high structure (calmer tie-break),
 preferences page, dashboard, lecture Structured and Standard (Map tab), Persona A session
 (setup, overloaded break with seed task, recall quiz from seed). After the History of Life
-  swap and baby blue theme: landing, dashboard, lecture and moth lab checked in the browser.
+  swap and baby blue theme (since replaced by orange): landing, dashboard, lecture and moth lab checked in the browser.
 
 **Known gaps**
 - Voice input preference is stored but nothing uses it yet (screen-time behaviour was to stay
   unchanged).
-- No code or design review run yet (skipped for speed at the owner's request); lab and skim
-  suggestion were self-reviewed only.
+- No code or design review run (skipped at the owner's request, again for Pip and the theme).
+- Untracked `AGENTS.md` appeared during the Pip session; not authored by the agent, left uncommitted.
 - The skim card and the focus-session break card share the bottom-right spot; both showing at
   once is possible but unlikely.
 - Out of scope by choice (from the SimMind brief): teacher/parent views, topic canvas, MCP,

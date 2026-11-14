@@ -5,7 +5,8 @@
 - [arch] Front-end-only demo with all data in `lib/data.ts` (2026-11-14)
 - [arch] Lecture written once, rendered in four layouts (2026-11-14)
 - [arch] Client state in small `useSyncExternalStore` stores, persisted to localStorage (2026-11-14)
-- [arch] Design foundations: Lexend, baby blue fills + deep blue text tokens, light mode only (2026-11-14, palette changed same day)
+- [arch] Design foundations: Lexend, warm orange canvas + orange fills with dark text + deep orange text tokens, light mode only (2026-11-14, palette changed twice same day)
+- Pip study buddy reads the screen-time session read-only; wardrobe lives in the profile store, not MongoDB (2026-11-14)
 - [arch] Screen-time rules in one JSON file with a pure, tested engine (2026-11-14)
 - [arch] Four need dimensions (0-4 scores) replace condition labels everywhere (2026-11-14)
 - [arch] Demo module loaded from one JSON seed: BIOL0104 History of Life only (2026-11-14)
@@ -49,15 +50,30 @@ per learner by a model.
 **By:** agent
 
 ### [arch] Design foundations
-**Decision:** Lexend only; tokens in `app/globals.css`. Baby blue `--brand` `#A8D5F7` fills buttons
-and selected pills with navy `--brand-ink` text (10:1). Deeper blue `--accent` `#2867A6` carries text,
-strokes, borders and data bars, where baby blue would be unreadable (1.6:1 on white). Pale blue
-canvas `#F3F8FD`, navy ink `#14243B`, pale blue `--paper` for the Listen layout, yellow mark for key
-terms, clay for wrong answers. Light mode only. Full plan in `DESIGN.md`.
-**Why:** Owner asked for baby blue. Splitting fill and text blues keeps it soft without failing contrast.
-**Instead of:** Warm stone + deep pine (first version, replaced 2026-11-14); one baby blue accent for
-everything (fails WCAG for text and borders).
+**Decision:** Lexend only; tokens in `app/globals.css`. Soft orange canvas `#FFE8D6` with white
+cards, ink `#2B2B2B` (12:1 on canvas). Orange `--brand` `#E07A2E` fills buttons, selected pills and
+progress rings with dark `--brand-ink` text (4.7:1). Deeper orange `--accent` `#9A4710` carries text,
+links, numbers and the focus ring (5.4:1 on canvas), because `#E07A2E` as text is only 3:1 on white.
+Wrong answers moved from clay to berry red `#B42318` so they never read as the accent. Calm theme keeps
+the palette with softer fills. Logo tiles are orange tints around a matcha tile. Light mode only.
+Every page and Pip state audited at WCAG AA in both themes (2026-11-14).
+**Why:** Owner asked for a warm orange theme. Splitting fill and text oranges keeps it warm without
+failing contrast.
+**Instead of:** Baby blue (replaced 2026-11-14); warm stone + deep pine (first version); one orange for
+fills and text (fails AA).
 **To undo:** Change tokens in one file. Rethink if a brand identity is commissioned.
+**By:** agent
+
+### Pip study buddy is a read-only observer
+**Decision:** `components/pip/pip-buddy.tsx` watches session updates and reacts only to transitions
+(block start, break, return), the first idle event of a block or a return from another tab (urge),
+and struggle suggestions. It never calls session actions. Rules and lines live in `lib/pip.ts`
+(tested). Outfit unlocks, colour and outfit are saved with the profile in localStorage.
+**Why:** The brief asked not to change screen-time logic. The brief also said MongoDB, but this demo
+has no backend (see the front-end-only decision); the profile store is where a user document would go.
+**Instead of:** New session events; a database for one demo feature.
+**To undo:** Under an hour to remove (one mount in `app-shell.tsx`). Move `pip` with the profile when a
+backend arrives.
 **By:** agent
 
 ### [arch] Screen-time rules in one JSON file with a pure, tested engine

@@ -1,14 +1,14 @@
 import Link from "next/link";
 
-// Mark: four tiles (the four needs) set around a small warm tile (the learner).
+// Mark: four orange tiles (the four needs) set around a small warm tile (the learner).
 export function LogoMark({ size = 26 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 28 28" aria-hidden>
-      <rect x="0" y="0" width="17" height="9" rx="2.5" fill="#1F5A94" />
-      <rect x="19" y="0" width="9" height="17" rx="2.5" fill="#3F7FC0" />
-      <rect x="11" y="19" width="17" height="9" rx="2.5" fill="#6FA8DE" />
-      <rect x="0" y="11" width="9" height="17" rx="2.5" fill="#A8D5F7" />
-      <rect x="11" y="11" width="6" height="6" rx="1.5" fill="#F2C14E" />
+      <rect x="0" y="0" width="17" height="9" rx="2.5" fill="#9A4710" />
+      <rect x="19" y="0" width="9" height="17" rx="2.5" fill="#C8621E" />
+      <rect x="11" y="19" width="17" height="9" rx="2.5" fill="#E8904F" />
+      <rect x="0" y="11" width="9" height="17" rx="2.5" fill="#F6C29A" />
+      <rect x="11" y="11" width="6" height="6" rx="1.5" fill="#6E9F52" />
     </svg>
   );
 }

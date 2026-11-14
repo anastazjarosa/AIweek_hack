@@ -89,7 +89,7 @@ export default function Landing() {
           <div className="flex flex-col items-start justify-between gap-6 rounded-3xl bg-brand px-10 py-12 text-brand-ink md:flex-row md:items-center">
             <div>
               <p className="mb-2 text-3xl font-light tracking-[-0.02em]">Your next lecture, in your shape.</p>
-              <p className="text-brand-ink/80">Takes two minutes to set up. Change it any time.</p>
+              <p className="text-brand-ink">Takes two minutes to set up. Change it any time.</p>
             </div>
             <Button asChild size="lg" className="bg-surface text-ink hover:bg-canvas">
               <Link href="/signin">

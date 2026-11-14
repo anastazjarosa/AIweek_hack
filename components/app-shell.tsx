@@ -1,10 +1,11 @@
 "use client";
 
-import { BarChart3, BookOpen, LayoutGrid, Timer, Upload, UserRound } from "lucide-react";
+import { BarChart3, BookOpen, LayoutGrid, Shirt, Timer, Upload, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/logo";
 import { ViewSwitcher } from "@/components/view-switcher";
+import { PipBuddy } from "@/components/pip/pip-buddy";
 import { SessionLayer } from "@/components/session/session-layer";
 import { sessionActions, useSession } from "@/lib/screentime/session";
 import { user } from "@/lib/data";
@@ -17,6 +18,7 @@ const nav = [
   { href: "/dashboard#upload", label: "Upload", icon: Upload },
   { href: "/summary", label: "Screen time", icon: BarChart3 },
   { href: "/preferences", label: "How I like to learn", icon: UserRound },
+  { href: "/wardrobe", label: "Pip’s wardrobe", icon: Shirt },
 ];
 
 export function AppShell({
@@ -35,7 +37,7 @@ export function AppShell({
   const canStart = !session || ["idle", "done"].includes(session.phase);
   return (
     <div className="flex min-h-screen">
-      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-line px-4 py-6 md:flex">
+      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-line px-4 pt-6 pb-28 md:flex">
         <div className="mb-10 px-2">
           <Logo href="/dashboard" />
         </div>
@@ -91,6 +93,7 @@ export function AppShell({
         </div>
         <main className="mx-auto w-full max-w-[1120px] flex-1 px-6 py-10 pb-32">{children}</main>
         <SessionLayer />
+        <PipBuddy />
       </div>
     </div>
   );
