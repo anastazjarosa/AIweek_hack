@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, BookOpen, FlaskConical, LayoutGrid, Shirt, Timer, Upload, UserRound } from "lucide-react";
+import { Activity, BarChart3, BookOpen, CalendarDays, FlaskConical, LayoutGrid, Shirt, Timer, Upload, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/logo";
@@ -17,6 +17,8 @@ const nav = [
   { href: "/lab", label: "Simulation Lab", icon: FlaskConical },
   { href: "/dashboard#modules", label: "My modules", icon: BookOpen },
   { href: "/dashboard#upload", label: "Upload", icon: Upload },
+  { href: "/planner", label: "Study planner", icon: CalendarDays },
+  { href: "/profile", label: "What works for me", icon: Activity },
   { href: "/summary", label: "Screen time", icon: BarChart3 },
   { href: "/preferences", label: "How I like to learn", icon: UserRound },
   { href: "/wardrobe", label: "Pip’s wardrobe", icon: Shirt },

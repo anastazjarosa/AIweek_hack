@@ -35,6 +35,13 @@
   experiment and the self-check.
 - MCP server (Part 3): `npm run mcp`, four tools over the same engine; share links `/lab/s?d=`.
   Verified: tool unit tests and a stdio integration test (real client lists tools, calls them).
+- Learning profile (Part 4): `/profile` "What works for you" from a browser-only event log;
+  findings with evidence; suggestions apply on request. Instrumented: experiments, lecture quizzes,
+  skim reads, audio replays, focus blocks.
+- Study planner (Part 5): `/planner` with exams, plan sized to focus span and weak topics, habit
+  coach suggested from behaviour, 2-minute first step, weekly check-in.
+  Verified: 128 unit tests, 20 e2e (event log from a real experiment, profile demo and Use this,
+  planner demo, no label words); screenshots of profile and planner, no phone overflow.
 
 **Verified (2026-11-14, simulation agent):** 98 unit tests (agent logic with a scripted fake
 model: retry on checker errors, retry on answer mismatch, give up after 3, refusal, off-topic,
@@ -70,6 +77,4 @@ preferences page, dashboard, lecture Structured and Standard (Map tab), Persona 
 - The live AI path has not run against the real API yet; run one question with a key before the
   pitch. Generated specs live in server memory only (lost on restart).
 
-**Next (SimMind plan):** live-test Part 2 with a key. Then Part 4
-behaviour-based profile and event log, Part 5 exam planner and procrastination coach, Part 6
-consent, privacy and polish.
+**Next (SimMind plan):** live-test Part 2 with a key. Then Part 6 consent, privacy and polish.

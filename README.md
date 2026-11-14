@@ -70,7 +70,14 @@ my guess that the heavy one lands first."
    lands first, run 1 kg then **Set it for me** (10 kg), and both land at 2.02 s.
    **Ask for any experiment** (top of `/lab`): type "Why don't heavier things fall faster?" and the
    agent builds a new experiment. Write an explanation at the end for AI feedback.
-8. **How I like to learn** (`/preferences`): edit the four sliders, format (audio/visual/text),
+8. **What works for me** (`/profile`): the learning profile, built from behaviour (experiments,
+   quiz answers, reading speed, focus blocks). Click **Load a demo week** for a full profile:
+   focus about 10 minutes, learns by doing, weak on forces, practice improving. **Use this** applies
+   a suggestion; nothing changes on its own.
+9. **Study planner** (`/planner`): **Load demo exams and a demo week**. The plan sizes sessions to
+   the focus span and gives forces extra time; **Start with 2 minutes** is the procrastination
+   coach's tiny first step; the weekly check-in shows what improved and what's next.
+10. **How I like to learn** (`/preferences`): edit the four sliders, format (audio/visual/text),
    voice input and calm theme, or load a demo persona.
 
 ## How needs drive the app
@@ -123,6 +130,10 @@ Next.js (App Router), TypeScript, Tailwind CSS v4, shadcn/ui-style components
   `match.ts` is the offline question matcher. `components/sim/` renders any spec.
 - `lib/ai/`: the simulation agent. `prompts.ts` (built from the templates), `sim-agent.ts` (ask,
   check, retry; unit tested with a fake model), `claude.ts` (the real API calls, server only).
+- `lib/learner/`: the event log (`events.ts`, browser only) and the behaviour-based profile
+  (`profile.ts`: focus, format, depth, pace, practice, weak topics, suggested changes).
+- `lib/planner/`: `plan.ts` (exam plan, habit detection, first steps, weekly check-in) and the
+  planner store.
 - `mcp/server.ts` + `lib/mcp/tools.ts`: the MCP server and its tools; `lib/sim/share.ts` builds
   the `/lab/s?d=…` links.
 - `lib/adapt.ts`: the skim signal (reading time vs text length) behind the Sprints suggestion.

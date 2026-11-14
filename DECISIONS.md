@@ -15,6 +15,8 @@
 - [arch] Simulations are specs over tested templates; the engine decides prediction answers (2026-11-14)
 - [arch] Simulation agent: Claude writes specs via structured outputs, checked and retried; offline fallback always available (2026-11-14)
 - [arch] MCP server over stdio exposes the same simulation functions; specs travel in share links, no database (2026-11-14)
+- [arch] Learning profile computed from a browser-only event log; every finding shows its evidence; suggestions apply only when the student accepts (2026-11-14)
+- [arch] Planner is a deterministic function of exams, profile and habit; procrastination coach is the full one, the others are tips (2026-11-14)
 - Demo clock runs 20× by default (2026-11-14)
 - Product renamed Mosaic; logo is a four-tile pinwheel (see DESIGN.md) (2026-11-14)
 - SimMind plan work continues on `feat/simmind` (branched from `feat/mosaic-demo` at the Simulation Lab commit); `feat/mosaic-demo` is left to its owner (2026-11-14)
@@ -191,6 +193,37 @@ check experiments, and hand the student a link that opens in the app, with no da
 server-side.
 **To undo:** Delete `mcp/` and `lib/mcp/`. Rethink when specs need ids that outlive a link (a
 database), or when a remote MCP endpoint is needed (Streamable HTTP transport).
+**By:** agent
+
+### [arch] Learning profile from behaviour
+**Decision:** `lib/learner/events.ts` logs what the student does (predictions, experiment runs,
+explanations, quiz answers, reading time per section, audio replays, focus blocks) to
+localStorage, capped at 600 events. `computeProfile` (`lib/learner/profile.ts`) turns it into
+signals (focus span, what they use, depth, pace, practice trend), topic stats and weak topics,
+each with an evidence sentence and a confidence level. Suggested changes can carry need-score
+changes; they apply only on **Use this**. Onboarding stays as an optional starting point.
+**Why:** The brief: watch behaviour instead of asking students to label themselves, and adapt to
+what works rather than fixed "learning styles". Evidence makes it contestable; no label words
+appear (e2e checks).
+**Instead of:** Inferring from the self-rating only, or switching layouts automatically.
+**To undo:** Remove the `logEvent` calls; the rest of the app doesn't depend on them. Rethink when
+events go to a backend (consent and retention rules first).
+**By:** agent
+
+### [arch] Study planner and habit coach
+**Decision:** `buildPlan` (`lib/planner/plan.ts`) plans each day to the last exam (max 28 days):
+daily minutes split into blocks sized from the measured focus span (10-25 min, 15 for the
+distraction coach); topics compete by urgency (1/sqrt(days left)) and weakness (1 + 2 × miss rate)
+through a deterministic credit round robin; review within 2 days of an exam, practice for weak
+topics, a 10-minute warm-up on exam day. `detectHabits` suggests a coach from behaviour (gap of 2+
+days, half of focus blocks ended early, experiments re-run 6+ times). The procrastination coach is
+the full one: a concrete 2-minute first step with a timer. `weeklyCheckIn` compares this week with
+last week.
+**Why:** The brief's first version: exam planner with a calendar and one habit coach. Pure
+functions keep it testable and identical every run.
+**Instead of:** An LLM writing the plan (non-deterministic, harder to trust on stage).
+**To undo:** Delete `/planner` and `lib/planner`. Rethink for real calendars (iCal export) and
+reminders (needs notifications and a backend).
 **By:** agent
 
 ### Demo clock runs 20× by default
