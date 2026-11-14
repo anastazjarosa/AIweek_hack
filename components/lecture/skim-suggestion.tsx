@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { shouldSuggestSprints, skimEvidence, wordCount, type Read } from "@/lib/adapt";
 import { lecture } from "@/lib/data";
 import { useProfile } from "@/lib/profile";
+import { useSession } from "@/lib/screentime/session";
 
 // Asked at most once per page load, whatever the answer.
 let asked = false;
@@ -16,6 +17,7 @@ let asked = false;
  */
 export function SkimSuggestion({ simplify }: { simplify: boolean }) {
   const { setView } = useProfile();
+  const session = useSession();
   const [reads, setReads] = useState<Read[]>([]);
   const [closed, setClosed] = useState(asked);
 
@@ -49,7 +51,8 @@ export function SkimSuggestion({ simplify }: { simplify: boolean }) {
     return () => io.disconnect();
   }, [simplify]);
 
-  const open = !closed && shouldSuggestSprints(reads);
+  // Never stack on top of the focus-session break card.
+  const open = !closed && !session?.suggestion && shouldSuggestSprints(reads);
   const { spent, needed } = skimEvidence(reads);
 
   const close = () => {
@@ -61,9 +64,8 @@ export function SkimSuggestion({ simplify }: { simplify: boolean }) {
     <AnimatePresence>
       {open && (
         <motion.div
-          role="dialog"
+          role="alertdialog"
           aria-label="Layout suggestion"
-          aria-live="polite"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 8 }}

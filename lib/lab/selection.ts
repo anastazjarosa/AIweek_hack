@@ -40,7 +40,7 @@ export const explainIdeas = [
   {
     id: "survival",
     label: "Dark moths were harder for birds to spot on dark bark, so more survived",
-    pattern: /camoufla|\bhid|\bblend|\bspot|\bsee|\bnotic|\beat|surviv|predat|\bbird|stand out/i,
+    pattern: /camoufla|\bhid(den|e|ing)?\b|\bblend|\bspot|\bsee\b|\bseen\b|\bnotic|\beat(en|s)?\b|surviv|predat|stand out|harder to (see|find)/i,
   },
   {
     id: "inherit",
@@ -49,11 +49,19 @@ export const explainIdeas = [
   },
 ] as const;
 
+/** The classic wrong idea: individual moths changing colour on purpose. */
+const misconception = /\b(moths?|they|it)\s+(chang|turn)\w*\s+(their\s+|its\s+)?colou?r|\bchose\b|\bchoos|\bdecid|wanted to|tried to/i;
+
 export const modelExplanation =
   "On soot-dark bark, birds spot pale moths more easily, so dark moths survive and breed more. Colour is inherited, so each generation has a few more dark moths. Over many generations, dark becomes common. No moth chose to change: the birds and the bark did the selecting.";
 
-export function explainHits(text: string): Record<(typeof explainIdeas)[number]["id"], boolean> {
+export type ExplainCheck = { misconception: boolean } & Record<(typeof explainIdeas)[number]["id"], boolean>;
+
+/** Ticks each idea the text mentions; ticks nothing when it describes moths choosing to change. */
+export function checkExplanation(text: string): ExplainCheck {
+  if (misconception.test(text)) return { misconception: true, survival: false, inherit: false };
   return {
+    misconception: false,
     survival: explainIdeas[0].pattern.test(text),
     inherit: explainIdeas[1].pattern.test(text),
   };

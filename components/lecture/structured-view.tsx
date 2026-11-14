@@ -3,6 +3,7 @@
 import { ArrowRight, Clock } from "lucide-react";
 import Link from "next/link";
 import { AudioBar } from "@/components/audio-bar";
+import { LabEntry } from "@/components/lecture/lab-entry";
 import { Card } from "@/components/ui/card";
 import { interests, lecture } from "@/lib/data";
 import { useProfile } from "@/lib/profile";
@@ -19,6 +20,7 @@ export function StructuredView() {
     <div className="mx-auto max-w-3xl">
       <p className="mb-2 text-sm text-muted">{lecture.source}</p>
       <h1 className="mb-8 text-4xl font-light tracking-[-0.02em]">{lecture.title}</h1>
+      <LabEntry className="mb-10" />
 
       <div className="mb-10 grid gap-4 sm:grid-cols-2">
         <Card className="p-6">
@@ -53,7 +55,7 @@ export function StructuredView() {
                   onClick={() => setInterest(it.id)}
                   className={cn(
                     "h-9 rounded-full border px-4 text-sm font-medium transition-colors duration-150",
-                    interest === it.id ? "border-accent bg-brand text-brand-ink" : "border-line hover:border-ink/30",
+                    interest === it.id ? "border-accent bg-accent-soft text-accent" : "border-line hover:border-ink/30",
                   )}
                 >
                   {it.label}

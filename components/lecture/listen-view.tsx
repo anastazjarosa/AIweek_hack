@@ -2,6 +2,7 @@
 
 import { Headphones } from "lucide-react";
 import { AudioBar } from "@/components/audio-bar";
+import { LabEntry } from "@/components/lecture/lab-entry";
 import { WithTerms } from "@/components/term";
 import { lecture } from "@/lib/data";
 
@@ -11,6 +12,7 @@ export function ListenView() {
       <div className="mx-auto max-w-[62ch]">
         <p className="mb-2 text-base text-muted">{lecture.moduleShort} · {lecture.minutes} minutes to listen</p>
         <h1 className="mb-6 text-5xl font-light tracking-[-0.02em]">{lecture.title}</h1>
+        <LabEntry className="mb-8" />
         <div className="mb-4 flex items-center gap-2 text-base font-medium">
           <Headphones className="h-4 w-4 text-accent" /> Listen to the whole lecture
         </div>

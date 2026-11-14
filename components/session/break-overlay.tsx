@@ -89,7 +89,7 @@ export function BreakOverlay() {
                     br.taskType === t
                       ? dim
                         ? "bg-white/15 text-white"
-                        : "bg-brand text-brand-ink"
+                        : "bg-accent-soft text-accent ring-1 ring-inset ring-accent"
                       : dim
                         ? "text-white/60 ring-1 ring-white/15 hover:text-white"
                         : "bg-surface ring-1 ring-line hover:ring-ink/30",

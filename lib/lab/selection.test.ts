@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { GENERATIONS, START_DARK, explainHits, simulate } from "./selection";
+import { GENERATIONS, START_DARK, checkExplanation, simulate } from "./selection";
 
 describe("simulate", () => {
   it("returns one value per generation, starting from the rare dark form", () => {
@@ -36,15 +36,29 @@ describe("simulate", () => {
   });
 });
 
-describe("explainHits", () => {
+describe("checkExplanation", () => {
   it("finds both ideas in a good explanation", () => {
-    expect(explainHits("Birds could not spot the dark ones, so they survived and passed it on to their young")).toEqual({
+    expect(checkExplanation("Birds could not spot the dark ones, so they survived and passed it on to their young")).toEqual({
+      misconception: false,
       survival: true,
       inherit: true,
     });
   });
 
-  it("finds neither in an unrelated answer", () => {
-    expect(explainHits("because of the weather in general")).toEqual({ survival: false, inherit: false });
+  it("finds neither in an unrelated answer, including words that only contain the stems", () => {
+    expect(checkExplanation("because of the weather in general, it seems")).toEqual({
+      misconception: false,
+      survival: false,
+      inherit: false,
+    });
+  });
+
+  it("does not tick the classic wrong idea that moths changed colour on purpose", () => {
+    expect(checkExplanation("The moths changed colour to blend in and passed it to their babies")).toEqual({
+      misconception: true,
+      survival: false,
+      inherit: false,
+    });
+    expect(checkExplanation("they decided to be dark so birds would not see them").misconception).toBe(true);
   });
 });

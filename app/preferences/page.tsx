@@ -72,7 +72,7 @@ export default function PreferencesPage() {
                   onClick={() => setPrefs({ format: f.id })}
                   className={cn(
                     "h-9 rounded-full px-4 text-sm font-medium",
-                    prefs.format === f.id ? "bg-brand text-brand-ink" : "bg-canvas hover:bg-accent-soft",
+                    prefs.format === f.id ? "bg-accent-soft text-accent ring-1 ring-inset ring-accent" : "bg-canvas hover:bg-accent-soft",
                   )}
                 >
                   {f.label}

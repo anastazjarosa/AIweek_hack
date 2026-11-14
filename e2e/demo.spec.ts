@@ -41,8 +41,8 @@ test("moth lab runs predict, run and explain", async ({ page }) => {
   await expect(page.getByText(/With no birds, nothing is choosing/)).toBeVisible();
 
   await page.getByRole("button", { name: /Explain it/ }).click();
-  await expect(page.getByText(/the experiment says almost all of them/)).toBeVisible();
-  await page.getByLabel(/why did dark moths take over/).fill("Birds could not spot dark moths so they survived and passed on their colour");
+  await expect(page.getByText(/the model reaches almost all of them/)).toBeVisible();
+  await page.getByLabel(/why do dark moths take over/).fill("Birds could not spot dark moths so they survived and passed on their colour");
   await page.getByRole("button", { name: "Check my explanation" }).click();
   await expect(page.getByText(": you mentioned this")).toHaveCount(2);
 });
@@ -51,7 +51,7 @@ test("skimming the notes offers Sprints, and accepting switches layout", async (
   await page.goto("/lecture/history-of-life");
   await expect(page.getByRole("tab", { name: "Notes", selected: true })).toBeVisible();
 
-  const card = page.getByRole("dialog", { name: "Layout suggestion" });
+  const card = page.getByRole("alertdialog", { name: "Layout suggestion" });
   for (let i = 0; i < 20 && !(await card.isVisible()); i++) {
     await page.mouse.move(600, 400);
     await page.mouse.wheel(0, 350);

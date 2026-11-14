@@ -5,7 +5,7 @@
   --surface: #ffffff;
   --ink: #14243b;
   --muted: #4f6079;
-  --line: #d9e5f0;
+  --line: #c9daea;
   /* Baby blue fills (buttons, selected pills) carry navy text. */
   --brand: #a8d5f7;
   --brand-hover: #92c8f2;
@@ -14,9 +14,9 @@
   --accent: #2867a6;
   --accent-ink: #ffffff;
   --accent-soft: #e1f0fc;
-  --paper: #eaf4fd;
+  --paper: #dcedfb;
   --mark: #fbe7a1;
-  --clay: #a9502b;
+  --clay: #9c4a28;
   --clay-soft: #f6e6dd;
 }
 

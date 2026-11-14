@@ -3,11 +3,11 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, Play, RotateCcw } from "lucide-react";
 import Link from "next/link";
-import { useId, useState } from "react";
+import { useId, useState, useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { lecture } from "@/lib/data";
-import { GENERATIONS, START_DARK, explainHits, explainIdeas, modelExplanation, simulate, type Run } from "@/lib/lab/selection";
+import { GENERATIONS, START_DARK, checkExplanation, explainIdeas, modelExplanation, simulate, type Run } from "@/lib/lab/selection";
 import { cn } from "@/lib/utils";
 
 const steps = ["Predict", "Run", "Explain"] as const;
@@ -31,7 +31,8 @@ export function MothLab() {
   const [explain, setExplain] = useState("");
   const [checked, setChecked] = useState(false);
   const barkId = useId();
-  const hits = explainHits(explain);
+  const hits = checkExplanation(explain);
+  const stale = !!run && (run.bark !== bark / 100 || run.birds !== birds);
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -55,7 +56,7 @@ export function MothLab() {
               aria-current={current ? "step" : undefined}
               className={cn(
                 "flex h-9 items-center gap-2 rounded-full px-4 text-sm font-medium",
-                current ? "bg-brand text-brand-ink" : done ? "bg-accent-soft text-accent" : "bg-surface text-muted ring-1 ring-line",
+                current ? "bg-accent-soft text-accent ring-1 ring-inset ring-accent" : done ? "bg-accent-soft text-accent" : "bg-surface text-muted ring-1 ring-line",
               )}
             >
               {done ? <Check className="h-4 w-4" /> : <span className="tabular-nums">{i + 1}</span>}
@@ -66,7 +67,7 @@ export function MothLab() {
       </ol>
 
       {step === "Predict" && (
-        <Card className="p-8">
+        <Card className="p-5 sm:p-8">
           <p className="mb-5 text-xl leading-snug font-medium">{prediction.q}</p>
           <div role="radiogroup" aria-label="Your prediction" className="space-y-2">
             {prediction.options.map((o, oi) => (
@@ -96,7 +97,7 @@ export function MothLab() {
       )}
 
       {step === "Run" && (
-        <Card className="p-8">
+        <Card className="p-5 sm:p-8">
           <div className="mb-6 grid gap-6 sm:grid-cols-[1fr_auto]">
             <div>
               <label htmlFor={barkId} className="mb-2 block font-medium">
@@ -110,6 +111,7 @@ export function MothLab() {
                 step={10}
                 value={bark}
                 onChange={(e) => setBark(Number(e.target.value))}
+                aria-valuetext={`${bark}% dark, ${barkLabel(bark / 100)}`}
                 className="h-11 w-full accent-[var(--accent)]"
               />
               <p className="mb-5 text-sm text-muted">{barkLabel(bark / 100)}</p>
@@ -126,7 +128,7 @@ export function MothLab() {
                     onClick={() => setBirds(o.on)}
                     className={cn(
                       "h-11 rounded-full border px-4 text-sm font-medium transition-colors duration-150",
-                      birds === o.on ? "border-accent bg-brand text-brand-ink" : "border-line hover:border-accent",
+                      birds === o.on ? "border-accent bg-accent-soft text-accent" : "border-line hover:border-accent",
                     )}
                   >
                     {o.label}
@@ -142,9 +144,10 @@ export function MothLab() {
           </Button>
 
           {run && (
-            <div className="mt-8">
+            <div className={cn("mt-8 transition-opacity duration-150", stale && "opacity-50")}>
+              {stale && <p className="mb-2 text-sm font-medium text-accent">Settings changed. Press Run again to update.</p>}
               <Chart run={run} />
-              <p className="mt-4 text-lg" aria-live="polite">
+              <p className="mt-4 text-base" aria-live="polite">
                 {!run.birds ? (
                   <>
                     With no birds, nothing is choosing, so dark moths stay at{" "}
@@ -172,18 +175,18 @@ export function MothLab() {
       )}
 
       {step === "Explain" && (
-        <Card className="p-8">
+        <Card className="p-5 sm:p-8">
           <p className="mb-1 text-sm text-muted">You predicted</p>
           <p className="mb-5 text-lg">
             {prediction.options[guess!]}.{" "}
             <span className={guess === prediction.answer ? "text-accent" : "text-ink/75"}>
               {guess === prediction.answer
-                ? "The experiment agrees."
-                : "On sooty bark, the experiment says almost all of them. Surprises like this are how you learn."}
+                ? "Right: with sooty bark and birds hunting, the model reaches almost all of them."
+                : "With sooty bark and birds hunting, the model reaches almost all of them. Surprises like this are how you learn."}
             </span>
           </p>
           <label htmlFor="explain" className="mb-2 block font-medium">
-            In one sentence: why did dark moths take over?
+            In one sentence: on sooty bark, why do dark moths take over?
           </label>
           <textarea
             id="explain"
@@ -207,7 +210,13 @@ export function MothLab() {
 
           {checked && (
             <div className="mt-8 space-y-5" aria-live="polite">
-              {explain.trim() && (
+              {hits.misconception && (
+                <p className="rounded-2xl bg-mark/60 p-4">
+                  Close, but no moth changed on purpose. Each moth keeps the colour it was born with. Think about which
+                  moths the birds ate, and what the survivors passed on.
+                </p>
+              )}
+              {explain.trim() && !hits.misconception && (
                 <ul className="space-y-2">
                   {explainIdeas.map((idea) => (
                     <li key={idea.id} className="flex items-start gap-3">
@@ -289,15 +298,31 @@ function Moth({ x, y, fill }: { x: number; y: number; fill: string }) {
 
 // ---------- Chart: share of dark moths over generations ----------
 
-const W = 640;
-const H = 260;
-const PAD = { l: 44, r: 16, t: 20, b: 36 };
-const x = (g: number) => PAD.l + (g / GENERATIONS) * (W - PAD.l - PAD.r);
-const y = (p: number) => PAD.t + (1 - p) * (H - PAD.t - PAD.b);
-const path = (curve: number[]) => curve.map((p, g) => `${g ? "L" : "M"}${x(g).toFixed(1)},${y(p).toFixed(1)}`).join(" ");
+// A narrower drawing on phones keeps the axis labels readable once the SVG is scaled down.
+const narrowQuery = "(max-width: 639px)";
+function useNarrow() {
+  return useSyncExternalStore(
+    (cb) => {
+      const m = window.matchMedia(narrowQuery);
+      m.addEventListener("change", cb);
+      return () => m.removeEventListener("change", cb);
+    },
+    () => window.matchMedia(narrowQuery).matches,
+    () => false,
+  );
+}
 
 function Chart({ run }: { run: Run }) {
   const reduce = useReducedMotion();
+  const narrow = useNarrow();
+  const W = narrow ? 320 : 640;
+  const H = narrow ? 240 : 260;
+  const font = narrow ? 13 : 12;
+  const PAD = { l: narrow ? 40 : 44, r: 16, t: 20, b: 36 };
+  const x = (g: number) => PAD.l + (g / GENERATIONS) * (W - PAD.l - PAD.r);
+  const y = (p: number) => PAD.t + (1 - p) * (H - PAD.t - PAD.b);
+  const d = run.curve.map((p, g) => `${g ? "L" : "M"}${x(g).toFixed(1)},${y(p).toFixed(1)}`).join(" ");
+  const ticks = narrow ? [0, 25, 50] : [0, 10, 20, 30, 40, 50];
   const draw = reduce
     ? {}
     : { initial: { pathLength: 0 }, animate: { pathLength: 1 }, transition: { duration: 0.6, ease: "easeOut" as const } };
@@ -312,26 +337,25 @@ function Chart({ run }: { run: Run }) {
         {[0, 0.5, 1].map((p) => (
           <g key={p}>
             <line x1={PAD.l} x2={W - PAD.r} y1={y(p)} y2={y(p)} className="stroke-line" />
-            <text x={PAD.l - 8} y={y(p) + 4} textAnchor="end" className="fill-muted text-[12px]">
+            <text x={PAD.l - 8} y={y(p) + 4} textAnchor="end" fontSize={font} className="fill-muted">
               {pct(p)}
             </text>
           </g>
         ))}
-        {[0, 10, 20, 30, 40, 50].map((g) => (
-          <text key={g} x={x(g)} y={H - 12} textAnchor="middle" className="fill-muted text-[12px]">
+        {ticks.map((g) => (
+          <text key={g} x={x(g)} y={H - 12} textAnchor="middle" fontSize={font} className="fill-muted">
             {g === 0 ? "Gen 0" : g}
           </text>
         ))}
-        <motion.path
-          key={`${run.bark}-${run.birds}`}
-          d={path(run.curve)}
-          fill="none"
-          strokeWidth={3}
-          className="stroke-accent"
-          {...draw}
-        />
+        <motion.path key={`${run.bark}-${run.birds}-${W}`} d={d} fill="none" strokeWidth={3} className="stroke-accent" {...draw} />
         <circle cx={x(GENERATIONS)} cy={y(run.end)} r={6} className="fill-accent" />
-        <text x={x(GENERATIONS) - 10} y={run.end > 0.85 ? y(run.end) + 22 : y(run.end) - 12} textAnchor="end" className="fill-accent text-[13px] font-medium">
+        <text
+          x={x(GENERATIONS) - 10}
+          y={run.end > 0.85 ? y(run.end) + 22 : y(run.end) - 12}
+          textAnchor="end"
+          fontSize={font + 1}
+          className="fill-accent font-medium"
+        >
           {pct(run.end)} dark
         </text>
       </svg>

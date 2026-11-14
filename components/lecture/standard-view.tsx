@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { LectureTitle } from "@/components/lecture/lecture-view";
 import { QuizOption, optionState } from "@/components/lecture/quiz-option";
+import { LabEntry } from "@/components/lecture/lab-entry";
 import { SkimSuggestion } from "@/components/lecture/skim-suggestion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -20,6 +21,7 @@ export function StandardView() {
   return (
     <div>
       <LectureTitle />
+      <LabEntry className="mb-8 max-w-2xl" />
       <div role="tablist" className="mb-8 flex gap-6 border-b border-line">
         {tabs.map((t) => (
           <button

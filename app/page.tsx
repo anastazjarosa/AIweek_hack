@@ -21,7 +21,7 @@ export default function Landing() {
             <Link href="/signin">Sign in</Link>
           </Button>
           <Button asChild size="sm">
-            <Link href="/signin">Get started</Link>
+            <Link href="/signin">Set up my layout</Link>
           </Button>
         </nav>
       </header>
@@ -38,7 +38,7 @@ export default function Landing() {
             </p>
             <Button asChild size="lg">
               <Link href="/signin">
-                Get started <ArrowRight />
+                Set up my layout <ArrowRight />
               </Link>
             </Button>
             <p className="mt-4 text-sm text-muted">Set four needs your way: focus, processing, planning and structure.</p>
@@ -93,7 +93,7 @@ export default function Landing() {
             </div>
             <Button asChild size="lg" className="bg-surface text-ink hover:bg-canvas">
               <Link href="/signin">
-                Get started <ArrowRight />
+                Set up my layout <ArrowRight />
               </Link>
             </Button>
           </div>

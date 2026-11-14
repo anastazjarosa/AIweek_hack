@@ -114,7 +114,10 @@ export function SprintsView() {
                     Take a 2-minute break <ArrowRight />
                   </Link>
                 </Button>
-                <Button variant="secondary" onClick={restart}>
+                <Button variant="secondary" asChild>
+                  <Link href={`/lecture/${lecture.slug}/lab`}>Try the moth lab</Link>
+                </Button>
+                <Button variant="ghost" onClick={restart}>
                   <RotateCcw /> Go again
                 </Button>
               </div>

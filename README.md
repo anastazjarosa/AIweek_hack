@@ -19,7 +19,7 @@ Open http://localhost:3000. Run tests with `npm test`.
 ## Demo click path (about 3 minutes)
 
 1. **Landing** (`/`): in the hero, click Sprints → Listen → Structured → Standard. The same slide
-   reshapes live. Then **Get started**.
+   reshapes live. Then **Set up my layout**.
 2. **Sign in** (`/signin`): click **Sign in** or **Continue with Google**. No validation.
 3. **Onboarding** (`/onboarding`): **Rate 8 statements** on a 0–4 scale ("Not like me" to
    "Very like me"). Two statements per need are averaged. Or **Set it myself** for sliders.
