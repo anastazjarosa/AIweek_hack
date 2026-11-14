@@ -65,7 +65,7 @@ export type Session = {
   toast: { id: number; text: string } | null;
 };
 
-const KEY = "neura-session-v2";
+const KEY = "mosaic-session-v1";
 let session: Session | null = null;
 let loaded = false;
 const listeners = new Set<() => void>();

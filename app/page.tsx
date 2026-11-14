@@ -104,7 +104,7 @@ export default function Landing() {
         <div className="mx-auto flex max-w-[1180px] flex-col justify-between gap-4 px-6 py-8 text-sm text-muted sm:flex-row">
           <Logo />
           <p>A study tool that adapts to how you work.</p>
-          <p>© 2026 Neura · Hackathon demo</p>
+          <p>© 2026 Mosaic · Hackathon demo</p>
         </div>
       </footer>
     </div>

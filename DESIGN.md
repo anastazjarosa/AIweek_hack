@@ -1,4 +1,4 @@
-# Neura design plan
+# Mosaic design plan
 
 ## Story
 
@@ -34,6 +34,9 @@
   | `--mark` | `#F3E2A8` | key-term highlight |
   | `--clay` | `#A9502B` | wrong-answer feedback only |
   Light mode only (a demo on a projector; dark mode not designed).
+- **Name and mark.** Mosaic: many small pieces arranged into one picture, like four needs in
+  any mix. The mark is four tiles in pine tints (one per need) around a small warm tile (the
+  learner), in `components/logo.tsx` and `app/icon.svg`.
 - **Imagery.** Product UI only (concept cards, sprint timer, audio bar). lucide icons used
   sparingly for navigation and controls, never decorative per feature.
 - **Layout.** 12-column, max 1180px, left-aligned. Landing: hero (claim left, live card right)

@@ -12,7 +12,8 @@
 - [arch] Screen-time session log kept client-side; `/summary` stands in for the API (2026-11-14)
 - [arch] Break planner is a deterministic function, not an AI agent (2026-11-14)
 - Demo clock runs 20× by default (2026-11-14)
-- Not pushed to GitHub; local commits on `feat/neura-demo` only (owner instruction, 2026-11-14)
+- Product renamed Mosaic; logo is a four-tile pinwheel (see DESIGN.md) (2026-11-14)
+- Not pushed to GitHub; local commits on `feat/mosaic-demo` only (owner instruction, 2026-11-14)
 
 ---
 

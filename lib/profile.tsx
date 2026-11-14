@@ -7,9 +7,9 @@ import { DEFAULT_PREFS, ZERO, defaultView, needsFromScores, type Prefs, type Sco
 /** scores drive every adaptation; view is the lecture layout (the student can override it). */
 type State = { scores: Scores; prefs: Prefs; view: ViewId; interest: Interest };
 
-const KEY = "neura-profile-v2";
-// v1 stored label-based profiles. Removed on first load; scores start fresh.
-const OLD_KEYS = ["neura-profile-v1", "neura-session-v1"];
+const KEY = "mosaic-profile-v1";
+// Keys from earlier builds (label-based profiles, old app name). Removed on first load.
+const OLD_KEYS = ["neura-profile-v1", "neura-session-v1", "neura-profile-v2", "neura-session-v2"];
 const DEFAULT: State = { scores: ZERO, prefs: DEFAULT_PREFS, view: "standard", interest: "trains" };
 
 // Tiny external store. localStorage is demo persistence only: it survives a refresh mid-pitch.

@@ -1,4 +1,4 @@
-# Neura
+# Mosaic
 
 Hackathon demo: a study app that turns lecture slides and textbooks into notes, flashcards,
 quizzes and concept maps shaped around four learning needs: **Focus**, **Processing**,

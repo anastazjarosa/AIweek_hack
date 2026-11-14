@@ -10,7 +10,7 @@ const lexend = Lexend({
 });
 
 export const metadata: Metadata = {
-  title: "Neura — study material that fits your brain",
+  title: "Mosaic — study material that fits your brain",
   description:
     "Upload lectures and textbooks. Get notes, flashcards and quizzes shaped around how you focus, read and remember.",
 };

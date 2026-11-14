@@ -1,9 +1,9 @@
 # Progress
 
-**Objective:** Clickable hackathon demo of Neura: study material adapted to four learning needs
+**Objective:** Clickable hackathon demo of Mosaic: study material adapted to four learning needs
 (Focus, Processing, Planning, Structure).
 
-**Branch:** `feat/neura-demo`, local commits only. Owner said not to push or open a PR.
+**Branch:** `feat/mosaic-demo`, local commits only. Owner said not to push or open a PR.
 
 **Done**
 - Landing, sign in, onboarding (8 statements, 0-4), "How I like to learn" sliders and
