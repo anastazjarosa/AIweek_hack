@@ -49,7 +49,7 @@ export function AudioBar({
           setPlaying((p) => !p);
         }}
         aria-label={playing ? `Pause ${label ?? "audio"}` : `Listen to ${label ?? "this section"}`}
-        className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent text-accent-ink"
+        className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-brand-ink"
       >
         {playing ? <Pause className="h-4 w-4" /> : <Play className="ml-0.5 h-4 w-4" />}
       </button>

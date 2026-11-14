@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
-import { SpacingLab } from "@/components/lab/spacing-lab";
+import { MothLab } from "@/components/lab/moth-lab";
 import { lecture } from "@/lib/data";
 
 export function generateStaticParams() {
@@ -20,11 +20,11 @@ export default async function LabPage({ params }: PageProps<"/lecture/[slug]/lab
             {lecture.title}
           </Link>
           <span className="mx-2">/</span>
-          <span className="text-ink">Spacing lab</span>
+          <span className="text-ink">Moth lab</span>
         </span>
       }
     >
-      <SpacingLab />
+      <MothLab />
     </AppShell>
   );
 }

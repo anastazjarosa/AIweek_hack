@@ -1,24 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  --canvas: #f5f3ee;
+  --canvas: #f3f8fd;
   --surface: #ffffff;
-  --ink: #1c2321;
-  --muted: #5b625e;
-  --line: #e3dfd6;
-  --accent: #1e6b57;
+  --ink: #14243b;
+  --muted: #4f6079;
+  --line: #d9e5f0;
+  /* Baby blue fills (buttons, selected pills) carry navy text. */
+  --brand: #a8d5f7;
+  --brand-hover: #92c8f2;
+  --brand-ink: #0f2440;
+  /* Deeper blue for text, strokes, borders and data, where baby blue is too light to read. */
+  --accent: #2867a6;
   --accent-ink: #ffffff;
-  --accent-soft: #e4efea;
-  --cream: #faf4e2;
-  --mark: #f3e2a8;
+  --accent-soft: #e1f0fc;
+  --paper: #eaf4fd;
+  --mark: #fbe7a1;
   --clay: #a9502b;
   --clay-soft: #f6e6dd;
 }
 
 /* Calm theme (student setting): softer accent, no CSS transitions or animations. */
 [data-calm] {
-  --accent: #3f6f62;
-  --accent-soft: #e8efeb;
+  --brand: #bcdcf3;
+  --brand-hover: #a9d1ee;
+  --accent: #3b6a96;
+  --accent-soft: #e8f1f9;
   --clay: #8a5a43;
 }
 [data-calm] * {
@@ -32,10 +39,13 @@
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-ink: var(--brand-ink);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
-  --color-cream: var(--cream);
+  --color-paper: var(--paper);
   --color-mark: var(--mark);
   --color-clay: var(--clay);
   --color-clay-soft: var(--clay-soft);

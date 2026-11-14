@@ -23,19 +23,22 @@
 - **Palette (tokens in `app/globals.css`).**
   | Token | Value | Role |
   |---|---|---|
-  | `--canvas` | `#F5F3EE` | warm stone page |
+  | `--canvas` | `#F3F8FD` | pale blue page |
   | `--surface` | `#FFFFFF` | cards |
-  | `--ink` | `#1C2321` | text |
-  | `--muted` | `#5B625E` | secondary text (≈6:1 on canvas) |
-  | `--line` | `#E3DFD6` | rules, borders |
-  | `--accent` | `#1E6B57` | deep pine: primary action, progress, selection (<10% of page) |
-  | `--accent-soft` | `#E4EFEA` | selected backgrounds |
-  | `--cream` | `#FAF4E2` | Listen layout reading surface |
-  | `--mark` | `#F3E2A8` | key-term highlight |
+  | `--ink` | `#14243B` | navy text (14.6:1 on canvas) |
+  | `--muted` | `#4F6079` | secondary text (6:1 on canvas) |
+  | `--line` | `#D9E5F0` | rules, borders |
+  | `--brand` | `#A8D5F7` | baby blue: primary buttons, selected pills, CTA band (<10% of page) |
+  | `--brand-hover` | `#92C8F2` | hover on brand fills |
+  | `--brand-ink` | `#0F2440` | text on baby blue (10:1) |
+  | `--accent` | `#2867A6` | deep blue: links, numbers, chart lines, progress, focus ring (5.9:1 on white) |
+  | `--accent-soft` | `#E1F0FC` | selected backgrounds |
+  | `--paper` | `#EAF4FD` | Listen layout reading surface |
+  | `--mark` | `#FBE7A1` | key-term highlight |
   | `--clay` | `#A9502B` | wrong-answer feedback only |
   Light mode only (a demo on a projector; dark mode not designed).
 - **Name and mark.** Mosaic: many small pieces arranged into one picture, like four needs in
-  any mix. The mark is four tiles in pine tints (one per need) around a small warm tile (the
+  any mix. The mark is four tiles in blue tints, deep to baby blue (one per need), around a small warm tile (the
   learner), in `components/logo.tsx` and `app/icon.svg`.
 - **Imagery.** Product UI only (concept cards, sprint timer, audio bar). lucide icons used
   sparingly for navigation and controls, never decorative per feature.
@@ -51,7 +54,7 @@
   | Sprint complete | small reward | check scales 0.8→1, ring of dots | last card done | static check |
   | Break overlay opens | you are stepping away | 400ms fade over the page | block ends / break accepted | instant |
   | Walk-and-listen dim | the screen is not for now | background fades to near-black, 700ms | task type | instant colour |
-  | Spacing lab run | the experiment happening | curve draws left to right, 600ms ease-out | Run | line appears at once |
+  | Moth lab run | the experiment happening | curve draws left to right, 600ms ease-out | Run | line appears at once |
 | Skim suggestion | the app noticed how you read | 200ms rise and fade, light card (break cards are dark) | skim score ≥ 0.7 | instant |
 | Break suggestion / warning toast | the app noticed, gently | 200ms rise and fade | struggle trigger / warning point | instant |
 - **References.** Technique only: Linear's restraint in type sizes and 1px rules; Headspace's

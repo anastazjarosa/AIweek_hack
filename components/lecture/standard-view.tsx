@@ -181,16 +181,9 @@ function Quiz() {
   );
 }
 
-const groups = [
-  { id: "memory", label: "Memory" },
-  { id: "stage", label: "Stages" },
-  { id: "effect", label: "Effects" },
-  { id: "tip", label: "Study tips" },
-];
-
 /** Concept map from the seed: one column per level, each node lists where it leads. */
 function ConceptMap() {
-  const { nodes, edges } = lecture.visualMap;
+  const { groups, nodes, edges } = lecture.visualMap;
   const label = (id: string) => nodes.find((n) => n.id === id)?.label;
   return (
     <div className="grid gap-4 md:grid-cols-4">

@@ -63,7 +63,7 @@ export function AppShell({
           </span>
           <div className="text-sm leading-tight">
             <p className="font-medium">{user.name} Patel</p>
-            <p className="text-muted">Year 2 · Medicine</p>
+            <p className="text-muted">Year 1 · Biology</p>
           </div>
         </div>
       </aside>
@@ -75,7 +75,7 @@ export function AppShell({
               {canStart && (
                 <button
                   onClick={sessionActions.openSetup}
-                  className="inline-flex h-11 items-center gap-2 rounded-full bg-accent px-4 text-sm font-medium text-accent-ink hover:bg-[#185a49]"
+                  className="inline-flex h-11 items-center gap-2 rounded-full bg-brand px-4 text-sm font-medium text-brand-ink hover:bg-brand-hover"
                 >
                   <Timer className="h-4 w-4" /> Start focus session
                 </button>

@@ -38,7 +38,7 @@ export function SetupDialog() {
               onClick={() => setScores(demo.scores)}
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium",
-                isDemo ? "bg-accent text-accent-ink" : "bg-surface ring-1 ring-line hover:ring-ink/30",
+                isDemo ? "bg-brand text-brand-ink" : "bg-surface ring-1 ring-line hover:ring-ink/30",
               )}
             >
               <Sparkles className="h-3 w-3" /> {demo.name.split(":")[0]}: high focus + high structure
@@ -100,7 +100,7 @@ export function SetupDialog() {
                   aria-pressed={cap === c}
                   className={cn(
                     "h-9 flex-1 rounded-full text-sm font-medium",
-                    cap === c ? "bg-accent text-accent-ink" : "bg-canvas hover:bg-accent-soft",
+                    cap === c ? "bg-brand text-brand-ink" : "bg-canvas hover:bg-accent-soft",
                   )}
                 >
                   {c}m
@@ -118,7 +118,7 @@ export function SetupDialog() {
                   aria-pressed={demoSpeed === d}
                   className={cn(
                     "h-9 flex-1 rounded-full text-sm font-medium",
-                    demoSpeed === d ? "bg-accent text-accent-ink" : "bg-canvas hover:bg-accent-soft",
+                    demoSpeed === d ? "bg-brand text-brand-ink" : "bg-canvas hover:bg-accent-soft",
                   )}
                 >
                   {d ? `Demo ${rules.demo.speed}×` : "Real time"}

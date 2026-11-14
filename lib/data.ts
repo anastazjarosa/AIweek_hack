@@ -1,5 +1,5 @@
 // All mock data for the demo lives here or in lib/seed. Nothing is fetched or generated.
-import seed from "@/lib/seed/psyc0101-lecture5.json";
+import seed from "@/lib/seed/biol0104-history-of-life.json";
 import type { TaskType } from "@/lib/screentime/engine";
 
 export type Interest = "trains" | "football";
@@ -19,42 +19,42 @@ export type Module = { id: string; title: string; code: string; progress: number
 
 export const modules: Module[] = [
   {
-    id: "psyc0101",
-    title: "Introduction to Psychology",
-    code: "PSYC0101",
+    id: "biol0104",
+    title: "The History of Life",
+    code: "BIOL0104",
     progress: 40,
     lectures: [
-      { title: "Lecture 4: Perception", minutes: 11, done: true },
-      { slug: "memory", title: "Lecture 5: How memory works", minutes: 16, done: false },
-      { title: "Lecture 6: How we learn", minutes: 12, done: false },
+      { title: "Lecture 2: Fossils and deep time", minutes: 11, done: true },
+      { slug: "history-of-life", title: "Lecture 3: The story of life on Earth", minutes: 16, done: false },
+      { title: "Lecture 4: How new species form", minutes: 12, done: false },
     ],
   },
   {
-    id: "cardiology",
-    title: "Cardiology",
-    code: "MED2041",
+    id: "biol0105",
+    title: "Evolution in Action",
+    code: "BIOL0105",
     progress: 62,
     lectures: [
-      { title: "Heart failure", minutes: 12, done: true },
-      { title: "Atrial fibrillation", minutes: 10, done: true },
+      { title: "Variation and inheritance", minutes: 12, done: true },
+      { title: "Natural selection in the wild", minutes: 10, done: true },
     ],
   },
   {
-    id: "respiratory",
-    title: "Respiratory",
-    code: "MED2043",
+    id: "biol0106",
+    title: "The Fossil Record",
+    code: "BIOL0106",
     progress: 38,
     lectures: [
-      { title: "Asthma and COPD", minutes: 11, done: true },
-      { title: "Pneumonia", minutes: 9, done: false },
+      { title: "How fossils form", minutes: 11, done: true },
+      { title: "Reading rock layers", minutes: 9, done: false },
     ],
   },
 ];
 
 export const todaysPlan = [
-  { title: "Memory: the forgetting curve", minutes: 5, module: "Psychology" },
-  { title: "Memory: the spacing effect", minutes: 4, module: "Psychology" },
-  { title: "Memory: flashcards", minutes: 3, module: "Psychology" },
+  { title: "History of life: deep time", minutes: 5, module: "History of Life" },
+  { title: "History of life: the Cambrian explosion", minutes: 4, module: "History of Life" },
+  { title: "History of life: flashcards", minutes: 3, module: "History of Life" },
 ];
 
 export const processingSteps = ["Reading your slides", "Finding key concepts", "Adapting to how you learn"];
@@ -92,11 +92,11 @@ const sections: Section[] = seed.slides.map((sl, i) => {
 export const lecture = {
   slug: seed.lecture.slug,
   module: `${seed.module.code} ${seed.module.title}`,
-  moduleShort: "Psychology",
+  moduleShort: "History of Life",
   title: seed.lecture.title,
   source: `Lecture ${seed.lecture.number} · ${seed.slides.length} slides`,
   minutes: sections.reduce((n, s) => n + s.minutes, 0),
-  nextLecture: { title: "Lecture 6: How we learn", sections: 4, minutes: 12 },
+  nextLecture: { title: "Lecture 4: How new species form", sections: 4, minutes: 12 },
   sections,
   keyIdeas: seed.key_ideas,
   references: seed.references,

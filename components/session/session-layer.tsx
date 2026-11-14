@@ -72,7 +72,7 @@ function FocusWidget() {
   const b = s.blocks[s.blocks.length - 1];
   const left = blockLeftSec(s);
   return (
-    <div className="fixed right-5 bottom-5 z-40 flex items-center gap-4 rounded-3xl border border-line bg-surface py-3 pr-3 pl-3 shadow-[0_20px_40px_-24px_rgba(28,35,33,0.35)]">
+    <div className="fixed right-5 bottom-5 z-40 flex items-center gap-4 rounded-3xl border border-line bg-surface py-3 pr-3 pl-3 shadow-[0_20px_40px_-24px_rgba(20,36,59,0.35)]">
       <ProgressRing value={(left / (b.plannedMin * 60)) * 100} size={60} stroke={5} label={fmtClock(left)} />
       <div className="text-sm leading-tight">
         <p className="font-medium">
@@ -113,7 +113,7 @@ function StruggleCard() {
           transition={{ duration: 0.2, ease: "easeOut" }}
           className="fixed right-5 bottom-28 z-40 w-[340px] rounded-3xl bg-ink p-6 text-white shadow-xl"
         >
-          <Coffee className="mb-3 h-5 w-5 text-[#9fd3c1]" />
+          <Coffee className="mb-3 h-5 w-5 text-[#A8D5F7]" />
           <p className="mb-1 text-lg font-medium">This looks like a good moment for a break.</p>
           <p className="mb-5 text-sm text-white/70">{reasonLabels[s.suggestion]}. A few minutes away usually helps it stick.</p>
           <div className="flex gap-2">
@@ -162,7 +162,7 @@ function Toast() {
 
 function DoneCard() {
   return (
-    <div className="fixed right-5 bottom-5 z-40 flex items-center gap-4 rounded-3xl border border-line bg-surface p-4 pl-5 shadow-[0_20px_40px_-24px_rgba(28,35,33,0.35)]">
+    <div className="fixed right-5 bottom-5 z-40 flex items-center gap-4 rounded-3xl border border-line bg-surface p-4 pl-5 shadow-[0_20px_40px_-24px_rgba(20,36,59,0.35)]">
       <p className="text-sm font-medium">Session finished</p>
       <Button asChild size="sm">
         <Link href="/summary">See summary</Link>

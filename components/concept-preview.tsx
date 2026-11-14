@@ -24,8 +24,8 @@ export function ConceptPreview() {
       </div>
       <div
         className={cn(
-          "relative min-h-[420px] overflow-hidden rounded-3xl border border-line p-6 sm:p-8 shadow-[0_1px_0_rgba(0,0,0,0.02),0_20px_40px_-24px_rgba(28,35,33,0.18)] transition-colors duration-300",
-          p === "listen" ? "bg-cream" : "bg-surface",
+          "relative min-h-[420px] overflow-hidden rounded-3xl border border-line p-6 sm:p-8 shadow-[0_1px_0_rgba(0,0,0,0.02),0_20px_40px_-24px_rgba(20,36,59,0.18)] transition-colors duration-300",
+          p === "listen" ? "bg-paper" : "bg-surface",
         )}
       >
         <AnimatePresence mode="wait" initial={false}>

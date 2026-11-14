@@ -5,10 +5,10 @@
 - [arch] Front-end-only demo with all data in `lib/data.ts` (2026-11-14)
 - [arch] Lecture written once, rendered in four layouts (2026-11-14)
 - [arch] Client state in small `useSyncExternalStore` stores, persisted to localStorage (2026-11-14)
-- [arch] Design foundations: Lexend, warm stone + deep pine tokens, light mode only (2026-11-14)
+- [arch] Design foundations: Lexend, baby blue fills + deep blue text tokens, light mode only (2026-11-14, palette changed same day)
 - [arch] Screen-time rules in one JSON file with a pure, tested engine (2026-11-14)
 - [arch] Four need dimensions (0-4 scores) replace condition labels everywhere (2026-11-14)
-- [arch] Demo module loaded from one JSON seed (2026-11-14)
+- [arch] Demo module loaded from one JSON seed: BIOL0104 History of Life only (2026-11-14)
 - [arch] Screen-time session log kept client-side; `/summary` stands in for the API (2026-11-14)
 - [arch] Break planner is a deterministic function, not an AI agent (2026-11-14)
 - Demo clock runs 20× by default (2026-11-14)
@@ -49,11 +49,14 @@ per learner by a model.
 **By:** agent
 
 ### [arch] Design foundations
-**Decision:** Lexend only; tokens in `app/globals.css` (canvas `#F5F3EE`, ink `#1C2321`, accent
-`#1E6B57`, cream `#FAF4E2` for the Listen layout, mark `#F3E2A8` for key terms, clay for wrong answers).
-Light mode only. Full plan in `DESIGN.md`.
-**Why:** Calm and readable for the audience; one accent keeps it premium, not "AI purple".
-**Instead of:** Default shadcn neutrals, dark mode.
+**Decision:** Lexend only; tokens in `app/globals.css`. Baby blue `--brand` `#A8D5F7` fills buttons
+and selected pills with navy `--brand-ink` text (10:1). Deeper blue `--accent` `#2867A6` carries text,
+strokes, borders and data bars, where baby blue would be unreadable (1.6:1 on white). Pale blue
+canvas `#F3F8FD`, navy ink `#14243B`, pale blue `--paper` for the Listen layout, yellow mark for key
+terms, clay for wrong answers. Light mode only. Full plan in `DESIGN.md`.
+**Why:** Owner asked for baby blue. Splitting fill and text blues keeps it soft without failing contrast.
+**Instead of:** Warm stone + deep pine (first version, replaced 2026-11-14); one baby blue accent for
+everything (fails WCAG for text and borders).
 **To undo:** Change tokens in one file. Rethink if a brand identity is commissioned.
 **By:** agent
 
@@ -87,13 +90,15 @@ label fields deleted; v1 localStorage keys are removed on load. Wording uses "ne
 **By:** owner request, implemented by agent
 
 ### [arch] Demo module loaded from one JSON seed
-**Decision:** `lib/seed/psyc0101-lecture5.json` holds PSYC0101 Lecture 5 (memory and forgetting):
+**Decision:** `lib/seed/biol0104-history-of-life.json` holds BIOL0104 Lecture 3, "The story of life
+on Earth" (deep time to humans, natural selection). The app is History of Life only: the earlier
+psychology/memory and medicine content was removed at the owner's request. The seed has
 slides, notes, key ideas, quiz, visual map, off-screen tasks and references, plus two fields
 the existing layouts need (`glossary` for key terms, `interest_examples` for the Structured
 layout). `lib/data.ts` adapts it to the section model; break tasks come from its
 `offscreen_tasks`. Non-demo dashboard lectures are not linked.
 **Why:** One file to swap for another module; only established findings, debated points
-marked "researchers debate".
+marked "researchers debate". The concept map's columns come from `visual_map.groups`.
 **Instead of:** Hard-coding lecture content in components.
 **To undo:** Cheap: point the adapter at another seed file.
 **By:** agent

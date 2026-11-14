@@ -186,7 +186,7 @@ function Celebration() {
         );
       })}
       <motion.span
-        className="grid h-16 w-16 place-items-center rounded-full bg-accent text-accent-ink"
+        className="grid h-16 w-16 place-items-center rounded-full bg-brand text-brand-ink"
         initial={{ scale: 0.8 }}
         animate={{ scale: 1 }}
         transition={{ type: "spring", stiffness: 400, damping: 15 }}

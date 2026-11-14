@@ -5,7 +5,7 @@ quizzes and concept maps shaped around four learning needs: **Focus**, **Process
 **Planning** and **Structure**. Any mix is allowed and adaptations stack. No labels.
 
 Front end only. No auth, no backend, no AI calls. The demo module lives in
-`lib/seed/psyc0101-lecture5.json`; other mock data is in `lib/data.ts`. Loading states are faked.
+`lib/seed/biol0104-history-of-life.json`; other mock data is in `lib/data.ts`. Loading states are faked.
 
 ## Run it
 
@@ -25,17 +25,17 @@ Open http://localhost:3000. Run tests with `npm test`.
    "Very like me"). Two statements per need are averaged. Or **Set it myself** for sliders.
 4. **Dashboard** (`/dashboard`): your four need scores and live difficulty signals.
 5. **Upload**: drop any file on "Add course material" and watch the 3 processing steps.
-6. **Lecture** (PSYC0101 Lecture 5, "How memory works, and why we forget"): switch **Layout**:
+6. **Lecture** (BIOL0104 Lecture 3, "The story of life on Earth"): switch **Layout**:
    - **Sprints**: timed cards, one idea each, a quick check with instant feedback.
-   - **Listen**: cream page, larger text, play button per section, key terms explained.
+   - **Listen**: pale blue page, larger text, play button per section, key terms explained.
    - **Structured**: fixed numbered layout, what you'll learn and what's next, interest examples.
    - **Standard**: key ideas, notes, flashcards, quiz, concept map, references.
    - **Skim to see it adapt**: in Standard → Notes, scroll quickly past 3 or more sections. A card
      says what it noticed ("about 3 s on sections that take about 24 s to read") and offers
      **Try Sprints** or **No thanks**. It never switches on its own.
-7. **Spacing lab** (`/lecture/memory/lab`, "Try it" card at the top of every layout): predict
-   which study plan remembers more, run it (days between sessions, re-read or self-test), then
-   explain why. Set 3 days apart: 84% a week later vs 43% for one evening.
+7. **Moth lab** (`/lecture/history-of-life/lab`, "Try it" card at the top of every layout):
+   predict how many peppered moths will be dark after 50 generations on sooty bark, run it
+   (bark darkness, birds on or off), then explain why. Sooty bark: 2% → 99% dark. No birds: stays 2%.
 8. **How I like to learn** (`/preferences`): edit the four sliders, format (audio/visual/text),
    voice input and calm theme, or load a demo persona.
 
@@ -78,11 +78,11 @@ Next.js (App Router), TypeScript, Tailwind CSS v4, shadcn/ui-style components
 
 ## Where things are
 
-- `lib/seed/psyc0101-lecture5.json`: the demo module (slides, notes, quiz, map, tasks, references).
+- `lib/seed/biol0104-history-of-life.json`: the demo module (slides, notes, quiz, map, tasks, references).
 - `lib/dimensions.ts`: the four needs, levels, onboarding statements, layout choice, personas.
 - `lib/data.ts`: other mock data and the adapter from the seed to the lecture views.
 - `components/lecture/`: the four lecture layouts.
-- `lib/lab/spacing.ts`: the spacing lab's illustrative memory model and explanation word check.
+- `lib/lab/selection.ts`: the moth lab's illustrative natural-selection model and explanation word check.
 - `lib/adapt.ts`: the skim signal (reading time vs text length) behind the Sprints suggestion.
 - `lib/screentime/`: screen-time rules (JSON), engine and tests, break planner, session store.
 - `components/session/`: focus ring, setup dialog, break overlay, recall screen.

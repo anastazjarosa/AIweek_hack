@@ -49,7 +49,7 @@ export function LectureView() {
   );
 }
 
-/** Same for every layout: the hands-on version of the forgetting-curve and spacing slides. */
+/** Same for every layout: the hands-on version of the natural selection slide. */
 function LabEntry() {
   return (
     <Link
@@ -58,8 +58,8 @@ function LabEntry() {
     >
       <FlaskConical className="h-5 w-5 shrink-0 text-accent" />
       <span className="flex-1">
-        <span className="font-medium">Try it: spacing lab</span>
-        <span className="block text-sm text-muted">Predict, run and explain how study timing changes what you remember. 2 minutes.</span>
+        <span className="font-medium">Try it: moth lab</span>
+        <span className="block text-sm text-muted">Predict, run and explain how natural selection changed the peppered moth. 2 minutes.</span>
       </span>
       <ArrowRight className="h-4 w-4 shrink-0 text-muted transition-transform duration-150 group-hover:translate-x-0.5" />
     </Link>

@@ -53,7 +53,7 @@ export function StructuredView() {
                   onClick={() => setInterest(it.id)}
                   className={cn(
                     "h-9 rounded-full border px-4 text-sm font-medium transition-colors duration-150",
-                    interest === it.id ? "border-accent bg-accent text-accent-ink" : "border-line hover:border-ink/30",
+                    interest === it.id ? "border-accent bg-brand text-brand-ink" : "border-line hover:border-ink/30",
                   )}
                 >
                   {it.label}

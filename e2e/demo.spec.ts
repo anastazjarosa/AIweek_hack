@@ -17,35 +17,38 @@ test("onboarding scores pick the calmer layout and drive the lecture", async ({ 
   await page.getByRole("button", { name: /Go to my dashboard/ }).click();
   await expect(page.getByText("Your needs")).toBeVisible();
 
-  await page.getByRole("link", { name: /Lecture 5: How memory works/ }).click();
-  await expect(page.getByRole("heading", { name: "How memory works, and why we forget" })).toBeVisible();
+  await page.getByRole("link", { name: /Lecture 3: The story of life on Earth/ }).click();
+  await expect(page.getByRole("heading", { name: "The story of life on Earth" })).toBeVisible();
   await expect(page.getByText("What you’ll learn")).toBeVisible();
 
   await page.getByRole("radio", { name: "Standard" }).click();
   await page.getByRole("tab", { name: "Map" }).click();
-  await expect(page.getByText("Spread sessions over days", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Natural selection", { exact: true }).first()).toBeVisible();
 });
 
-test("spacing lab runs predict, run and explain", async ({ page }) => {
-  await page.goto("/lecture/memory");
-  await page.getByRole("link", { name: /Try it: spacing lab/ }).click();
+test("moth lab runs predict, run and explain", async ({ page }) => {
+  await page.goto("/lecture/history-of-life");
+  await page.getByRole("link", { name: /Try it: moth lab/ }).click();
 
-  await page.getByRole("radio", { name: "All 3 in one evening" }).click();
+  await page.getByRole("radio", { name: "Still about 2 in 100" }).click();
   await page.getByRole("button", { name: /Run the experiment/ }).click();
 
-  await page.getByLabel(/Days between sessions/).fill("3");
   await page.getByRole("button", { name: "Run" }).click();
-  await expect(page.getByText(/Your plan: 84% remembered on test day\. One evening: 43%/)).toBeVisible();
+  await expect(page.getByText(/After 50 generations, 9\d% of moths are dark\. They started at 2%\./)).toBeVisible();
+
+  await page.getByRole("radio", { name: "No birds" }).click();
+  await page.getByRole("button", { name: "Run again" }).click();
+  await expect(page.getByText(/With no birds, nothing is choosing/)).toBeVisible();
 
   await page.getByRole("button", { name: /Explain it/ }).click();
-  await expect(page.getByText(/The experiment says spreading out wins/)).toBeVisible();
-  await page.getByLabel(/why does spreading out help/).fill("You forget a little in the gap so recalling takes effort");
+  await expect(page.getByText(/the experiment says almost all of them/)).toBeVisible();
+  await page.getByLabel(/why did dark moths take over/).fill("Birds could not spot dark moths so they survived and passed on their colour");
   await page.getByRole("button", { name: "Check my explanation" }).click();
   await expect(page.getByText(": you mentioned this")).toHaveCount(2);
 });
 
 test("skimming the notes offers Sprints, and accepting switches layout", async ({ page }) => {
-  await page.goto("/lecture/memory");
+  await page.goto("/lecture/history-of-life");
   await expect(page.getByRole("tab", { name: "Notes", selected: true })).toBeVisible();
 
   const card = page.getByRole("dialog", { name: "Layout suggestion" });
@@ -62,7 +65,7 @@ test("skimming the notes offers Sprints, and accepting switches layout", async (
 });
 
 test("no condition labels appear on the main pages", async ({ page }) => {
-  for (const path of ["/", "/onboarding", "/dashboard", "/preferences", "/lecture/memory", "/lecture/memory/lab"]) {
+  for (const path of ["/", "/onboarding", "/dashboard", "/preferences", "/lecture/history-of-life", "/lecture/history-of-life/lab"]) {
     await page.goto(path);
     await expect(page.locator("body")).not.toContainText(/adhd|dyslexi|autis|dyspraxi/i);
   }

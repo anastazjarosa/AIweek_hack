@@ -7,46 +7,30 @@ import { useId, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { lecture } from "@/lib/data";
-import {
-  MAX_DAY,
-  MAX_GAP,
-  TEST_DELAY,
-  explainHits,
-  explainIdeas,
-  modelExplanation,
-  simulate,
-  type Method,
-  type Run,
-} from "@/lib/lab/spacing";
+import { GENERATIONS, START_DARK, explainHits, explainIdeas, modelExplanation, simulate, type Run } from "@/lib/lab/selection";
 import { cn } from "@/lib/utils";
 
 const steps = ["Predict", "Run", "Explain"] as const;
 type Step = (typeof steps)[number];
 
 const prediction = {
-  q: `You have 3 study sessions. The test is ${TEST_DELAY} days after your last one. Which plan remembers more?`,
-  options: ["All 3 in one evening", "Spread out over a few days", "No real difference"],
-  answer: 1,
+  q: `Factory soot turns the tree bark dark. Only 2 in 100 peppered moths are dark. After ${GENERATIONS} generations, how many will be dark?`,
+  options: ["Still about 2 in 100", "About half", "Almost all of them"],
+  answer: 2,
 };
 
-const methods: { id: Method; label: string }[] = [
-  { id: "reread", label: "Re-read notes" },
-  { id: "selftest", label: "Test yourself" },
-];
-
 const pct = (r: number) => `${Math.round(r * 100)}%`;
+const barkLabel = (b: number) => (b <= 0.3 ? "Pale, covered in lichen" : b < 0.7 ? "Partly sooty" : "Dark with soot");
 
-export function SpacingLab() {
+export function MothLab() {
   const [step, setStep] = useState<Step>("Predict");
   const [guess, setGuess] = useState<number | null>(null);
-  const [gap, setGap] = useState(2);
-  const [method, setMethod] = useState<Method>("reread");
+  const [bark, setBark] = useState(90);
+  const [birds, setBirds] = useState(true);
   const [run, setRun] = useState<Run | null>(null);
   const [explain, setExplain] = useState("");
   const [checked, setChecked] = useState(false);
-  const gapId = useId();
-
-  const crammed = run ? simulate(0, run.method) : null;
+  const barkId = useId();
   const hits = explainHits(explain);
 
   return (
@@ -54,8 +38,8 @@ export function SpacingLab() {
       <Link href={`/lecture/${lecture.slug}`} className="mb-6 inline-flex items-center gap-2 text-sm text-muted hover:text-ink">
         <ArrowLeft className="h-4 w-4" /> Back to the lecture
       </Link>
-      <p className="mb-2 text-sm text-muted">Spacing lab · 2 minutes</p>
-      <h1 className="mb-3 text-4xl font-light tracking-[-0.02em]">When you study changes what you remember</h1>
+      <p className="mb-2 text-sm text-muted">Moth lab · 2 minutes</p>
+      <h1 className="mb-3 text-4xl font-light tracking-[-0.02em]">Watch natural selection happen</h1>
       <p className="mb-8 max-w-[60ch] text-ink/75">
         Guess first, then run the experiment, then say why it happened. This is a simple model for exploring the idea,
         not real data.
@@ -71,7 +55,7 @@ export function SpacingLab() {
               aria-current={current ? "step" : undefined}
               className={cn(
                 "flex h-9 items-center gap-2 rounded-full px-4 text-sm font-medium",
-                current ? "bg-accent text-accent-ink" : done ? "bg-accent-soft text-accent" : "bg-surface text-muted ring-1 ring-line",
+                current ? "bg-brand text-brand-ink" : done ? "bg-accent-soft text-accent" : "bg-surface text-muted ring-1 ring-line",
               )}
             >
               {done ? <Check className="h-4 w-4" /> : <span className="tabular-nums">{i + 1}</span>}
@@ -83,7 +67,7 @@ export function SpacingLab() {
 
       {step === "Predict" && (
         <Card className="p-8">
-          <p className="mb-5 text-xl font-medium leading-snug">{prediction.q}</p>
+          <p className="mb-5 text-xl leading-snug font-medium">{prediction.q}</p>
           <div role="radiogroup" aria-label="Your prediction" className="space-y-2">
             {prediction.options.map((o, oi) => (
               <button
@@ -113,63 +97,69 @@ export function SpacingLab() {
 
       {step === "Run" && (
         <Card className="p-8">
-          <div className="mb-6 grid gap-6 sm:grid-cols-2">
+          <div className="mb-6 grid gap-6 sm:grid-cols-[1fr_auto]">
             <div>
-              <label htmlFor={gapId} className="mb-2 block font-medium">
-                Days between sessions: <span className="text-accent tabular-nums">{gap}</span>
+              <label htmlFor={barkId} className="mb-2 block font-medium">
+                How dark is the tree bark? <span className="text-accent tabular-nums">{bark}%</span>
               </label>
               <input
-                id={gapId}
+                id={barkId}
                 type="range"
                 min={0}
-                max={MAX_GAP}
-                step={1}
-                value={gap}
-                onChange={(e) => setGap(Number(e.target.value))}
+                max={100}
+                step={10}
+                value={bark}
+                onChange={(e) => setBark(Number(e.target.value))}
                 className="h-11 w-full accent-[var(--accent)]"
               />
-              <p className="text-sm text-muted">{gap === 0 ? "0 means all 3 in one evening." : `Sessions on day 0, ${gap} and ${gap * 2}.`}</p>
-            </div>
-            <div>
-              <p className="mb-2 font-medium">Each session you…</p>
-              <div role="radiogroup" aria-label="Study method" className="flex flex-wrap gap-2">
-                {methods.map((m) => (
+              <p className="mb-5 text-sm text-muted">{barkLabel(bark / 100)}</p>
+              <p className="mb-2 font-medium">Birds</p>
+              <div role="radiogroup" aria-label="Birds" className="flex flex-wrap gap-2">
+                {[
+                  { on: true, label: "Hunting moths" },
+                  { on: false, label: "No birds" },
+                ].map((o) => (
                   <button
-                    key={m.id}
+                    key={o.label}
                     role="radio"
-                    aria-checked={method === m.id}
-                    onClick={() => setMethod(m.id)}
+                    aria-checked={birds === o.on}
+                    onClick={() => setBirds(o.on)}
                     className={cn(
                       "h-11 rounded-full border px-4 text-sm font-medium transition-colors duration-150",
-                      method === m.id ? "border-accent bg-accent text-accent-ink" : "border-line hover:border-ink/30",
+                      birds === o.on ? "border-accent bg-brand text-brand-ink" : "border-line hover:border-accent",
                     )}
                   >
-                    {m.label}
+                    {o.label}
                   </button>
                 ))}
               </div>
             </div>
+            <BarkSwatch bark={bark / 100} />
           </div>
 
-          <Button onClick={() => setRun(simulate(gap, method))}>
+          <Button onClick={() => setRun(simulate(bark / 100, birds))}>
             <Play /> {run ? "Run again" : "Run"}
           </Button>
 
-          {run && crammed && (
+          {run && (
             <div className="mt-8">
-              <Chart run={run} crammed={crammed} />
+              <Chart run={run} />
               <p className="mt-4 text-lg" aria-live="polite">
-                {run.gap === 0 ? (
+                {!run.birds ? (
                   <>
-                    One evening: <span className="font-medium">{pct(run.atTest)}</span> remembered on test day. Try
-                    a gap.
+                    With no birds, nothing is choosing, so dark moths stay at{" "}
+                    <span className="font-medium">{pct(run.end)}</span>.
                   </>
                 ) : (
                   <>
-                    Your plan: <span className="font-medium text-accent">{pct(run.atTest)}</span> remembered on test
-                    day. One evening: <span className="font-medium">{pct(crammed.atTest)}</span>.
+                    After {GENERATIONS} generations, <span className="font-medium text-accent">{pct(run.end)}</span> of
+                    moths are dark. They started at {pct(START_DARK)}.
+                    {run.bark < 0.5 && " On pale bark, dark moths stand out and get eaten."}
                   </>
                 )}
+              </p>
+              <p className="mt-2 text-sm text-muted">
+                Real history: around Manchester, dark moths went from rare in 1848 to about 98% by 1895.
               </p>
               <div className="mt-6 flex justify-end">
                 <Button onClick={() => setStep("Explain")}>
@@ -181,7 +171,7 @@ export function SpacingLab() {
         </Card>
       )}
 
-      {step === "Explain" && run && crammed && (
+      {step === "Explain" && (
         <Card className="p-8">
           <p className="mb-1 text-sm text-muted">You predicted</p>
           <p className="mb-5 text-lg">
@@ -189,11 +179,11 @@ export function SpacingLab() {
             <span className={guess === prediction.answer ? "text-accent" : "text-ink/75"}>
               {guess === prediction.answer
                 ? "The experiment agrees."
-                : "The experiment says spreading out wins. Surprises like this are how you learn."}
+                : "On sooty bark, the experiment says almost all of them. Surprises like this are how you learn."}
             </span>
           </p>
           <label htmlFor="explain" className="mb-2 block font-medium">
-            In one sentence: why does spreading out help?
+            In one sentence: why did dark moths take over?
           </label>
           <textarea
             id="explain"
@@ -224,7 +214,7 @@ export function SpacingLab() {
                       <span
                         className={cn(
                           "mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs",
-                          hits[idea.id] ? "bg-accent text-accent-ink" : "bg-ink/5 text-muted",
+                          hits[idea.id] ? "bg-brand text-brand-ink" : "bg-ink/5 text-muted",
                         )}
                       >
                         {hits[idea.id] ? <Check className="h-3.5 w-3.5" /> : "–"}
@@ -255,7 +245,7 @@ export function SpacingLab() {
                     setChecked(false);
                   }}
                 >
-                  <RotateCcw /> Try another plan
+                  <RotateCcw /> Try other conditions
                 </Button>
               </div>
             </div>
@@ -266,63 +256,86 @@ export function SpacingLab() {
   );
 }
 
-// ---------- Chart: retention over days, your plan against one evening ----------
+// ---------- Bark swatch: shows which moth is hidden ----------
+
+const mix = (a: number[], b: number[], t: number) => `rgb(${a.map((v, i) => Math.round(v + (b[i] - v) * t)).join(",")})`;
+const PALE_BARK = [214, 210, 196];
+const SOOT_BARK = [46, 43, 40];
+
+function BarkSwatch({ bark }: { bark: number }) {
+  return (
+    <figure className="flex flex-col items-center gap-2">
+      <svg viewBox="0 0 120 150" className="h-40 w-32 rounded-2xl" role="img" aria-label={`Tree bark, ${Math.round(bark * 100)}% dark, with a pale moth and a dark moth on it`}>
+        <rect width="120" height="150" fill={mix(PALE_BARK, SOOT_BARK, bark)} />
+        {[22, 50, 78, 104].map((x) => (
+          <path key={x} d={`M${x} 0 Q${x + 6} 75 ${x - 2} 150`} stroke="rgba(0,0,0,0.12)" strokeWidth="3" fill="none" />
+        ))}
+        <Moth x={36} y={48} fill="#EDE8DA" />
+        <Moth x={80} y={104} fill="#26221F" />
+      </svg>
+      <figcaption className="text-xs text-muted">Pale moth top, dark moth bottom</figcaption>
+    </figure>
+  );
+}
+
+function Moth({ x, y, fill }: { x: number; y: number; fill: string }) {
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <path d="M0 0 L-16 -9 Q-20 4 -10 10 Z M0 0 L16 -9 Q20 4 10 10 Z" fill={fill} />
+      <ellipse cx="0" cy="2" rx="2.5" ry="8" fill={fill} />
+    </g>
+  );
+}
+
+// ---------- Chart: share of dark moths over generations ----------
 
 const W = 640;
 const H = 260;
-const PAD = { l: 44, r: 16, t: 16, b: 36 };
-const x = (day: number) => PAD.l + (day / MAX_DAY) * (W - PAD.l - PAD.r);
-const y = (r: number) => PAD.t + (1 - r) * (H - PAD.t - PAD.b);
-const path = (run: Run) => run.curve.map((p, i) => `${i ? "L" : "M"}${x(p.day).toFixed(1)},${y(p.r).toFixed(1)}`).join(" ");
+const PAD = { l: 44, r: 16, t: 20, b: 36 };
+const x = (g: number) => PAD.l + (g / GENERATIONS) * (W - PAD.l - PAD.r);
+const y = (p: number) => PAD.t + (1 - p) * (H - PAD.t - PAD.b);
+const path = (curve: number[]) => curve.map((p, g) => `${g ? "L" : "M"}${x(g).toFixed(1)},${y(p).toFixed(1)}`).join(" ");
 
-function Chart({ run, crammed }: { run: Run; crammed: Run }) {
+function Chart({ run }: { run: Run }) {
   const reduce = useReducedMotion();
-  const same = run.gap === 0;
-  const draw = reduce ? {} : { initial: { pathLength: 0 }, animate: { pathLength: 1 }, transition: { duration: 0.6, ease: "easeOut" as const } };
+  const draw = reduce
+    ? {}
+    : { initial: { pathLength: 0 }, animate: { pathLength: 1 }, transition: { duration: 0.6, ease: "easeOut" as const } };
   return (
     <figure>
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={`Memory over ${MAX_DAY} days. Your plan ends at ${pct(run.atTest)} on test day.`}>
-        {[0, 0.5, 1].map((r) => (
-          <g key={r}>
-            <line x1={PAD.l} x2={W - PAD.r} y1={y(r)} y2={y(r)} className="stroke-line" />
-            <text x={PAD.l - 8} y={y(r) + 4} textAnchor="end" className="fill-muted text-[12px]">
-              {pct(r)}
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="w-full"
+        role="img"
+        aria-label={`Share of dark moths over ${GENERATIONS} generations, from ${pct(START_DARK)} to ${pct(run.end)}.`}
+      >
+        {[0, 0.5, 1].map((p) => (
+          <g key={p}>
+            <line x1={PAD.l} x2={W - PAD.r} y1={y(p)} y2={y(p)} className="stroke-line" />
+            <text x={PAD.l - 8} y={y(p) + 4} textAnchor="end" className="fill-muted text-[12px]">
+              {pct(p)}
             </text>
           </g>
         ))}
-        {[0, 5, 10, 15].map((d) => (
-          <text key={d} x={x(d)} y={H - 12} textAnchor="middle" className="fill-muted text-[12px]">
-            Day {d}
+        {[0, 10, 20, 30, 40, 50].map((g) => (
+          <text key={g} x={x(g)} y={H - 12} textAnchor="middle" className="fill-muted text-[12px]">
+            {g === 0 ? "Gen 0" : g}
           </text>
         ))}
-
-        {!same && (
-          <g>
-            <path d={path(crammed)} fill="none" strokeWidth={2} strokeDasharray="5 5" className="stroke-muted" />
-            <circle cx={x(crammed.testDay)} cy={y(crammed.atTest)} r={5} className="fill-muted" />
-            <text x={x(crammed.testDay)} y={y(crammed.atTest) + 22} textAnchor="middle" className="fill-muted text-[12px]">
-              One evening {pct(crammed.atTest)}
-            </text>
-          </g>
-        )}
-
-        <motion.path key={`${run.gap}-${run.method}`} d={path(run)} fill="none" strokeWidth={3} className="stroke-accent" {...draw} />
-        {run.sessions.map((d, i) => (
-          <circle key={i} cx={x(d)} cy={y(1)} r={5} className="fill-accent" />
-        ))}
-        <circle cx={x(run.testDay)} cy={y(run.atTest)} r={6} className="fill-accent" />
-        <text
-          x={Math.min(x(run.testDay), W - PAD.r - 60)}
-          y={y(run.atTest) - 12}
-          textAnchor="middle"
-          className="fill-accent text-[13px] font-medium"
-        >
-          Test {pct(run.atTest)}
+        <motion.path
+          key={`${run.bark}-${run.birds}`}
+          d={path(run.curve)}
+          fill="none"
+          strokeWidth={3}
+          className="stroke-accent"
+          {...draw}
+        />
+        <circle cx={x(GENERATIONS)} cy={y(run.end)} r={6} className="fill-accent" />
+        <text x={x(GENERATIONS) - 10} y={run.end > 0.85 ? y(run.end) + 22 : y(run.end) - 12} textAnchor="end" className="fill-accent text-[13px] font-medium">
+          {pct(run.end)} dark
         </text>
       </svg>
-      <figcaption className="mt-2 text-sm text-muted">
-        Dots on top are study sessions. {same ? "" : "The dashed line is the same 3 sessions in one evening."}
-      </figcaption>
+      <figcaption className="mt-2 text-sm text-muted">Share of moths that are dark, each generation.</figcaption>
     </figure>
   );
 }

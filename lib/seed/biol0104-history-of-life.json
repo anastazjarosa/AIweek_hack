@@ -1,0 +1,490 @@
+{
+  "module": {
+    "code": "BIOL0104",
+    "title": "The History of Life: Demo"
+  },
+  "lecture": {
+    "number": 3,
+    "slug": "history-of-life",
+    "title": "The story of life on Earth",
+    "audience": "First-year students from any subject"
+  },
+  "slides": [
+    {
+      "id": "deep-time",
+      "title": "Deep time: a 4.5-billion-year story",
+      "bullets": [
+        "Earth formed about 4.5 billion years ago.",
+        "Geologists split this huge span into eons, eras and periods, called the geologic time scale.",
+        "Rock layers and fossils record what lived when. In undisturbed rock, lower layers are older.",
+        "Radiometric dating uses the steady decay of radioactive elements to give a rock its age in years.",
+        "If Earth's history were squeezed into one day, humans would appear in about the last 6 seconds."
+      ]
+    },
+    {
+      "id": "first-life",
+      "title": "The first life and the oxygen revolution",
+      "bullets": [
+        "The oldest widely accepted evidence of life is about 3.5 billion years old.",
+        "For over a billion years, all life was prokaryotes: single cells with no nucleus.",
+        "Stromatolites are layered rocks built by mats of microbes. Some still grow today, in Shark Bay, Australia.",
+        "Cyanobacteria released oxygen by photosynthesis. Around 2.4 billion years ago, oxygen built up in the air. This is the Great Oxidation Event.",
+        "How life first began is still an open question. Researchers debate where and how it happened."
+      ]
+    },
+    {
+      "id": "complex-cells",
+      "title": "Complex cells and many-celled life",
+      "bullets": [
+        "Eukaryotes are cells with a nucleus. Their oldest clear fossils are roughly 1.6 to 1.8 billion years old.",
+        "Endosymbiosis explains where mitochondria came from: they were once free-living bacteria that lived inside another cell.",
+        "Chloroplasts in plant cells came from cyanobacteria in the same way.",
+        "Evidence: mitochondria and chloroplasts have their own DNA and divide like bacteria.",
+        "Large many-celled organisms appear in the fossil record about 575 million years ago."
+      ]
+    },
+    {
+      "id": "cambrian",
+      "title": "The Cambrian explosion",
+      "bullets": [
+        "Starting about 538 million years ago, many animal groups appear in the fossil record within a few tens of millions of years.",
+        "This burst is called the Cambrian explosion.",
+        "Most of the main animal body plans alive today first appear around this time, including early relatives of vertebrates.",
+        "The Burgess Shale in Canada preserves soft-bodied Cambrian animals in fine detail.",
+        "Possible causes include more oxygen and the first predators. Researchers debate which mattered most."
+      ]
+    },
+    {
+      "id": "land",
+      "title": "Moving onto land",
+      "bullets": [
+        "Plants moved onto land about 470 million years ago.",
+        "Tetrapods are four-limbed animals with backbones. Amphibians, reptiles, birds and mammals all descend from them.",
+        "Tiktaalik, about 375 million years old, was a fish with features of land animals: a neck and sturdy fins with wrist-like bones.",
+        "Animals without backbones, such as early millipede relatives, reached land before tetrapods did.",
+        "Eggs with a protective shell let reptiles lay eggs away from water."
+      ]
+    },
+    {
+      "id": "extinctions",
+      "title": "Mass extinctions",
+      "bullets": [
+        "A mass extinction is when a large share of species die out in a short time, geologically speaking.",
+        "The fossil record shows five big mass extinctions.",
+        "The worst was at the end of the Permian, about 252 million years ago. An estimated 80 to 90% of ocean species died out.",
+        "About 66 million years ago, an asteroid impact helped end the age of the dinosaurs. Birds are the dinosaurs that survived.",
+        "After each extinction, survivors spread into the empty ways of life left behind."
+      ]
+    },
+    {
+      "id": "selection",
+      "title": "Natural selection: how life changes",
+      "bullets": [
+        "Individuals in a population vary, and many of those differences are inherited.",
+        "More young are born than can survive. Those with helpful traits survive and reproduce more.",
+        "Over many generations, helpful traits become more common. This is natural selection.",
+        "Charles Darwin and Alfred Russel Wallace proposed it. Darwin published On the Origin of Species in 1859.",
+        "Peppered moths: in polluted 1800s England, dark moths became common because birds spotted pale moths more easily on soot-darkened trees."
+      ]
+    },
+    {
+      "id": "humans",
+      "title": "Mammals and the arrival of humans",
+      "bullets": [
+        "Early mammals lived alongside the dinosaurs for over 100 million years, mostly small and active at night.",
+        "After the dinosaurs died out 66 million years ago, mammals spread into many new ways of life.",
+        "Humans and chimpanzees share a common ancestor that lived roughly 6 to 7 million years ago.",
+        "The oldest known fossils of our species, Homo sapiens, are about 300,000 years old, from Jebel Irhoud in Morocco.",
+        "Our species is a very recent twig on a very old tree of life."
+      ]
+    }
+  ],
+  "notes": "Earth is about 4.5 billion years old, a span so long that geologists call it deep time. To organise it, they divide it into eons, eras and periods: the geologic time scale. Two kinds of evidence anchor the story. Rock layers and the fossils inside them give an order of events, because in undisturbed rock the lower layers formed first. Radiometric dating then puts numbers on that order, using the steady decay of radioactive elements in certain rocks. A useful picture: squeeze all of Earth's history into one day, and humans arrive in roughly the last six seconds.\n\nThe oldest widely accepted signs of life are about 3.5 billion years old. For more than a billion years after that, every living thing was a prokaryote: a single cell without a nucleus. Some of these microbes grew in mats that trapped sediment and built layered rocks called stromatolites, which still form today in a few places such as Shark Bay in Australia. Cyanobacteria changed the planet by releasing oxygen through photosynthesis. Around 2.4 billion years ago, oxygen began to build up in the atmosphere, an event called the Great Oxidation Event. Exactly how life first began remains an open research question.\n\nEukaryotes, cells with a nucleus, appear in the fossil record roughly 1.6 to 1.8 billion years ago. The theory of endosymbiosis explains a key step: mitochondria were once free-living bacteria that came to live inside a larger cell, and chloroplasts came from cyanobacteria in the same way. Strong evidence supports this. Both mitochondria and chloroplasts carry their own DNA and divide in a way that resembles bacteria. Many-celled life came later still. Large many-celled organisms appear in the fossil record about 575 million years ago, shortly before the major burst of animal life.\n\nStarting about 538 million years ago, a remarkable number of animal groups appear in the fossil record within a few tens of millions of years. This is the Cambrian explosion. Most of the main body plans seen in animals today, including early relatives of vertebrates, first show up around this time. Sites such as the Burgess Shale in Canada are especially valuable because they preserve soft-bodied animals that usually leave no trace. Why it happened is still debated. Rising oxygen levels and the arrival of the first predators are two leading ideas, and several causes may have worked together.\n\nPlants colonised land about 470 million years ago, and animals without backbones, such as early relatives of millipedes, followed. Vertebrates came later. Tiktaalik, a fossil about 375 million years old, shows a fish with features of land animals: a neck and sturdy fins containing wrist-like bones. Tetrapods, the four-limbed animals with backbones, descend from fish like this, and amphibians, reptiles, birds and mammals all belong to this group. A later innovation, the egg with a protective shell, let reptiles lay eggs away from water and spread into dry habitats.\n\nA mass extinction is a loss of a large share of species in a geologically short time. The fossil record shows five big ones. The worst came at the end of the Permian period, about 252 million years ago, when an estimated 80 to 90 percent of ocean species disappeared. The most famous came about 66 million years ago, when an asteroid impact helped end the age of the dinosaurs. Not all dinosaurs vanished, though: birds are their surviving descendants. After each extinction, the survivors spread into the ways of life left empty, which reshaped life on Earth.\n\nNatural selection explains how populations change over time. Individuals vary, and many of their differences are inherited. More young are born than can survive, so individuals with helpful traits tend to survive and reproduce more, passing those traits on. Over many generations, helpful traits become more common. Charles Darwin and Alfred Russel Wallace proposed this idea, and Darwin published On the Origin of Species in 1859. The peppered moth is a classic example. In polluted industrial England, soot darkened tree bark, birds spotted pale moths more easily, and dark moths became common.\n\nMammals first appear while dinosaurs dominated, and for over 100 million years they were mostly small and active at night. After the dinosaurs died out 66 million years ago, mammals spread into many new ways of life, from whales to bats. Humans and chimpanzees share a common ancestor that lived roughly 6 to 7 million years ago. The oldest known fossils of our own species, Homo sapiens, are about 300,000 years old and come from Jebel Irhoud in Morocco. Seen against deep time, our species is a very recent twig on a very old tree of life.",
+  "key_ideas": [
+    "Life on Earth is about 3.5 billion years old, and for most of that time it was single-celled.",
+    "Big changes came in bursts: oxygen, complex cells, the Cambrian explosion and the move onto land.",
+    "Natural selection shapes life over generations, and mass extinctions reset which groups thrive."
+  ],
+  "quiz": [
+    {
+      "slide": "deep-time",
+      "q": "In undisturbed rock layers, where are the oldest fossils usually found?",
+      "options": [
+        "At the top",
+        "At the bottom",
+        "Spread evenly through every layer"
+      ],
+      "answer": 1,
+      "why": "Layers build up over time, so lower layers formed first."
+    },
+    {
+      "slide": "first-life",
+      "q": "What caused oxygen to build up in the air about 2.4 billion years ago?",
+      "options": [
+        "Volcanoes",
+        "Cyanobacteria doing photosynthesis",
+        "The first land plants"
+      ],
+      "answer": 1,
+      "why": "Cyanobacteria released oxygen as a by-product of photosynthesis."
+    },
+    {
+      "slide": "complex-cells",
+      "q": "Which is the best evidence that mitochondria were once bacteria?",
+      "options": [
+        "They are found in every cell",
+        "They have their own DNA and divide like bacteria",
+        "They are very small"
+      ],
+      "answer": 1,
+      "why": "Having their own DNA and dividing like bacteria points to a bacterial origin."
+    },
+    {
+      "slide": "cambrian",
+      "q": "What was the Cambrian explosion?",
+      "options": [
+        "An asteroid impact",
+        "A burst of new animal groups in the fossil record",
+        "The first appearance of oxygen"
+      ],
+      "answer": 1,
+      "why": "Many animal groups appear in a geologically short time, starting about 538 million years ago."
+    },
+    {
+      "slide": "land",
+      "q": "Why is Tiktaalik important?",
+      "options": [
+        "It was the first plant on land",
+        "It shows a fish with features of land animals",
+        "It was the largest dinosaur"
+      ],
+      "answer": 1,
+      "why": "Its neck and wrist-like fin bones show steps from fish towards tetrapods."
+    },
+    {
+      "slide": "extinctions",
+      "q": "What happened to the dinosaurs 66 million years ago?",
+      "options": [
+        "All of them died out",
+        "Most died out, but birds survived",
+        "Nothing changed for them"
+      ],
+      "answer": 1,
+      "why": "Birds are the surviving descendants of dinosaurs."
+    },
+    {
+      "slide": "selection",
+      "q": "On soot-darkened trees, why did dark peppered moths become common?",
+      "options": [
+        "Moths chose to change colour",
+        "Birds ate more pale moths, so dark ones survived and bred",
+        "Soot dyed the moths"
+      ],
+      "answer": 1,
+      "why": "Dark moths were better hidden, survived more often and passed their colour on."
+    },
+    {
+      "slide": "humans",
+      "q": "About how old are the oldest known Homo sapiens fossils?",
+      "options": [
+        "300,000 years",
+        "3 million years",
+        "66 million years"
+      ],
+      "answer": 0,
+      "why": "Fossils from Jebel Irhoud in Morocco are about 300,000 years old."
+    }
+  ],
+  "visual_map": {
+    "groups": [
+      {
+        "id": "life",
+        "label": "Life on Earth"
+      },
+      {
+        "id": "moment",
+        "label": "Big moments"
+      },
+      {
+        "id": "process",
+        "label": "What drives change"
+      },
+      {
+        "id": "evidence",
+        "label": "How we know"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "life",
+        "label": "Life on Earth",
+        "group": "life"
+      },
+      {
+        "id": "first-cells",
+        "label": "First cells (3.5 bn years)",
+        "group": "moment"
+      },
+      {
+        "id": "oxygen",
+        "label": "Oxygen builds up (2.4 bn)",
+        "group": "moment"
+      },
+      {
+        "id": "eukaryotes",
+        "label": "Complex cells",
+        "group": "moment"
+      },
+      {
+        "id": "cambrian",
+        "label": "Cambrian explosion (538 m)",
+        "group": "moment"
+      },
+      {
+        "id": "land",
+        "label": "Life on land",
+        "group": "moment"
+      },
+      {
+        "id": "humans",
+        "label": "Homo sapiens (300,000)",
+        "group": "moment"
+      },
+      {
+        "id": "selection",
+        "label": "Natural selection",
+        "group": "process"
+      },
+      {
+        "id": "endosymbiosis",
+        "label": "Endosymbiosis",
+        "group": "process"
+      },
+      {
+        "id": "extinction",
+        "label": "Mass extinctions",
+        "group": "process"
+      },
+      {
+        "id": "fossils",
+        "label": "Fossils",
+        "group": "evidence"
+      },
+      {
+        "id": "layers",
+        "label": "Rock layers",
+        "group": "evidence"
+      },
+      {
+        "id": "dating",
+        "label": "Radiometric dating",
+        "group": "evidence"
+      },
+      {
+        "id": "dna",
+        "label": "DNA",
+        "group": "evidence"
+      }
+    ],
+    "edges": [
+      {
+        "from": "life",
+        "to": "first-cells",
+        "label": "began with"
+      },
+      {
+        "from": "life",
+        "to": "selection",
+        "label": "shaped by"
+      },
+      {
+        "from": "life",
+        "to": "fossils",
+        "label": "recorded in"
+      },
+      {
+        "from": "first-cells",
+        "to": "oxygen",
+        "label": "led to"
+      },
+      {
+        "from": "oxygen",
+        "to": "cambrian",
+        "label": "helped fuel"
+      },
+      {
+        "from": "eukaryotes",
+        "to": "cambrian",
+        "label": "made possible"
+      },
+      {
+        "from": "cambrian",
+        "to": "land",
+        "label": "followed by"
+      },
+      {
+        "from": "land",
+        "to": "humans",
+        "label": "eventually"
+      },
+      {
+        "from": "selection",
+        "to": "land",
+        "label": "adapted life for"
+      },
+      {
+        "from": "endosymbiosis",
+        "to": "eukaryotes",
+        "label": "created"
+      },
+      {
+        "from": "extinction",
+        "to": "humans",
+        "label": "cleared space for mammals and"
+      },
+      {
+        "from": "fossils",
+        "to": "layers",
+        "label": "ordered by"
+      },
+      {
+        "from": "layers",
+        "to": "dating",
+        "label": "dated by"
+      },
+      {
+        "from": "dna",
+        "to": "endosymbiosis",
+        "label": "supports"
+      }
+    ]
+  },
+  "offscreen_tasks": [
+    {
+      "type": "move_and_recall",
+      "instruction": "Stand up and name 5 big moments in the history of life, in order, without looking.",
+      "steps": [
+        "Walk to a window or another room while you think.",
+        "Count them on your fingers."
+      ]
+    },
+    {
+      "type": "paper_sketch",
+      "instruction": "On paper, draw a timeline of life from 4.5 billion years ago to today.",
+      "steps": [
+        "Mark first life, oxygen, the Cambrian explosion, life on land, the dinosaurs' end and humans.",
+        "Notice how squeezed the recent end is.",
+        "Snap a photo if you want to keep it."
+      ]
+    },
+    {
+      "type": "teach_back",
+      "instruction": "Explain natural selection in 30 seconds, using the peppered moth.",
+      "steps": [
+        "Say what varied, who did the selecting, and what got passed on.",
+        "Use no notes."
+      ]
+    },
+    {
+      "type": "walk_and_listen",
+      "instruction": "Walk while you listen to a 90-second recap of this lecture.",
+      "steps": [
+        "The screen dims while you're away.",
+        "When it ends, say out loud one idea for what caused the Cambrian explosion."
+      ]
+    },
+    {
+      "type": "real_world_link",
+      "instruction": "Find one thing near you that exists because of ancient life.",
+      "steps": [
+        "Ideas: the oxygen you breathe, chalk (made from tiny fossil shells), or a bird outside.",
+        "Say how far back its story goes."
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "slide": "deep-time",
+      "term": "radiometric dating",
+      "def": "Working out a rock's age from the steady decay of radioactive elements inside it."
+    },
+    {
+      "slide": "deep-time",
+      "term": "geologic time scale",
+      "def": "The way geologists divide Earth's history into eons, eras and periods."
+    },
+    {
+      "slide": "first-life",
+      "term": "prokaryotes",
+      "def": "Simple single cells with no nucleus, like bacteria."
+    },
+    {
+      "slide": "first-life",
+      "term": "stromatolites",
+      "def": "Layered rocks built up by mats of microbes over time."
+    },
+    {
+      "slide": "complex-cells",
+      "term": "eukaryotes",
+      "def": "Cells that keep their DNA inside a nucleus. Plants, animals and fungi are made of them."
+    },
+    {
+      "slide": "complex-cells",
+      "term": "endosymbiosis",
+      "def": "When one cell lives inside another and the two come to depend on each other."
+    },
+    {
+      "slide": "cambrian",
+      "term": "Cambrian explosion",
+      "def": "A burst of new animal groups in the fossil record, starting about 538 million years ago."
+    },
+    {
+      "slide": "land",
+      "term": "tetrapods",
+      "def": "Four-limbed animals with backbones: amphibians, reptiles, birds and mammals."
+    },
+    {
+      "slide": "extinctions",
+      "term": "mass extinction",
+      "def": "A loss of a large share of Earth's species in a geologically short time."
+    },
+    {
+      "slide": "selection",
+      "term": "natural selection",
+      "def": "Living things with helpful inherited traits survive and reproduce more, so those traits spread."
+    },
+    {
+      "slide": "humans",
+      "term": "common ancestor",
+      "def": "A species from which two or more later species are descended."
+    }
+  ],
+  "interest_examples": {
+    "trains": {
+      "title": "Deep time, as a train journey",
+      "lines": [
+        "Imagine one 450 km train journey, where every kilometre is 10 million years.",
+        "The first life appears after about 100 km. Oxygen builds up in the air after about 210 km.",
+        "The Cambrian explosion happens with only 54 km to go. The dinosaurs' age ends 6.6 km before the station.",
+        "Our species boards in the last 30 metres, as the train pulls into the platform."
+      ]
+    },
+    "football": {
+      "title": "Deep time, as a football match",
+      "lines": [
+        "Imagine all 4.5 billion years as one 90-minute match, so every minute is 50 million years.",
+        "The first life appears around the 20th minute. Oxygen builds up in the air around the 42nd.",
+        "The Cambrian explosion kicks off in about the 79th minute. The dinosaurs' age ends in the 89th.",
+        "Our species arrives in the last half-second before the final whistle."
+      ]
+    }
+  },
+  "references": [
+    "Darwin, C. (1859). On the Origin of Species by Means of Natural Selection. London: John Murray.",
+    "Sagan, L. (1967). On the origin of mitosing cells. Journal of Theoretical Biology, 14(3), 225–274.",
+    "Alvarez, L. W., Alvarez, W., Asaro, F., & Michel, H. V. (1980). Extraterrestrial cause for the Cretaceous–Tertiary extinction. Science, 208(4448), 1095–1108.",
+    "Daeschler, E. B., Shubin, N. H., & Jenkins, F. A. (2006). A Devonian tetrapod-like fish and the evolution of the tetrapod body plan. Nature, 440(7085), 757–763.",
+    "Cook, L. M., Grant, B. S., Saccheri, I. J., & Mallet, J. (2012). Selective bird predation on the peppered moth: the last experiment of Michael Majerus. Biology Letters, 8(4), 609–612.",
+    "Hublin, J.-J., et al. (2017). New fossils from Jebel Irhoud, Morocco and the pan-African origin of Homo sapiens. Nature, 546(7657), 289–292."
+  ]
+}
