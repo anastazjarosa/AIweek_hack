@@ -18,6 +18,8 @@ import {
   type Direction,
   type SimSpec,
 } from "@/lib/sim/spec";
+import { logEvent } from "@/lib/learner/events";
+import { topicForTemplate } from "@/lib/learner/topics";
 import type { Feedback } from "@/lib/sim/ai-spec";
 import type { FeedbackResponse } from "@/lib/sim/api-types";
 import type { ParamDef, Result, Values } from "@/lib/sim/templates";
@@ -65,15 +67,26 @@ export function SimLab({ spec, backHref = "/lab" }: { spec: SimSpec; backHref?: 
         body: JSON.stringify({ spec, guess, explanation: text }),
       });
       const data = (await res.json()) as FeedbackResponse;
-      setCoach(data.source === "ai" ? { status: "ai", text, feedback: data.feedback } : { status: "offline" });
+      if (data.source === "ai") {
+        setCoach({ status: "ai", text, feedback: data.feedback });
+        logExplanation(true, data.feedback.ideas.filter(Boolean).length);
+      } else {
+        setCoach({ status: "offline" });
+        logExplanation(true, null);
+      }
     } catch {
       setCoach({ status: "offline" });
+      logExplanation(true, null);
     }
   };
   const compare = () => {
     setRevealed(true);
     if (explain.trim()) void askCoach(explain.trim());
   };
+  // Learning profile: what the student did in this experiment (stored only in this browser).
+  const topic = topicForTemplate(spec.template);
+  const logExplanation = (wrote: boolean, ideas: number | null) =>
+    logEvent({ t: "explanation", topic, sim: spec.id, wrote, ideas, total: spec.keyIdeas.length });
   const aiIdeas = coach.status === "ai" ? coach.feedback.ideas : null;
   const coachStale = (coach.status === "ai" || coach.status === "loading") && coach.text !== explain.trim();
 
@@ -84,7 +97,10 @@ export function SimLab({ spec, backHref = "/lab" }: { spec: SimSpec; backHref?: 
   // A fair test changes only the prediction's parameter.
   const unfair = visible.some((p) => p.id !== pred.param && values[p.id] !== base[p.id]);
 
-  const run = () => setRuns((rs) => [...rs.slice(-1), { key: (rs.at(-1)?.key ?? 0) + 1, values: { ...values }, result: runSpec(spec, values) }]);
+  const run = () => {
+    setRuns((rs) => [...rs.slice(-1), { key: (rs.at(-1)?.key ?? 0) + 1, values: { ...values }, result: runSpec(spec, values) }]);
+    logEvent({ t: "experiment_run", topic, sim: spec.id });
+  };
   const set = (id: string, v: number) => setValues((vs) => ({ ...vs, [id]: v }));
 
   const options: { id: Direction; label: string }[] = (["up", "down", "same"] as const).map((d) => ({
@@ -160,7 +176,12 @@ export function SimLab({ spec, backHref = "/lab" }: { spec: SimSpec; backHref?: 
           {guess && (
             <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
               <p className="text-muted">Locked in. Now test it.</p>
-              <Button onClick={() => setStep("Run")}>
+              <Button
+                onClick={() => {
+                  if (outcome) logEvent({ t: "prediction", topic, sim: spec.id, correct: guess === outcome.answer });
+                  setStep("Run");
+                }}
+              >
                 Run the experiment <ArrowRight />
               </Button>
             </div>
@@ -290,7 +311,13 @@ export function SimLab({ spec, backHref = "/lab" }: { spec: SimSpec; backHref?: 
               </Button>
             )}
             {!revealed && (
-              <Button variant="ghost" onClick={() => setRevealed(true)}>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setRevealed(true);
+                  if (!explain.trim()) logExplanation(false, null);
+                }}
+              >
                 Show me the answer
               </Button>
             )}
@@ -372,6 +399,13 @@ export function SimLab({ spec, backHref = "/lab" }: { spec: SimSpec; backHref?: 
                   })}
                 </ul>
               </div>
+              <p className="text-sm text-muted">
+                Added to{" "}
+                <Link href="/profile" className="font-medium text-accent underline-offset-4 hover:underline">
+                  what works for you
+                </Link>
+                . It helps plan what to study next.
+              </p>
               {spec.realWorld && (
                 <p className="text-ink/80">
                   <span className="font-medium">In the real world: </span>

@@ -15,6 +15,7 @@ import {
   type StruggleReason,
   type TaskType,
 } from "./engine";
+import { logEvent } from "@/lib/learner/events";
 import { sectionForBlock } from "./planner";
 
 export type Phase = "idle" | "setup" | "focus" | "break" | "recall" | "final" | "done";
@@ -150,6 +151,7 @@ function checkStruggle(s: Session) {
 function endBlock(s: Session, endedBy: NonNullable<BlockLog["endedBy"]>, reason: BreakReason) {
   const b = current(s);
   b.endedBy = endedBy;
+  logEvent({ t: "focus_block", plannedMin: b.plannedMin, activeMin: Math.round((b.activeSec / 60) * 10) / 10, endedBy });
   s.suggestion = null;
   s.toast = null;
   if (endedBy === "cap") {
@@ -294,7 +296,11 @@ export const sessionActions = {
   },
   end() {
     update((x) => {
-      if (x.phase === "focus") current(x).endedBy = "ended";
+      if (x.phase === "focus") {
+        const b = current(x);
+        b.endedBy = "ended";
+        logEvent({ t: "focus_block", plannedMin: b.plannedMin, activeMin: Math.round((b.activeSec / 60) * 10) / 10, endedBy: "ended" });
+      }
       x.phase = "done";
       x.suggestion = null;
       x.toast = null;

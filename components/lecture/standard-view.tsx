@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { lecture } from "@/lib/data";
 import { useProfile } from "@/lib/profile";
+import { logEvent } from "@/lib/learner/events";
 import { sessionActions, useSession } from "@/lib/screentime/session";
 import { cn } from "@/lib/utils";
 
@@ -162,6 +163,7 @@ function Quiz() {
                 onClick={() => {
                   setPicks((p) => p.map((x, k) => (k === qi ? oi : x)));
                   sessionActions.reportAnswer(oi === q.answer);
+                  logEvent({ t: "quiz", topic: "history-of-life", correct: oi === q.answer });
                 }}
               />
             ))}

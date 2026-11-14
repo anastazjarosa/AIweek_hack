@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { shouldSuggestSprints, skimEvidence, wordCount, type Read } from "@/lib/adapt";
 import { lecture } from "@/lib/data";
 import { useProfile } from "@/lib/profile";
+import { logEvent } from "@/lib/learner/events";
 import { useSession } from "@/lib/screentime/session";
 
 // Asked at most once per page load, whatever the answer.
@@ -39,6 +40,7 @@ export function SkimSuggestion({ simplify }: { simplify: boolean }) {
             passed.add(id);
             const read = { words: words.get(id) ?? 0, seconds: (now - entered.get(id)!) / 1000 };
             setReads((r) => [...r, read]);
+            logEvent({ t: "read", topic: "history-of-life", ...read });
           }
         }
       },

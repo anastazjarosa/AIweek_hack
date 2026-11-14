@@ -2,6 +2,7 @@
 
 import { Pause, Play } from "lucide-react";
 import { useEffect, useState } from "react";
+import { logEvent } from "@/lib/learner/events";
 import { sessionActions } from "@/lib/screentime/session";
 import { cn } from "@/lib/utils";
 
@@ -46,6 +47,7 @@ export function AudioBar({
         onClick={() => {
           if (t >= seconds) setT(0);
           if (!playing && contentId) sessionActions.reportReplay(contentId);
+          if (!playing) logEvent({ t: "replay", topic: "history-of-life" });
           setPlaying((p) => !p);
         }}
         aria-label={playing ? `Pause ${label ?? "audio"}` : `Listen to ${label ?? "this section"}`}
