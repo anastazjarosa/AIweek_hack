@@ -4,24 +4,9 @@ import rules from "./screentime_rules.json";
 export { rules };
 
 export type Level = "low" | "medium" | "high";
-export type Need = "focus" | "info_intake" | "organising" | "predictability";
+export type Need = "focus" | "processing" | "organising" | "predictability";
 export type Needs = Record<Need, Level>;
 export type TaskType = "teach_back" | "paper_sketch" | "walk_and_listen" | "move_and_recall" | "real_world_link";
-export type ProfileKey = keyof typeof rules.profile_needs;
-
-const rank: Record<Level, number> = { low: 0, medium: 1, high: 2 };
-const NEEDS: Need[] = ["focus", "info_intake", "organising", "predictability"];
-
-/** Combine picked profiles: each need takes the highest level any picked profile asks for. */
-export function needsFor(profiles: ProfileKey[]): Needs {
-  const list = profiles.length ? profiles : (["standard"] as ProfileKey[]);
-  const out = { focus: "low", info_intake: "low", organising: "low", predictability: "low" } as Needs;
-  for (const p of list) {
-    const n = rules.profile_needs[p] as Needs;
-    for (const k of NEEDS) if (rank[n[k]] > rank[out[k]]) out[k] = n[k];
-  }
-  return out;
-}
 
 export function baseBlockMinutes(needs: Needs): number {
   return rules.focus_block_minutes[needs.focus];
@@ -60,7 +45,7 @@ export function schedule(needs: Needs, capMinutes: number) {
 export function taskScores(needs: Needs): Record<TaskType, number> {
   const w = rules.task_weights;
   const scores = { ...w.base } as Record<TaskType, number>;
-  for (const need of ["focus", "info_intake", "organising"] as const) {
+  for (const need of ["focus", "processing", "organising"] as const) {
     const mult = rules.need_multiplier[needs[need]];
     for (const [t, v] of Object.entries(w[need])) scores[t as TaskType] += (v as number) * mult;
   }

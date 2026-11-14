@@ -3,22 +3,22 @@
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
-import { AdhdView } from "@/components/lecture/adhd-view";
-import { AutismView } from "@/components/lecture/autism-view";
-import { DyslexiaView } from "@/components/lecture/dyslexia-view";
+import { ListenView } from "@/components/lecture/listen-view";
+import { SprintsView } from "@/components/lecture/sprints-view";
+import { StructuredView } from "@/components/lecture/structured-view";
 import { StandardView } from "@/components/lecture/standard-view";
 import { lecture } from "@/lib/data";
 import { useHydrated, useProfile } from "@/lib/profile";
 
 export function LectureView() {
-  const { profile } = useProfile();
+  const { view } = useProfile();
   const hydrated = useHydrated();
   return (
     <AppShell
       crumb={
         <span>
           <Link href="/dashboard" className="hover:text-ink">
-            {lecture.module}
+            {lecture.moduleShort}
           </Link>
           <span className="mx-2">/</span>
           <span className="text-ink">{lecture.title}</span>
@@ -30,16 +30,16 @@ export function LectureView() {
       ) : (
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
-          key={profile}
+          key={view}
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -4 }}
           transition={{ duration: 0.22, ease: "easeOut" }}
         >
-          {profile === "standard" && <StandardView />}
-          {profile === "adhd" && <AdhdView />}
-          {profile === "dyslexia" && <DyslexiaView />}
-          {profile === "autism" && <AutismView />}
+          {view === "standard" && <StandardView />}
+          {view === "sprints" && <SprintsView />}
+          {view === "listen" && <ListenView />}
+          {view === "structured" && <StructuredView />}
         </motion.div>
       </AnimatePresence>
       )}

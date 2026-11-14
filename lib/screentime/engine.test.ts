@@ -4,34 +4,26 @@ import {
   baseBlockMinutes,
   breakAfter,
   chooseTask,
-  needsFor,
   schedule,
   struggleReason,
   warningSeconds,
 } from "./engine";
+import { needsFromScores, ZERO } from "../dimensions";
 
-const demo = needsFor(["adhd", "autism"]);
-
-describe("needs", () => {
-  it("merges picked profiles by taking the highest need", () => {
-    expect(demo).toEqual({ focus: "high", info_intake: "medium", organising: "high", predictability: "high" });
-  });
-  it("defaults to standard when nothing is picked", () => {
-    expect(needsFor([])).toEqual(needsFor(["standard"]));
-  });
-});
+const n = (s: Partial<typeof ZERO>) => needsFromScores({ ...ZERO, ...s });
+const demo = n({ focus: 4, predictability: 4 });
 
 describe("blocks and breaks", () => {
   it("sets block length from focus need", () => {
-    expect(baseBlockMinutes(needsFor(["standard"]))).toBe(20);
-    expect(baseBlockMinutes(needsFor(["dyslexia", "autism"]))).toBe(20);
+    expect(baseBlockMinutes(n({}))).toBe(20);
+    expect(baseBlockMinutes(n({ focus: 2 }))).toBe(15);
     expect(baseBlockMinutes(demo)).toBe(10);
   });
   it("gives a long break after every third block", () => {
     expect([1, 2, 3, 4, 6].map((n) => breakAfter(n).kind)).toEqual(["short", "short", "long", "short", "long"]);
   });
   it("adds 5 min and 30 s warnings only for high predictability", () => {
-    expect(warningSeconds(needsFor(["adhd"]))).toEqual([120]);
+    expect(warningSeconds(n({ focus: 4 }))).toEqual([120]);
     expect(warningSeconds(demo)).toEqual([300, 120, 30]);
   });
   it("plans a schedule that stops at the daily cap", () => {
@@ -43,19 +35,22 @@ describe("blocks and breaks", () => {
 });
 
 describe("break tasks", () => {
-  it("prefers movement for high focus and avoids writing for high organising", () => {
-    expect(chooseTask(needsFor(["adhd"]), 0)).toBe("move_and_recall");
+  it("prefers movement for high focus", () => {
+    expect(chooseTask(n({ focus: 4, organising: 2 }), 0)).toBe("move_and_recall");
+    expect(chooseTask(demo, 0)).toBe("move_and_recall");
   });
-  it("prefers audio or teach-back for high info intake", () => {
-    const n = needsFor(["dyslexia"]);
-    expect([chooseTask(n, 0), chooseTask(n, 1)].sort()).toEqual(["teach_back", "walk_and_listen"]);
+  it("avoids writing tasks for high organising", () => {
+    expect(chooseTask(n({ organising: 4 }), 0)).not.toBe("paper_sketch");
+  });
+  it("prefers audio for high processing", () => {
+    expect(chooseTask(n({ processing: 4 }), 0)).toBe("walk_and_listen");
   });
   it("keeps the same task type when predictability is high", () => {
     expect(chooseTask(demo, 3, "paper_sketch")).toBe("paper_sketch");
   });
   it("rotates through tied tasks for a standard profile", () => {
-    const n = needsFor(["standard"]);
-    expect(new Set([0, 1, 2, 3, 4].map((i) => chooseTask(n, i))).size).toBe(5);
+    const low = n({});
+    expect(new Set([0, 1, 2, 3, 4].map((i) => chooseTask(low, i))).size).toBe(5);
   });
 });
 

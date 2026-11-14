@@ -10,17 +10,15 @@ import { ProgressRing } from "@/components/ui/progress";
 import { rules, type TaskType } from "@/lib/screentime/engine";
 import { planFinalTask, planTask, sectionForBlock, taskLabels, type BreakTask } from "@/lib/screentime/planner";
 import { fmtClock, reasonLabels, sessionActions, useSession } from "@/lib/screentime/session";
-import { useProfile } from "@/lib/profile";
 import { cn } from "@/lib/utils";
 
 const kindLabel = { short: "Short break", long: "Long break", early: "Early break", final: "Done for today" };
 
 export function BreakOverlay() {
   const s = useSession()!;
-  const { interest } = useProfile();
   const br = s.breaks[s.breaks.length - 1];
   const section = sectionForBlock(br.afterBlock);
-  const task: BreakTask = br.taskType === "final_summary" ? planFinalTask() : planTask(br.taskType, section, interest);
+  const task: BreakTask = br.taskType === "final_summary" ? planFinalTask() : planTask(br.taskType, section);
   const dim = br.taskType === "walk_and_listen";
   const over = s.breakLeftSec <= 0;
   const final = s.phase === "final";

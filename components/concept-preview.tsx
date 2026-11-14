@@ -4,26 +4,28 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Check, Clock, Headphones } from "lucide-react";
 import { useState } from "react";
 import { AudioBar } from "@/components/audio-bar";
-import { ProfileSwitcher } from "@/components/profile-switcher";
+import { ViewSwitcher } from "@/components/view-switcher";
 import { WithTerms } from "@/components/term";
-import { lecture, type ProfileId } from "@/lib/data";
+import { lecture } from "@/lib/data";
+import type { ViewId } from "@/lib/dimensions";
 import { cn } from "@/lib/utils";
 
 const s = lecture.sections[0];
+const next = lecture.sections[1];
 
 /** Landing hero: one concept, reshaped live by the visitor. */
 export function ConceptPreview() {
-  const [p, setP] = useState<ProfileId>("adhd");
+  const [p, setP] = useState<ViewId>("sprints");
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
-        <p className="text-sm text-muted">Same slide. Pick a brain.</p>
-        <ProfileSwitcher id="hero" value={p} onChange={setP} />
+        <p className="text-sm text-muted">Same slide. Pick a layout.</p>
+        <ViewSwitcher id="hero" value={p} onChange={setP} />
       </div>
       <div
         className={cn(
           "relative min-h-[420px] overflow-hidden rounded-3xl border border-line p-6 sm:p-8 shadow-[0_1px_0_rgba(0,0,0,0.02),0_20px_40px_-24px_rgba(28,35,33,0.18)] transition-colors duration-300",
-          p === "dyslexia" ? "bg-cream" : "bg-surface",
+          p === "listen" ? "bg-cream" : "bg-surface",
         )}
       >
         <AnimatePresence mode="wait" initial={false}>
@@ -35,9 +37,9 @@ export function ConceptPreview() {
             transition={{ duration: 0.22, ease: "easeOut" }}
           >
             {p === "standard" && <Standard />}
-            {p === "adhd" && <Adhd />}
-            {p === "dyslexia" && <Dyslexia />}
-            {p === "autism" && <Autism />}
+            {p === "sprints" && <Sprints />}
+            {p === "listen" && <Listen />}
+            {p === "structured" && <Structured />}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -52,25 +54,25 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 function Standard() {
   return (
     <div>
-      <Eyebrow>Cardiology · Lecture 6</Eyebrow>
+      <Eyebrow>{lecture.moduleShort} · {lecture.source}</Eyebrow>
       <h3 className="mb-3 text-xl font-medium">{s.title}</h3>
       <p className="text-[15px] leading-relaxed text-muted">{s.body}</p>
     </div>
   );
 }
 
-function Adhd() {
+function Sprints() {
   const [picked, setPicked] = useState<number | null>(null);
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <Eyebrow>Sprint 1 of 5</Eyebrow>
+        <Eyebrow>Card 1 of {lecture.sections.length}</Eyebrow>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1 text-sm font-medium text-accent tabular-nums">
           <Clock className="h-3.5 w-3.5" /> 4:32
         </span>
       </div>
       <div className="mb-6 flex gap-1.5">
-        {[1, 0, 0, 0, 0].map((on, i) => (
+        {lecture.sections.map((_, i) => i === 0).map((on, i) => (
           <span key={i} className={cn("h-1.5 flex-1 rounded-full", on ? "bg-accent" : "bg-ink/10")} />
         ))}
       </div>
@@ -100,7 +102,7 @@ function Adhd() {
   );
 }
 
-function Dyslexia() {
+function Listen() {
   return (
     <div>
       <Eyebrow>
@@ -121,17 +123,17 @@ function Dyslexia() {
   );
 }
 
-function Autism() {
+function Structured() {
   return (
     <div>
       <div className="mb-5 grid gap-3 text-sm sm:grid-cols-2">
         <div className="rounded-2xl bg-canvas p-3">
           <p className="mb-1 font-medium">You will learn</p>
-          <p className="text-muted">What heart failure is, and its 3 groups.</p>
+          <p className="text-muted">{s.title}, in {s.points.length} points.</p>
         </div>
         <div className="rounded-2xl bg-canvas p-3">
           <p className="mb-1 font-medium">Next</p>
-          <p className="text-muted">Section 2: Causes. 3 minutes.</p>
+          <p className="text-muted">Section 2: {next.title}. {next.minutes} minutes.</p>
         </div>
       </div>
       <h3 className="mb-4 text-xl font-medium">
@@ -139,7 +141,7 @@ function Autism() {
         {s.title}
       </h3>
       <ol className="space-y-2.5 text-[15px] leading-relaxed">
-        {s.literal.slice(0, 3).map((l, i) => (
+        {s.points.slice(0, 3).map((l, i) => (
           <li key={l} className="flex gap-3">
             <span className="text-muted tabular-nums">1.{i + 1}</span>
             <span>{l}</span>

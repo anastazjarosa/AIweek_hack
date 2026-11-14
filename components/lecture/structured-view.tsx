@@ -2,15 +2,16 @@
 
 import { ArrowRight, Clock } from "lucide-react";
 import Link from "next/link";
+import { AudioBar } from "@/components/audio-bar";
 import { Card } from "@/components/ui/card";
 import { interests, lecture } from "@/lib/data";
 import { useProfile } from "@/lib/profile";
 import { cn } from "@/lib/utils";
 
-const NEXT_LECTURE = "Atrial fibrillation";
+const next = lecture.nextLecture;
 
-export function AutismView() {
-  const { interest, setInterest } = useProfile();
+export function StructuredView() {
+  const { interest, setInterest, needs } = useProfile();
   const analogy = lecture.analogy[interest];
   const n = lecture.sections.length;
 
@@ -39,7 +40,7 @@ export function AutismView() {
             <li>This lecture has {n} sections.</li>
             <li>It takes {lecture.minutes} minutes in total.</li>
             <li>Every section has the same layout.</li>
-            <li>After this lecture: {NEXT_LECTURE}.</li>
+            <li>After this lecture: {next.title}.</li>
           </ul>
           <div className="mt-auto pt-5">
             <p className="mb-2 text-sm text-muted">Examples use your interest:</p>
@@ -80,8 +81,11 @@ export function AutismView() {
                   <span className="mr-2 text-accent">{i + 1}.</span>
                   {s.title}
                 </h2>
+                {needs.processing === "high" && (
+                  <AudioBar seconds={s.minutes * 45} label={s.title} contentId={s.id} className="mb-5" />
+                )}
                 <ol className="space-y-3 text-[17px] leading-relaxed">
-                  {s.literal.map((l, k) => (
+                  {s.points.map((l, k) => (
                     <li key={l} className="grid grid-cols-[2.5rem_1fr] gap-2">
                       <span className="text-muted tabular-nums">
                         {i + 1}.{k + 1}
@@ -119,7 +123,7 @@ export function AutismView() {
       <Card className="mt-6 flex flex-wrap items-center justify-between gap-4 p-7">
         <div>
           <p className="font-medium">You have finished all {n} sections.</p>
-          <p className="text-muted">The next lecture is {NEXT_LECTURE}. It has 4 sections and takes 10 minutes.</p>
+          <p className="text-muted">The next lecture is {next.title}. It has {next.sections} sections and takes {next.minutes} minutes.</p>
         </div>
         <Link href="/dashboard" className="inline-flex items-center gap-2 font-medium text-accent">
           Back to dashboard <ArrowRight className="h-4 w-4" />

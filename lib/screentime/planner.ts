@@ -1,7 +1,11 @@
 // Mock "break-planner agent": builds an off-screen task and recall quiz from the section just
-// studied. Deterministic, so the demo behaves the same every time.
-import { lecture, type Check, type Interest, type Section } from "@/lib/data";
+// studied. Deterministic, so the demo behaves the same every time. If this becomes a model call,
+// its prompt must include PLANNER_GUARDRAIL.
+import { lecture, type Check, type Section } from "@/lib/data";
 import type { TaskType } from "./engine";
+
+export const PLANNER_GUARDRAIL =
+  "Never infer, guess or mention a medical condition or diagnosis. Describe needs and preferences only.";
 
 export type BreakTask = {
   type: TaskType | "final_summary";
@@ -20,59 +24,20 @@ export const taskLabels: Record<TaskType, string> = {
   real_world_link: "Real-world link",
 };
 
-const realWorld: Record<string, string> = {
-  definition: "Find something around you that pumps or moves liquid: a tap, a kettle, a garden hose. What happens when the push gets weaker?",
-  causes: "Look at a pipe, cable or road near you. What could narrow it or block it, like a narrowed heart artery?",
-  symptoms: "Notice how you feel lying flat versus sitting up. Why would fluid in the lungs make lying flat harder?",
-  diagnosis: "Find something with a warning light or gauge (a phone battery, a car dashboard). How is that like NT-proBNP?",
-  treatment: "Find something with a pressure release: a bottle cap, a tyre valve. Which heart failure drug works like that?",
-};
-
 export function sectionForBlock(blockNumber: number): Section {
   return lecture.sections[(blockNumber - 1) % lecture.sections.length];
 }
 
-export function planTask(type: TaskType, section: Section, interest: Interest): BreakTask {
-  const keyPoints = section.points.slice(0, 3);
-  const terms = section.terms.map((t) => t.term);
-  switch (type) {
-    case "teach_back":
-      return {
-        type,
-        title: taskLabels[type],
-        instruction: `Explain “${section.title}” out loud in about a minute, as if to a friend.`,
-        steps: [`Try to use: ${terms.join(", ")}.`, "Record it, or just say it to the room.", "Stuck? Start with: “Heart failure is when…”"],
-      };
-    case "paper_sketch":
-      return {
-        type,
-        title: taskLabels[type],
-        instruction: `On paper, draw a mind map of “${section.title}”.`,
-        steps: [`Put “${section.title}” in the middle.`, `Add a branch for each of: ${terms.join(", ")}.`, "Add one fact to each branch. Snap a photo if you want to keep it."],
-      };
-    case "walk_and_listen":
-      return {
-        type,
-        title: taskLabels[type],
-        instruction: `Put the phone in your pocket and walk while you listen to a recap of “${section.title}”.`,
-        steps: ["The screen dims while you're away.", "Listen once. No need to take notes."],
-      };
-    case "move_and_recall":
-      return {
-        type,
-        title: taskLabels[type],
-        instruction: "Stand up, stretch, and say 3 key points out loud.",
-        steps: [`Topic: ${section.title}.`, "Walk to a window or another room while you think.", "Then check yourself below."],
-        reveal: keyPoints,
-      };
-    case "real_world_link":
-      return {
-        type,
-        title: taskLabels[type],
-        instruction: realWorld[section.id] ?? "Find an example of this idea in the room around you.",
-        steps: [`Linked to: ${section.title}.`, `Example idea: ${lecture.analogy[interest].lines[1]}`],
-      };
-  }
+/** Off-screen task of the chosen type from the module seed, tied to the section just studied. */
+export function planTask(type: TaskType, section: Section): BreakTask {
+  const base = lecture.offscreenTasks.find((t) => t.type === type)!;
+  return {
+    type,
+    title: taskLabels[type],
+    instruction: base.instruction,
+    steps: [`Linked to: ${section.title}.`, ...base.steps],
+    reveal: type === "move_and_recall" ? section.points.slice(0, 3) : undefined,
+  };
 }
 
 export function planFinalTask(): BreakTask {
@@ -80,7 +45,7 @@ export function planFinalTask(): BreakTask {
     type: "final_summary",
     title: "Off-screen summary",
     instruction: "You've reached today's screen limit. Close the laptop and say, or write on paper, the 3 things you'll remember from today.",
-    steps: ["One thing about what heart failure is.", "One thing about how it's diagnosed.", "One thing about how it's treated."],
+    steps: lecture.keyIdeas.map((_, i) => `Idea ${i + 1}, in your own words.`),
   };
 }
 

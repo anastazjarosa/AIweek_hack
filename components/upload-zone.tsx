@@ -4,12 +4,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Check, FileText, Loader2, UploadCloud } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Progress } from "@/components/ui/progress";
-import { processingSteps, profiles } from "@/lib/data";
+import { processingSteps } from "@/lib/data";
+import { views } from "@/lib/dimensions";
 import { useProfile } from "@/lib/profile";
 import { cn } from "@/lib/utils";
 
 export function UploadZone({ onDone }: { onDone: (fileName: string) => void }) {
-  const { profile } = useProfile();
+  const { view } = useProfile();
   const input = useRef<HTMLInputElement>(null);
   const [over, setOver] = useState(false);
   const [file, setFile] = useState<string | null>(null);
@@ -35,7 +36,7 @@ export function UploadZone({ onDone }: { onDone: (fileName: string) => void }) {
     setFile(name || "Lecture 7 - Valve disease.pdf");
   };
 
-  const label = profiles.find((p) => p.id === profile)?.label;
+  const label = views.find((v) => v.id === view)?.label;
 
   return (
     <div
@@ -125,7 +126,7 @@ export function UploadZone({ onDone }: { onDone: (fileName: string) => void }) {
                     )}
                     <span>
                       {s}
-                      {i === 2 && label && <span className="block text-xs opacity-80">{label} profile</span>}
+                      {i === 2 && label && <span className="block text-xs opacity-80">{label} layout</span>}
                     </span>
                   </li>
                 );

@@ -4,17 +4,20 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, CalendarClock, Check, Pause, Play, RotateCcw, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { AudioBar } from "@/components/audio-bar";
 import { QuizOption, optionState } from "@/components/lecture/quiz-option";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { lecture } from "@/lib/data";
+import { useProfile } from "@/lib/profile";
 import { sessionActions } from "@/lib/screentime/session";
 
 const SPRINT = 5 * 60;
 const cards = lecture.sections;
 
-export function AdhdView() {
+export function SprintsView() {
+  const { needs } = useProfile();
   const [banner, setBanner] = useState(true);
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
@@ -69,7 +72,7 @@ export function AdhdView() {
             <CalendarClock className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
             <p className="flex-1">
               <span className="font-medium">Missed yesterday? No stress.</span>{" "}
-              <span className="text-ink/75">We moved &ldquo;Heart failure&rdquo; to today and kept your streak.</span>
+              <span className="text-ink/75">We moved this lecture to today and kept your streak.</span>
             </p>
             <button onClick={() => setBanner(false)} aria-label="Dismiss" className="text-ink/50 hover:text-ink">
               <X className="h-4 w-4" />
@@ -129,6 +132,7 @@ export function AdhdView() {
               <p className="mb-3 text-sm font-medium text-accent">{card.title}</p>
               <p className="mb-3 text-3xl leading-snug font-light tracking-[-0.01em]">{card.points[0]}</p>
               <p className="mb-8 text-lg text-muted">{card.points[1]}</p>
+              {needs.processing === "high" && <AudioBar seconds={45} label={card.title} contentId={card.id} className="mb-8" />}
               <div className="border-t border-line pt-6">
                 <p className="mb-3 font-medium">Quick check</p>
                 <p className="mb-4">{card.check.q}</p>

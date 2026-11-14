@@ -4,7 +4,7 @@ import { BarChart3, BookOpen, LayoutGrid, Timer, Upload, UserRound } from "lucid
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/logo";
-import { ProfileSwitcher } from "@/components/profile-switcher";
+import { ViewSwitcher } from "@/components/view-switcher";
 import { SessionLayer } from "@/components/session/session-layer";
 import { sessionActions, useSession } from "@/lib/screentime/session";
 import { user } from "@/lib/data";
@@ -16,12 +16,12 @@ const nav = [
   { href: "/dashboard#modules", label: "My modules", icon: BookOpen },
   { href: "/dashboard#upload", label: "Upload", icon: Upload },
   { href: "/summary", label: "Screen time", icon: BarChart3 },
-  { href: "/onboarding", label: "Profile", icon: UserRound },
+  { href: "/preferences", label: "How I like to learn", icon: UserRound },
 ];
 
 export function AppShell({ children, crumb }: { children: React.ReactNode; crumb?: React.ReactNode }) {
   const pathname = usePathname();
-  const { profile, setProfile } = useProfile();
+  const { view, setView } = useProfile();
   const session = useSession();
   const canStart = !session || ["idle", "done"].includes(session.phase);
   return (
@@ -71,8 +71,8 @@ export function AppShell({ children, crumb }: { children: React.ReactNode; crumb
                   <Timer className="h-4 w-4" /> Start focus session
                 </button>
               )}
-              <span className="hidden text-sm text-muted lg:inline">Viewing as</span>
-              <ProfileSwitcher id="app" value={profile} onChange={setProfile} />
+              <span className="hidden text-sm text-muted lg:inline">Layout</span>
+              <ViewSwitcher id="app" value={view} onChange={setView} />
             </div>
           </div>
         </div>

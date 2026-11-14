@@ -7,13 +7,15 @@ import { QuizOption, optionState } from "@/components/lecture/quiz-option";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { lecture } from "@/lib/data";
+import { useProfile } from "@/lib/profile";
 import { sessionActions, useSession } from "@/lib/screentime/session";
 import { cn } from "@/lib/utils";
 
-const tabs = ["Notes", "Flashcards", "Quiz"] as const;
+const tabs = ["Notes", "Flashcards", "Quiz", "Map"] as const;
 
 export function StandardView() {
-  const [tab, setTab] = useState<(typeof tabs)[number]>("Notes");
+  const { prefs } = useProfile();
+  const [tab, setTab] = useState<(typeof tabs)[number]>(prefs.format === "visual" ? "Map" : "Notes");
   return (
     <div>
       <LectureTitle />
@@ -36,6 +38,7 @@ export function StandardView() {
       {tab === "Notes" && <Notes />}
       {tab === "Flashcards" && <Flashcards />}
       {tab === "Quiz" && <Quiz />}
+      {tab === "Map" && <ConceptMap />}
     </div>
   );
 }
@@ -58,6 +61,17 @@ function Notes() {
         </ul>
       </nav>
       <article className="max-w-[68ch] space-y-10 lg:col-span-9">
+        <section className="rounded-3xl bg-surface p-6 ring-1 ring-line">
+          <p className="mb-3 font-medium">3 key ideas</p>
+          <ol className="space-y-2 leading-relaxed">
+            {lecture.keyIdeas.map((k, i) => (
+              <li key={k} className="flex gap-3">
+                <span className="text-accent tabular-nums">{i + 1}.</span>
+                {k}
+              </li>
+            ))}
+          </ol>
+        </section>
         {simplify && (
           <p className="rounded-2xl bg-accent-soft px-5 py-3 text-sm text-accent">
             Simpler wording is on after your last recall check. It switches off when the session ends.
@@ -77,6 +91,14 @@ function Notes() {
             )}
           </section>
         ))}
+        <section className="border-t border-line pt-6">
+          <p className="mb-3 text-sm font-medium">References</p>
+          <ul className="space-y-2 text-sm text-muted">
+            {lecture.references.map((r) => (
+              <li key={r}>{r}</li>
+            ))}
+          </ul>
+        </section>
       </article>
     </div>
   );
@@ -153,6 +175,45 @@ function Quiz() {
           </Button>
         </Card>
       )}
+    </div>
+  );
+}
+
+const groups = [
+  { id: "memory", label: "Memory" },
+  { id: "stage", label: "Stages" },
+  { id: "effect", label: "Effects" },
+  { id: "tip", label: "Study tips" },
+];
+
+/** Concept map from the seed: one column per level, each node lists where it leads. */
+function ConceptMap() {
+  const { nodes, edges } = lecture.visualMap;
+  const label = (id: string) => nodes.find((n) => n.id === id)?.label;
+  return (
+    <div className="grid gap-4 md:grid-cols-4">
+      {groups.map((g) => (
+        <div key={g.id}>
+          <p className="mb-3 text-xs font-medium tracking-wide text-muted uppercase">{g.label}</p>
+          <ul className="space-y-3">
+            {nodes
+              .filter((n) => n.group === g.id)
+              .map((n) => (
+                <li key={n.id} className="rounded-2xl bg-surface p-4 ring-1 ring-line">
+                  <p className="font-medium">{n.label}</p>
+                  {edges
+                    .filter((e) => e.from === n.id)
+                    .map((e) => (
+                      <p key={e.to} className="mt-1 text-sm text-muted">
+                        → {e.label ? `${e.label} ` : ""}
+                        <span className="text-accent">{label(e.to)}</span>
+                      </p>
+                    ))}
+                </li>
+              ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 }

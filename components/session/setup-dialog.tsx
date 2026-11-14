@@ -3,28 +3,24 @@
 import { Play, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { breakAfter, baseBlockMinutes, rules, schedule, warningSeconds, type Need } from "@/lib/screentime/engine";
+import { breakAfter, baseBlockMinutes, rules, schedule, warningSeconds } from "@/lib/screentime/engine";
 import { sessionActions } from "@/lib/screentime/session";
 import { useProfile } from "@/lib/profile";
+import { dimensions, personas } from "@/lib/dimensions";
 import { cn } from "@/lib/utils";
 
-const needLabels: Record<Need, string> = {
-  focus: "Focus",
-  info_intake: "Info intake",
-  organising: "Organising",
-  predictability: "Predictability",
-};
 
 const caps = [30, 60, 90, 120];
 
 export function SetupDialog() {
-  const { needs, setPicked, picked } = useProfile();
+  const { needs, scores, setScores } = useProfile();
   const [cap, setCap] = useState(rules.daily_cap_minutes_default);
   const [demoSpeed, setDemoSpeed] = useState(true);
   const block = baseBlockMinutes(needs);
   const plan = schedule(needs, cap);
   const total = plan.reduce((n, i) => n + i.minutes, 0);
-  const isDemo = picked.length === 2 && picked.includes("adhd") && picked.includes("autism");
+  const demo = personas[0];
+  const isDemo = dimensions.every((d) => scores[d.key] === demo.scores[d.key]);
   const warn = warningSeconds(needs).map((w) => (w >= 60 ? `${w / 60} min` : `${w} s`));
 
   return (
@@ -33,25 +29,25 @@ export function SetupDialog() {
         <h2 id="setup-title" className="mb-1 text-2xl font-light tracking-[-0.02em]">
           Start a focus session
         </h2>
-        <p className="mb-6 text-muted">Blocks, breaks and off-screen tasks are set from your profile.</p>
+        <p className="mb-6 text-muted">Blocks, breaks and off-screen tasks are set from your needs.</p>
 
         <div className="mb-6 rounded-2xl bg-canvas p-4">
           <div className="mb-3 flex items-center justify-between">
             <p className="text-sm font-medium">Your needs</p>
             <button
-              onClick={() => setPicked(isDemo ? [] : ["adhd", "autism"])}
+              onClick={() => setScores(demo.scores)}
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium",
                 isDemo ? "bg-accent text-accent-ink" : "bg-surface ring-1 ring-line hover:ring-ink/30",
               )}
             >
-              <Sparkles className="h-3 w-3" /> Demo profile: focus + predictability high
+              <Sparkles className="h-3 w-3" /> {demo.name.split(":")[0]}: high focus + high structure
             </button>
           </div>
           <div className="grid grid-cols-2 gap-2 text-sm sm:grid-cols-4">
-            {(Object.keys(needLabels) as Need[]).map((k) => (
+            {dimensions.map(({ key: k, label }) => (
               <div key={k} className="rounded-xl bg-surface px-3 py-2">
-                <p className="text-xs text-muted">{needLabels[k]}</p>
+                <p className="text-xs text-muted">{label}</p>
                 <p className={cn("font-medium capitalize", needs[k] === "high" && "text-accent")}>{needs[k]}</p>
               </div>
             ))}

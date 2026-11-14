@@ -65,7 +65,7 @@ export type Session = {
   toast: { id: number; text: string } | null;
 };
 
-const KEY = "neura-session-v1";
+const KEY = "neura-session-v2";
 let session: Session | null = null;
 let loaded = false;
 const listeners = new Set<() => void>();
@@ -316,7 +316,7 @@ function blank(): Session {
     startedAt: "",
     speed: rules.demo.speed,
     capMin: rules.daily_cap_minutes_default,
-    needs: { focus: "low", info_intake: "low", organising: "low", predictability: "low" },
+    needs: { focus: "low", processing: "low", organising: "low", predictability: "low" },
     phase: "idle",
     blocks: [],
     breaks: [],

@@ -15,6 +15,17 @@
   --clay-soft: #f6e6dd;
 }
 
+/* Calm theme (student setting): softer accent, no CSS transitions or animations. */
+[data-calm] {
+  --accent: #3f6f62;
+  --accent-soft: #e8efeb;
+  --clay: #8a5a43;
+}
+[data-calm] * {
+  transition: none !important;
+  animation: none !important;
+}
+
 @theme inline {
   --color-canvas: var(--canvas);
   --color-surface: var(--surface);

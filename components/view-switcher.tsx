@@ -2,40 +2,39 @@
 
 import { motion } from "framer-motion";
 import { useHydrated } from "@/lib/profile";
-import { profiles, type ProfileId } from "@/lib/data";
+import { views, type ViewId } from "@/lib/dimensions";
 import { cn } from "@/lib/utils";
 
-const order: ProfileId[] = ["adhd", "dyslexia", "autism", "standard"];
 
-export function ProfileSwitcher({
+
+export function ViewSwitcher({
   value,
   onChange,
   id,
   className,
 }: {
-  value: ProfileId;
-  onChange: (p: ProfileId) => void;
+  value: ViewId;
+  onChange: (v: ViewId) => void;
   /** Unique per instance so the sliding pill doesn't jump between switchers. */
   id: string;
   className?: string;
 }) {
-  // The saved profile loads after hydration; only animate the pill for real clicks.
+  // The saved layout loads after hydration; only animate the pill for real clicks.
   const hydrated = useHydrated();
   return (
     <div
       role="radiogroup"
-      aria-label="Learning profile"
+      aria-label="Lecture layout"
       className={cn("inline-flex rounded-full border border-line bg-surface p-1", className)}
     >
-      {order.map((pid) => {
-        const p = profiles.find((x) => x.id === pid)!;
-        const active = value === pid;
+      {views.map((p) => {
+        const active = value === p.id;
         return (
           <button
-            key={pid}
+            key={p.id}
             role="radio"
             aria-checked={active}
-            onClick={() => onChange(pid)}
+            onClick={() => onChange(p.id)}
             className={cn(
               "relative h-9 rounded-full px-3 text-sm sm:px-4 font-medium transition-colors duration-150",
               active ? "text-accent-ink" : "text-muted hover:text-ink",

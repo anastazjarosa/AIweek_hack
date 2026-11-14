@@ -3,10 +3,10 @@ import Link from "next/link";
 import { ConceptPreview } from "@/components/concept-preview";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
-import { profiles } from "@/lib/data";
+import { dimensions } from "@/lib/dimensions";
 
 const steps = [
-  { title: "Tell us how you learn", body: "Pick what you already know works, or take a 2-minute check. No diagnosis needed." },
+  { title: "Tell us how you learn", body: "Rate 8 short statements, or set four sliders yourself. No labels, just how you work." },
   { title: "Upload your course", body: "Lecture slides, textbook chapters, coursework briefs. Drop in whatever your module gives you." },
   { title: "Study your way", body: "Notes, flashcards and quizzes in the shape that suits you. Switch any time." },
 ];
@@ -41,7 +41,7 @@ export default function Landing() {
                 Get started <ArrowRight />
               </Link>
             </Button>
-            <p className="mt-4 text-sm text-muted">For ADHD, dyslexia, autism, or just strong preferences.</p>
+            <p className="mt-4 text-sm text-muted">Set four needs your way: focus, processing, planning and structure.</p>
           </div>
           <div className="lg:col-span-7">
             <ConceptPreview />
@@ -51,26 +51,19 @@ export default function Landing() {
         <section className="border-t border-line">
           <div className="mx-auto max-w-[1180px] px-6 py-20">
             <h2 className="mb-12 max-w-xl text-3xl font-light tracking-[-0.02em]">
-              Built around three ways of thinking. Useful to anyone who studies differently.
+              Four needs, any mix. Every adaptation follows how you set them.
             </h2>
-            <div className="grid gap-px overflow-hidden rounded-3xl border border-line bg-line md:grid-cols-3">
-              {profiles
-                .filter((p) => p.id !== "standard")
-                .map((p) => (
-                  <div key={p.id} className="bg-surface p-8">
-                    <p className="mb-1 text-xl font-medium">{p.label}</p>
-                    <p className="mb-5 text-accent">{p.short}</p>
-                    <p className="mb-6 leading-relaxed text-muted">{p.promise}</p>
-                    <ul className="space-y-2 border-t border-line pt-5 text-sm">
-                      {p.adaptations.map((a) => (
-                        <li key={a} className="flex gap-2.5">
-                          <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent" />
-                          {a}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+            <div className="grid gap-px overflow-hidden rounded-3xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+              {dimensions.map((d) => (
+                <div key={d.key} className="bg-surface p-8">
+                  <p className="mb-4 text-xl font-medium">{d.label}</p>
+                  <p className="mb-6 leading-relaxed text-muted">&ldquo;{d.statements[0]}&rdquo;</p>
+                  <p className="border-t border-line pt-5 text-sm">
+                    <span className="mb-1 block text-accent">When it&rsquo;s high</span>
+                    {d.high}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -110,7 +103,7 @@ export default function Landing() {
       <footer className="border-t border-line">
         <div className="mx-auto flex max-w-[1180px] flex-col justify-between gap-4 px-6 py-8 text-sm text-muted sm:flex-row">
           <Logo />
-          <p>Not a diagnostic tool. A study tool that listens to how you work.</p>
+          <p>A study tool that adapts to how you work.</p>
           <p>© 2026 Neura · Hackathon demo</p>
         </div>
       </footer>

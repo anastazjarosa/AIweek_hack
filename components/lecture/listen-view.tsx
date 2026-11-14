@@ -5,11 +5,11 @@ import { AudioBar } from "@/components/audio-bar";
 import { WithTerms } from "@/components/term";
 import { lecture } from "@/lib/data";
 
-export function DyslexiaView() {
+export function ListenView() {
   return (
     <div className="-mx-6 rounded-[32px] bg-cream px-6 py-10 sm:mx-0 sm:px-12 sm:py-14">
       <div className="mx-auto max-w-[62ch]">
-        <p className="mb-2 text-base text-muted">{lecture.module} · 12 minutes to listen</p>
+        <p className="mb-2 text-base text-muted">{lecture.moduleShort} · {lecture.minutes} minutes to listen</p>
         <h1 className="mb-6 text-5xl font-light tracking-[-0.02em]">{lecture.title}</h1>
         <div className="mb-4 flex items-center gap-2 text-base font-medium">
           <Headphones className="h-4 w-4 text-accent" /> Listen to the whole lecture
