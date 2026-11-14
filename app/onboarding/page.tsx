@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, SlidersHorizontal, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ConsentGate } from "@/components/consent-gate";
 import { Logo } from "@/components/logo";
 import { ScoreBars } from "@/components/score-bars";
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,8 @@ export default function Onboarding() {
         <Logo />
         <span className="text-sm text-muted">How you like to learn</span>
       </header>
+      {/* Consent comes before the student shares anything about how they learn. */}
+      <ConsentGate />
       <main className="flex flex-1 items-start justify-center px-6 pt-8 pb-16 sm:pt-16">
         <div className="w-full max-w-[640px]">
           <AnimatePresence mode="wait" initial={false}>
@@ -53,8 +56,12 @@ export default function Onboarding() {
             >
               {stage === "choose" && (
                 <div>
+                  <p className="mb-3 text-sm font-medium text-accent">Optional head start</p>
                   <h1 className="mb-3 text-4xl font-light tracking-[-0.02em]">How do you learn best?</h1>
-                  <p className="mb-10 text-lg text-muted">Two ways in. Both take less than two minutes.</p>
+                  <p className="mb-10 text-lg text-muted">
+                    Mosaic learns from what you do, so you can skip this. Answering gives it a head start; you can change
+                    everything later.
+                  </p>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <ChoiceCard
                       icon={<Sparkles />}
@@ -69,6 +76,12 @@ export default function Onboarding() {
                       onClick={() => router.push("/preferences")}
                     />
                   </div>
+                  <button
+                    onClick={() => router.push("/dashboard")}
+                    className="mt-6 inline-flex items-center gap-1.5 text-[15px] font-medium text-accent underline-offset-4 hover:underline"
+                  >
+                    Skip: learn from what I do <ArrowRight className="h-4 w-4" />
+                  </button>
                 </div>
               )}
 

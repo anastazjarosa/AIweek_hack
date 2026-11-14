@@ -7,6 +7,8 @@ import { AppShell } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { clearEvents, replaceEvents, useEvents } from "@/lib/learner/events";
+import { LearningMix } from "@/components/learner/learning-mix";
+import { detectPatterns } from "@/lib/learner/patterns";
 import { computeProfile, demoHistory, type Confidence } from "@/lib/learner/profile";
 import { topics } from "@/lib/learner/topics";
 import { useHydrated, useProfile } from "@/lib/profile";
@@ -19,6 +21,7 @@ export default function LearningProfilePage() {
   const hydrated = useHydrated();
   const profile = useMemo(() => computeProfile(events), [events]);
   const { scores, setScores } = useProfile();
+  const detected = useMemo(() => detectPatterns(profile), [profile]);
 
   return (
     <AppShell crumb="What works for me" showLayout={false}>
@@ -49,6 +52,14 @@ export default function LearningProfilePage() {
         </Card>
       ) : (
         <>
+          <section aria-labelledby="mix" className="mb-12">
+            <h2 id="mix" className="mb-1 text-xl font-medium">
+              Your learning mix
+            </h2>
+            <p className="mb-4 text-sm text-muted">Patterns in how you learn, not labels. Most people show a few, and they change over time.</p>
+            <LearningMix detected={detected} />
+          </section>
+
           <section aria-labelledby="signals" className="mb-12">
             <h2 id="signals" className="mb-4 text-xl font-medium">
               What we&rsquo;ve noticed

@@ -18,7 +18,9 @@ import {
   type Direction,
   type SimSpec,
 } from "@/lib/sim/spec";
-import { logEvent } from "@/lib/learner/events";
+import { logEvent, useEvents } from "@/lib/learner/events";
+import { detectPatterns, explainMode } from "@/lib/learner/patterns";
+import { computeProfile } from "@/lib/learner/profile";
 import { topicForTemplate } from "@/lib/learner/topics";
 import type { Feedback } from "@/lib/sim/ai-spec";
 import type { FeedbackResponse } from "@/lib/sim/api-types";
@@ -85,6 +87,11 @@ export function SimLab({ spec, backHref = "/lab" }: { spec: SimSpec; backHref?: 
   };
   // Learning profile: what the student did in this experiment (stored only in this browser).
   const topic = topicForTemplate(spec.template);
+  // The explain step follows the student's learning pattern, worked out from their other activity
+  // (this experiment's own events are left out, so the page doesn't change under them).
+  const allEvents = useEvents();
+  const mode = useMemo(() => explainMode(detectPatterns(computeProfile(allEvents.filter((e) => !("sim" in e) || e.sim !== spec.id)))), [allEvents, spec.id]);
+  const deeper = visible.find((p) => p.id !== pred.param && !isChoice(p)) ?? visible.find((p) => p.id !== pred.param);
   const logExplanation = (wrote: boolean, ideas: number | null) =>
     logEvent({ t: "explanation", topic, sim: spec.id, wrote, ideas, total: spec.keyIdeas.length });
   const aiIdeas = coach.status === "ai" ? coach.feedback.ideas : null;
@@ -339,10 +346,31 @@ export function SimLab({ spec, backHref = "/lab" }: { spec: SimSpec; backHref?: 
                   <p className="mt-3 text-xs text-muted">Written by AI. It&rsquo;s feedback, not a mark.</p>
                 </div>
               )}
-              <div className="rounded-2xl bg-accent-soft p-5">
-                <p className="mb-1 text-sm font-medium text-accent">What&rsquo;s going on</p>
-                <p className="leading-relaxed">{spec.explanation}</p>
-              </div>
+              {mode !== "standard" && (
+                <p className="flex flex-wrap items-center gap-2 text-sm text-muted">
+                  <span className="rounded-full bg-accent-soft px-2.5 py-0.5 font-medium text-accent">Shaped for you</span>
+                  {mode === "quick" ? "Key ideas first, because you like getting to the point." : "The full why, plus a challenge, because you like to dig deeper."}
+                  <Link href="/profile" className="font-medium text-accent underline-offset-4 hover:underline">
+                    Why?
+                  </Link>
+                </p>
+              )}
+              {/* Quick-answer learners see the key ideas first and the full explanation on demand. */}
+              <div className={cn("flex gap-5", mode === "quick" ? "flex-col-reverse" : "flex-col")}>
+              {mode === "quick" ? (
+                <details className="group rounded-2xl bg-accent-soft p-5">
+                  <summary className="cursor-pointer list-none text-sm font-medium text-accent">
+                    <span className="group-open:hidden">Read the full explanation</span>
+                    <span className="hidden group-open:inline">What&rsquo;s going on</span>
+                  </summary>
+                  <p className="mt-2 leading-relaxed">{spec.explanation}</p>
+                </details>
+              ) : (
+                <div className="rounded-2xl bg-accent-soft p-5">
+                  <p className="mb-1 text-sm font-medium text-accent">What&rsquo;s going on</p>
+                  <p className="leading-relaxed">{spec.explanation}</p>
+                </div>
+              )}
               <div>
                 <p className="mb-3 font-medium">
                   {aiIdeas ? "Ideas in your explanation" : explain.trim() && coach.status !== "loading" ? "Tick the ideas your answer included" : "The key ideas"}
@@ -399,6 +427,26 @@ export function SimLab({ spec, backHref = "/lab" }: { spec: SimSpec; backHref?: 
                   })}
                 </ul>
               </div>
+              </div>
+              {mode === "deep" && deeper && (
+                <div className="rounded-2xl p-5 ring-1 ring-accent/40">
+                  <p className="mb-1 text-sm font-medium text-accent">Go deeper</p>
+                  <p className="mb-3 leading-relaxed">
+                    Now change <span className="font-medium">{deeper.label.toLowerCase()}</span> instead. Before you run it: what do you
+                    think happens to {metric.label.toLowerCase()}, and why?
+                  </p>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                      setStep("Run");
+                      setRevealed(false);
+                    }}
+                  >
+                    Test my idea
+                  </Button>
+                </div>
+              )}
               <p className="text-sm text-muted">
                 Added to{" "}
                 <Link href="/profile" className="font-medium text-accent underline-offset-4 hover:underline">

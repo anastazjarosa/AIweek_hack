@@ -15,6 +15,7 @@ export function LectureView() {
   const hydrated = useHydrated();
   return (
     <AppShell
+      showLayout
       crumb={
         <span>
           <Link href="/dashboard" className="hover:text-ink">
