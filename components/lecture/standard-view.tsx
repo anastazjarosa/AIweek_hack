@@ -7,6 +7,7 @@ import { QuizOption, optionState } from "@/components/lecture/quiz-option";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { lecture } from "@/lib/data";
+import { sessionActions, useSession } from "@/lib/screentime/session";
 import { cn } from "@/lib/utils";
 
 const tabs = ["Notes", "Flashcards", "Quiz"] as const;
@@ -40,6 +41,9 @@ export function StandardView() {
 }
 
 function Notes() {
+  // After a weak recall check, the "tutor" switches to the short-sentence version.
+  const session = useSession();
+  const simplify = !!session?.simplify && session.phase !== "done";
   return (
     <div className="grid gap-10 lg:grid-cols-12">
       <nav className="hidden lg:col-span-3 lg:block">
@@ -54,10 +58,23 @@ function Notes() {
         </ul>
       </nav>
       <article className="max-w-[68ch] space-y-10 lg:col-span-9">
+        {simplify && (
+          <p className="rounded-2xl bg-accent-soft px-5 py-3 text-sm text-accent">
+            Simpler wording is on after your last recall check. It switches off when the session ends.
+          </p>
+        )}
         {lecture.sections.map((s) => (
           <section key={s.id} id={s.id} className="scroll-mt-24">
             <h2 className="mb-3 text-2xl font-medium">{s.title}</h2>
-            <p className="leading-relaxed text-ink/85">{s.body}</p>
+            {simplify ? (
+              <ul className="space-y-2 text-lg leading-relaxed">
+                {s.points.map((p) => (
+                  <li key={p}>{p}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="leading-relaxed text-ink/85">{s.body}</p>
+            )}
           </section>
         ))}
       </article>
@@ -116,7 +133,10 @@ function Quiz() {
                 key={o}
                 label={o}
                 state={optionState(picks[qi], oi, q.answer)}
-                onClick={() => setPicks((p) => p.map((x, k) => (k === qi ? oi : x)))}
+                onClick={() => {
+                  setPicks((p) => p.map((x, k) => (k === qi ? oi : x)));
+                  sessionActions.reportAnswer(oi === q.answer);
+                }}
               />
             ))}
           </div>

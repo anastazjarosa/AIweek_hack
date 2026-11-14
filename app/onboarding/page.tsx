@@ -30,7 +30,7 @@ const traitsFor: Record<ProfileId, string[]> = {
 
 export default function Onboarding() {
   const router = useRouter();
-  const { setProfile, setTraits, traits } = useProfile();
+  const { setProfile, setTraits, setPicked: savePicked, traits } = useProfile();
   const [stage, setStage] = useState<Stage>("choose");
   const [picked, setPicked] = useState<ProfileId[]>([]);
   const [qi, setQi] = useState(0);
@@ -42,6 +42,7 @@ export default function Onboarding() {
     const t = Array.from(new Set(picked.flatMap((p) => traitsFor[p]))).slice(0, 4);
     setPrimary(first);
     setProfile(first);
+    savePicked(picked.length ? picked : ["standard"]);
     setTraits(t);
     setStage("result");
   };
@@ -62,8 +63,11 @@ export default function Onboarding() {
     });
     const top = (Object.keys(score) as ProfileId[]).sort((a, b) => score[b] - score[a])[0];
     const t = [...traitCount.entries()].sort((a, b) => b[1] - a[1]).map(([k]) => k).slice(0, 4);
+    // Every profile scoring at least half the top score shapes the screen-time needs.
+    const strong = (Object.keys(score) as ProfileId[]).filter((k) => score[k] > 0 && score[k] >= score[top] / 2);
     setPrimary(top);
     setProfile(top);
+    savePicked(strong);
     setTraits(t);
     setStage("result");
   };

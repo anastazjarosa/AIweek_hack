@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { lecture } from "@/lib/data";
+import { sessionActions } from "@/lib/screentime/session";
 
 const SPRINT = 5 * 60;
 const cards = lecture.sections;
@@ -33,6 +34,7 @@ export function AdhdView() {
 
   const pick = (oi: number) => {
     setPicked(oi);
+    sessionActions.reportAnswer(oi === card.check.answer);
     if (oi === card.check.answer) setFirstTry((n) => n + 1);
   };
   const next = () => {

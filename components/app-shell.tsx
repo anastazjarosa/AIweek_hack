@@ -1,10 +1,12 @@
 "use client";
 
-import { BookOpen, LayoutGrid, Upload, UserRound } from "lucide-react";
+import { BarChart3, BookOpen, LayoutGrid, Timer, Upload, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "@/components/logo";
 import { ProfileSwitcher } from "@/components/profile-switcher";
+import { SessionLayer } from "@/components/session/session-layer";
+import { sessionActions, useSession } from "@/lib/screentime/session";
 import { user } from "@/lib/data";
 import { useProfile } from "@/lib/profile";
 import { cn } from "@/lib/utils";
@@ -13,12 +15,15 @@ const nav = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutGrid },
   { href: "/dashboard#modules", label: "My modules", icon: BookOpen },
   { href: "/dashboard#upload", label: "Upload", icon: Upload },
+  { href: "/summary", label: "Screen time", icon: BarChart3 },
   { href: "/onboarding", label: "Profile", icon: UserRound },
 ];
 
 export function AppShell({ children, crumb }: { children: React.ReactNode; crumb?: React.ReactNode }) {
   const pathname = usePathname();
   const { profile, setProfile } = useProfile();
+  const session = useSession();
+  const canStart = !session || ["idle", "done"].includes(session.phase);
   return (
     <div className="flex min-h-screen">
       <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-line px-4 py-6 md:flex">
@@ -27,7 +32,7 @@ export function AppShell({ children, crumb }: { children: React.ReactNode; crumb
         </div>
         <nav className="space-y-1">
           {nav.map(({ href, label, icon: Icon }, i) => {
-            const active = i === 0 && (pathname === "/dashboard" || pathname.startsWith("/lecture"));
+            const active = i === 0 ? pathname === "/dashboard" || pathname.startsWith("/lecture") : pathname === href;
             return (
               <Link
                 key={label}
@@ -57,13 +62,22 @@ export function AppShell({ children, crumb }: { children: React.ReactNode; crumb
         <div className="sticky top-0 z-30 border-b border-line bg-canvas/90 backdrop-blur">
           <div className="mx-auto flex max-w-[1120px] flex-wrap items-center justify-between gap-3 px-6 py-3">
             <div className="text-sm text-muted">{crumb}</div>
-            <div className="flex items-center gap-3">
-              <span className="hidden text-sm text-muted sm:inline">Viewing as</span>
+            <div className="flex flex-wrap items-center gap-3">
+              {canStart && (
+                <button
+                  onClick={sessionActions.openSetup}
+                  className="inline-flex h-11 items-center gap-2 rounded-full bg-accent px-4 text-sm font-medium text-accent-ink hover:bg-[#185a49]"
+                >
+                  <Timer className="h-4 w-4" /> Start focus session
+                </button>
+              )}
+              <span className="hidden text-sm text-muted lg:inline">Viewing as</span>
               <ProfileSwitcher id="app" value={profile} onChange={setProfile} />
             </div>
           </div>
         </div>
-        <main className="mx-auto w-full max-w-[1120px] flex-1 px-6 py-10">{children}</main>
+        <main className="mx-auto w-full max-w-[1120px] flex-1 px-6 py-10 pb-32">{children}</main>
+        <SessionLayer />
       </div>
     </div>
   );

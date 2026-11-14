@@ -46,5 +46,8 @@
   | Upload processing | work happening on *your* file | steps tick in sequence, bar fills | drop/select file | steps still tick, no slide |
   | ADHD feedback | instant feedback | colour change 150ms | answer | instant colour |
   | ADHD sprint complete | small reward | check scales 0.8→1, ring of dots | last card done | static check |
+  | Break overlay opens | you are stepping away | 400ms fade over the page | block ends / break accepted | instant |
+  | Walk-and-listen dim | the screen is not for now | background fades to near-black, 700ms | task type | instant colour |
+  | Break suggestion / warning toast | the app noticed, gently | 200ms rise and fade | struggle trigger / warning point | instant |
 - **References.** Technique only: Linear's restraint in type sizes and 1px rules; Headspace's
   warm, soft surfaces. No layouts or copy taken.

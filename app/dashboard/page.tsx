@@ -14,7 +14,7 @@ import { useProfile } from "@/lib/profile";
 type Added = { id: number; title: string };
 
 export default function Dashboard() {
-  const { profile, traits } = useProfile();
+  const { profile, traits, needs } = useProfile();
   const [added, setAdded] = useState<Added[]>([]);
   const total = todaysPlan.reduce((n, s) => n + s.minutes, 0);
   const p = profiles.find((x) => x.id === profile)!;
@@ -82,6 +82,12 @@ export default function Dashboard() {
             <p className="mb-1 text-sm text-muted">Studying as</p>
             <p className="mb-3 font-medium">
               {p.label} · <span className="font-normal text-muted">{p.short}</span>
+            </p>
+            <p className="mb-3 text-sm text-muted">
+              Focus <span className="text-ink capitalize">{needs.focus}</span> · Info intake{" "}
+              <span className="text-ink capitalize">{needs.info_intake}</span> · Organising{" "}
+              <span className="text-ink capitalize">{needs.organising}</span> · Predictability{" "}
+              <span className="text-ink capitalize">{needs.predictability}</span>
             </p>
             {traits.length > 0 && (
               <div className="flex flex-wrap gap-2">

@@ -1,0 +1,36 @@
+{
+  "focus_block_minutes": { "low": 20, "medium": 15, "high": 10 },
+  "short_break_minutes": 5,
+  "long_break_minutes": 15,
+  "long_break_every_blocks": 3,
+  "final_task_minutes": 5,
+  "daily_cap_minutes_default": 90,
+  "warnings_seconds_before_break": {
+    "always": [120],
+    "predictability_high": [300, 30]
+  },
+  "struggle": {
+    "wrong_in_a_row": 3,
+    "idle_seconds": 90,
+    "idle_events_per_block": 2,
+    "replays_same_content": 3,
+    "snoozes_per_block": 1,
+    "snooze_minutes": 3
+  },
+  "recall": { "questions": 2, "shorten_by_minutes": 5, "min_block_minutes": 5 },
+  "task_types": ["teach_back", "paper_sketch", "walk_and_listen", "move_and_recall", "real_world_link"],
+  "task_weights": {
+    "base": { "teach_back": 1, "paper_sketch": 1, "walk_and_listen": 1, "move_and_recall": 1, "real_world_link": 1 },
+    "focus": { "move_and_recall": 3, "walk_and_listen": 2 },
+    "info_intake": { "walk_and_listen": 3, "teach_back": 2 },
+    "organising": { "teach_back": 2, "move_and_recall": 2, "paper_sketch": -3 }
+  },
+  "need_multiplier": { "low": 0, "medium": 0.5, "high": 1 },
+  "profile_needs": {
+    "adhd": { "focus": "high", "info_intake": "low", "organising": "high", "predictability": "low" },
+    "dyslexia": { "focus": "low", "info_intake": "high", "organising": "medium", "predictability": "low" },
+    "autism": { "focus": "low", "info_intake": "medium", "organising": "medium", "predictability": "high" },
+    "standard": { "focus": "low", "info_intake": "low", "organising": "low", "predictability": "low" }
+  },
+  "demo": { "speed": 20, "idle_seconds": 6 }
+}

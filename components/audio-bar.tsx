@@ -2,10 +2,24 @@
 
 import { Pause, Play } from "lucide-react";
 import { useEffect, useState } from "react";
+import { sessionActions } from "@/lib/screentime/session";
 import { cn } from "@/lib/utils";
 
 /** Fake audio player: no sound, just a believable playing state. */
-export function AudioBar({ seconds, label, className }: { seconds: number; label?: string; className?: string }) {
+export function AudioBar({
+  seconds,
+  label,
+  className,
+  contentId,
+  dark = false,
+}: {
+  seconds: number;
+  label?: string;
+  className?: string;
+  /** When set, each play counts towards replay-based struggle detection. */
+  contentId?: string;
+  dark?: boolean;
+}) {
   const [playing, setPlaying] = useState(false);
   const [t, setT] = useState(0);
 
@@ -31,6 +45,7 @@ export function AudioBar({ seconds, label, className }: { seconds: number; label
         type="button"
         onClick={() => {
           if (t >= seconds) setT(0);
+          if (!playing && contentId) sessionActions.reportReplay(contentId);
           setPlaying((p) => !p);
         }}
         aria-label={playing ? `Pause ${label ?? "audio"}` : `Listen to ${label ?? "this section"}`}
@@ -45,13 +60,13 @@ export function AudioBar({ seconds, label, className }: { seconds: number; label
           return (
             <span
               key={i}
-              className={cn("w-[3px] rounded-full transition-colors duration-200", filled ? "bg-accent" : "bg-ink/15")}
+              className={cn("w-[3px] rounded-full transition-colors duration-200", filled ? "bg-accent" : dark ? "bg-white/20" : "bg-ink/15")}
               style={{ height: `${h}%` }}
             />
           );
         })}
       </div>
-      <span className="text-sm tabular-nums text-muted">
+      <span className={cn("text-sm tabular-nums", dark ? "text-white/50" : "text-muted")}>
         {fmt(t)} / {fmt(seconds)}
       </span>
     </div>

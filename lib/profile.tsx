@@ -2,11 +2,13 @@
 
 import { useSyncExternalStore } from "react";
 import type { Interest, ProfileId } from "@/lib/data";
+import { needsFor } from "@/lib/screentime/engine";
 
-type State = { profile: ProfileId; interest: Interest; traits: string[] };
+/** profile = layout shown; picked = profiles chosen in onboarding, which drive screen-time needs. */
+type State = { profile: ProfileId; interest: Interest; traits: string[]; picked: ProfileId[] };
 
 const KEY = "neura-profile-v1";
-const DEFAULT: State = { profile: "standard", interest: "trains", traits: [] };
+const DEFAULT: State = { profile: "standard", interest: "trains", traits: [], picked: [] };
 
 // Tiny external store. localStorage is demo persistence only: it survives a refresh mid-pitch.
 let state: State | null = null;
@@ -39,6 +41,8 @@ export function useProfile() {
   const s = useSyncExternalStore(subscribe, read, () => DEFAULT);
   return {
     ...s,
+    needs: needsFor(s.picked.length ? s.picked : [s.profile]),
+    setPicked: (picked: ProfileId[]) => write({ picked }),
     setProfile: (profile: ProfileId) => write({ profile }),
     setInterest: (interest: Interest) => write({ interest }),
     setTraits: (traits: string[]) => write({ traits }),

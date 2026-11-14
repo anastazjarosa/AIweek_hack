@@ -21,7 +21,7 @@ export function DyslexiaView() {
           {lecture.sections.map((s) => (
             <section key={s.id}>
               <h2 className="mb-5 text-3xl font-medium tracking-[-0.01em]">{s.title}</h2>
-              <AudioBar seconds={s.minutes * 45} label={s.title} className="mb-7" />
+              <AudioBar seconds={s.minutes * 45} label={s.title} contentId={s.id} className="mb-7" />
               <ul className="space-y-5 text-xl leading-[1.9] tracking-[0.015em] [word-spacing:0.08em]">
                 {s.points.map((pt) => (
                   <li key={pt} className="flex gap-4">
