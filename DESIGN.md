@@ -51,6 +51,8 @@
   | Sprint complete | small reward | check scales 0.8→1, ring of dots | last card done | static check |
   | Break overlay opens | you are stepping away | 400ms fade over the page | block ends / break accepted | instant |
   | Walk-and-listen dim | the screen is not for now | background fades to near-black, 700ms | task type | instant colour |
-  | Break suggestion / warning toast | the app noticed, gently | 200ms rise and fade | struggle trigger / warning point | instant |
+  | Spacing lab run | the experiment happening | curve draws left to right, 600ms ease-out | Run | line appears at once |
+| Skim suggestion | the app noticed how you read | 200ms rise and fade, light card (break cards are dark) | skim score ≥ 0.7 | instant |
+| Break suggestion / warning toast | the app noticed, gently | 200ms rise and fade | struggle trigger / warning point | instant |
 - **References.** Technique only: Linear's restraint in type sizes and 1px rules; Headspace's
   warm, soft surfaces. No layouts or copy taken.

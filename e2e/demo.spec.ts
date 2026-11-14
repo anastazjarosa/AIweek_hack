@@ -26,8 +26,43 @@ test("onboarding scores pick the calmer layout and drive the lecture", async ({ 
   await expect(page.getByText("Spread sessions over days", { exact: true }).first()).toBeVisible();
 });
 
+test("spacing lab runs predict, run and explain", async ({ page }) => {
+  await page.goto("/lecture/memory");
+  await page.getByRole("link", { name: /Try it: spacing lab/ }).click();
+
+  await page.getByRole("radio", { name: "All 3 in one evening" }).click();
+  await page.getByRole("button", { name: /Run the experiment/ }).click();
+
+  await page.getByLabel(/Days between sessions/).fill("3");
+  await page.getByRole("button", { name: "Run" }).click();
+  await expect(page.getByText(/Your plan: 84% remembered on test day\. One evening: 43%/)).toBeVisible();
+
+  await page.getByRole("button", { name: /Explain it/ }).click();
+  await expect(page.getByText(/The experiment says spreading out wins/)).toBeVisible();
+  await page.getByLabel(/why does spreading out help/).fill("You forget a little in the gap so recalling takes effort");
+  await page.getByRole("button", { name: "Check my explanation" }).click();
+  await expect(page.getByText(": you mentioned this")).toHaveCount(2);
+});
+
+test("skimming the notes offers Sprints, and accepting switches layout", async ({ page }) => {
+  await page.goto("/lecture/memory");
+  await expect(page.getByRole("tab", { name: "Notes", selected: true })).toBeVisible();
+
+  const card = page.getByRole("dialog", { name: "Layout suggestion" });
+  for (let i = 0; i < 20 && !(await card.isVisible()); i++) {
+    await page.mouse.move(600, 400);
+    await page.mouse.wheel(0, 350);
+    await page.waitForTimeout(150);
+  }
+  await expect(card).toContainText("You’re moving through the notes quickly.");
+
+  await card.getByRole("button", { name: "Try Sprints" }).click();
+  await expect(page.getByRole("radio", { name: "Sprints" })).toHaveAttribute("aria-checked", "true");
+  await expect(page.getByText(/Sprint 1/)).toBeVisible();
+});
+
 test("no condition labels appear on the main pages", async ({ page }) => {
-  for (const path of ["/", "/onboarding", "/dashboard", "/preferences", "/lecture/memory"]) {
+  for (const path of ["/", "/onboarding", "/dashboard", "/preferences", "/lecture/memory", "/lecture/memory/lab"]) {
     await page.goto(path);
     await expect(page.locator("body")).not.toContainText(/adhd|dyslexi|autis|dyspraxi/i);
   }

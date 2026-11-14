@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { LectureTitle } from "@/components/lecture/lecture-view";
 import { QuizOption, optionState } from "@/components/lecture/quiz-option";
+import { SkimSuggestion } from "@/components/lecture/skim-suggestion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { lecture } from "@/lib/data";
@@ -49,6 +50,7 @@ function Notes() {
   const simplify = !!session?.simplify && session.phase !== "done";
   return (
     <div className="grid gap-10 lg:grid-cols-12">
+      <SkimSuggestion simplify={simplify} />
       <nav className="hidden lg:col-span-3 lg:block">
         <ul className="sticky top-24 space-y-2 text-sm">
           {lecture.sections.map((s) => (

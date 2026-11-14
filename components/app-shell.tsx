@@ -19,7 +19,16 @@ const nav = [
   { href: "/preferences", label: "How I like to learn", icon: UserRound },
 ];
 
-export function AppShell({ children, crumb }: { children: React.ReactNode; crumb?: React.ReactNode }) {
+export function AppShell({
+  children,
+  crumb,
+  showLayout = true,
+}: {
+  children: React.ReactNode;
+  crumb?: React.ReactNode;
+  /** The lecture layout switch; hidden on pages it doesn't change. */
+  showLayout?: boolean;
+}) {
   const pathname = usePathname();
   const { view, setView } = useProfile();
   const session = useSession();
@@ -71,8 +80,12 @@ export function AppShell({ children, crumb }: { children: React.ReactNode; crumb
                   <Timer className="h-4 w-4" /> Start focus session
                 </button>
               )}
-              <span className="hidden text-sm text-muted lg:inline">Layout</span>
-              <ViewSwitcher id="app" value={view} onChange={setView} />
+              {showLayout && (
+                <>
+                  <span className="hidden text-sm text-muted lg:inline">Layout</span>
+                  <ViewSwitcher id="app" value={view} onChange={setView} />
+                </>
+              )}
             </div>
           </div>
         </div>

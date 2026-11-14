@@ -30,7 +30,13 @@ Open http://localhost:3000. Run tests with `npm test`.
    - **Listen**: cream page, larger text, play button per section, key terms explained.
    - **Structured**: fixed numbered layout, what you'll learn and what's next, interest examples.
    - **Standard**: key ideas, notes, flashcards, quiz, concept map, references.
-7. **How I like to learn** (`/preferences`): edit the four sliders, format (audio/visual/text),
+   - **Skim to see it adapt**: in Standard → Notes, scroll quickly past 3 or more sections. A card
+     says what it noticed ("about 3 s on sections that take about 24 s to read") and offers
+     **Try Sprints** or **No thanks**. It never switches on its own.
+7. **Spacing lab** (`/lecture/memory/lab`, "Try it" card at the top of every layout): predict
+   which study plan remembers more, run it (days between sessions, re-read or self-test), then
+   explain why. Set 3 days apart: 84% a week later vs 43% for one evening.
+8. **How I like to learn** (`/preferences`): edit the four sliders, format (audio/visual/text),
    voice input and calm theme, or load a demo persona.
 
 ## How needs drive the app
@@ -76,6 +82,8 @@ Next.js (App Router), TypeScript, Tailwind CSS v4, shadcn/ui-style components
 - `lib/dimensions.ts`: the four needs, levels, onboarding statements, layout choice, personas.
 - `lib/data.ts`: other mock data and the adapter from the seed to the lecture views.
 - `components/lecture/`: the four lecture layouts.
+- `lib/lab/spacing.ts`: the spacing lab's illustrative memory model and explanation word check.
+- `lib/adapt.ts`: the skim signal (reading time vs text length) behind the Sprints suggestion.
 - `lib/screentime/`: screen-time rules (JSON), engine and tests, break planner, session store.
 - `components/session/`: focus ring, setup dialog, break overlay, recall screen.
 - `DESIGN.md`: the design plan. `DECISIONS.md`: what was decided and why.

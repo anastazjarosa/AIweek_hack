@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight, FlaskConical } from "lucide-react";
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { ListenView } from "@/components/lecture/listen-view";
@@ -25,6 +26,7 @@ export function LectureView() {
         </span>
       }
     >
+      <LabEntry />
       {!hydrated ? (
         <div className="min-h-[60vh]" />
       ) : (
@@ -44,6 +46,23 @@ export function LectureView() {
       </AnimatePresence>
       )}
     </AppShell>
+  );
+}
+
+/** Same for every layout: the hands-on version of the forgetting-curve and spacing slides. */
+function LabEntry() {
+  return (
+    <Link
+      href={`/lecture/${lecture.slug}/lab`}
+      className="group mb-8 flex items-center gap-4 rounded-2xl bg-surface px-5 py-4 ring-1 ring-line transition-colors duration-150 hover:ring-accent"
+    >
+      <FlaskConical className="h-5 w-5 shrink-0 text-accent" />
+      <span className="flex-1">
+        <span className="font-medium">Try it: spacing lab</span>
+        <span className="block text-sm text-muted">Predict, run and explain how study timing changes what you remember. 2 minutes.</span>
+      </span>
+      <ArrowRight className="h-4 w-4 shrink-0 text-muted transition-transform duration-150 group-hover:translate-x-0.5" />
+    </Link>
   );
 }
 
