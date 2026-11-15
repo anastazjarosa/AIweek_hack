@@ -267,6 +267,24 @@ exams.
 when a course has hundreds of pages.
 **By:** owner request (Pip as coach, tones), implemented by agent
 
+### [arch] Teacher Studio: class misconceptions and AI experiment review
+**Decision:** `/teacher` has three tabs. **Class misconceptions** aggregates anonymous predictions
+per experiment (`lib/teacher/classroom.ts`): the browser sends only the experiment and the guess
+(`/api/class/events`), the engine works out the right answer server-side, no session or name is
+stored, and any experiment with fewer than 5 responses is hidden. **Questions for you** is Ana's
+escalation queue (answer, override, resume with guidance). **Experiment reviews**: every AI-built
+experiment is queued (`queueReview` in the generate route) with the engine's verification; the
+teacher approves, rewords (re-checked by `checkSpec`, and the verified answer can't change) or
+rejects with a note. A class setting holds AI experiments until approved; students wait on a
+screen that opens the experiment as soon as it is approved. Sample class and sample drafts are
+clearly labelled for demos.
+**Why:** Level 3 human-in-the-loop (inspect, guide, override, resume) and the teacher persona the
+brief names; misconceptions are visible before the exam, without exposing any student.
+**Instead of:** Per-student dashboards (privacy risk with under-18s).
+**To undo:** Remove the class event call in `SimLab` and the tabs. Rethink with real accounts:
+role-based access for teachers, durable storage, per-class groups.
+**By:** owner request, implemented by agent (escalation queue by Ana)
+
 ### Demo clock runs 20× by default
 A 10-minute block takes 30 seconds, a 5-minute break 15 seconds; idle is 6 real seconds in demo
 mode (90 s at real time). The setup dialog can switch to real time. Tune in `demo` in the

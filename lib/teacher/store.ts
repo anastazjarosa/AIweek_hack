@@ -71,7 +71,8 @@ export function listEscalations(session?: string): Escalation[] {
 }
 
 export function queueReview(question: string, spec: SimSpec): Review {
-  const existing = reviews.find((r) => r.spec.id === spec.id && r.question === question);
+  // Only merge with an item still waiting: a question asked again after a decision is reviewed again.
+  const existing = reviews.find((r) => r.status === "pending" && r.spec.id === spec.id && r.question === question);
   if (existing) return existing;
   const item: Review = { id: id("r"), at: Date.now(), question, spec, status: "pending" };
   reviews.unshift(item);
@@ -90,4 +91,20 @@ export function decideReview(rid: string, status: "approved" | "rejected", note?
 
 export function listReviews(): Review[] {
   return [...reviews];
+}
+
+export function getReview(rid: string): Review | null {
+  return reviews.find((x) => x.id === rid) ?? null;
+}
+
+/** The parts of an AI experiment a teacher may reword. The model, sliders and prediction stay as verified. */
+export const EDITABLE = ["title", "intro", "explanation", "keyIdeas", "misconception", "realWorld"] as const;
+export type ReviewEdits = Partial<Pick<SimSpec, (typeof EDITABLE)[number]>> & { predictionPrompt?: string };
+
+/** Applies a teacher's wording edits; returns the edited spec input for checkSpec. */
+export function applyEdits(spec: SimSpec, edits: ReviewEdits): Record<string, unknown> {
+  const next: Record<string, unknown> = { ...spec };
+  for (const k of EDITABLE) if (edits[k] !== undefined) next[k] = edits[k];
+  if (edits.predictionPrompt !== undefined) next.prediction = { ...spec.prediction, prompt: edits.predictionPrompt };
+  return next;
 }

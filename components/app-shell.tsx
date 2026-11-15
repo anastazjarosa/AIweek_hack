@@ -41,7 +41,7 @@ const groups: { label: string | null; items: Item[] }[] = [
   },
 ];
 const extras: Item[] = [
-  { href: "/teacher", label: "Teacher review", icon: MessagesSquare, match: (p) => p === "/teacher" },
+  { href: "/teacher", label: "Teacher Studio", icon: MessagesSquare, match: (p) => p === "/teacher" },
   { href: "/wardrobe", label: "Pip’s wardrobe", icon: Shirt, match: (p) => p === "/wardrobe" },
   { href: "/privacy", label: "Privacy", icon: ShieldCheck, match: (p) => p === "/privacy" },
 ];

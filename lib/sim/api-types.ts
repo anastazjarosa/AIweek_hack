@@ -8,7 +8,9 @@ export const EXPLANATION_MAX = 1200;
 
 export type GenerateResponse =
   /** The agent designed a new simulation. */
-  | { source: "ai"; spec: SimSpec }
+  | { source: "ai"; spec: SimSpec; reviewId?: string }
+  /** Built by the AI, waiting for a teacher's approval (class setting). Poll /api/sim/review/{id}. */
+  | { source: "pending"; reviewId: string; note: string }
   /** Offline, or the agent failed: the closest ready-made simulation. */
   | { source: "library"; spec: SimSpec; note: string }
   /** Nothing fits; `suggestion` is the closest ready-made one, if any. */

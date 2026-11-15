@@ -47,6 +47,11 @@
   Verified: 128 unit tests, 25 e2e (consent for under-18s and adults, privacy export and delete,
   dashboard plan, phone navigation without overflow).
 
+- Merged Ana's human-in-the-loop escalation queue and Jasmine's zodiac Pip avatars; `main` now
+  carries the whole app (2026-11-15).
+- Teacher Studio (2026-11-15): anonymous class misconceptions (k=5 threshold), AI experiment
+  review queue (approve, edit, reject; optional approval before students see them), and the
+  escalation queue. Verified: 183 unit tests, 44 e2e.
 - Pip, the Socratic coach (2026-11-15): "Ask Pip" on lectures and experiments. Grounded in the
   slides or the experiment, cites sources as clickable chips, hint ladder, check my thinking,
   escalates uncovered questions to the teacher, input and output guards, tones (friendly, funny,

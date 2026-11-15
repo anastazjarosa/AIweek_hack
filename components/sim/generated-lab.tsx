@@ -78,6 +78,7 @@ export function GeneratedLab({ question }: { question: string }) {
   }
 
   const r = state.result;
+  if (r.source === "pending") return <PendingReview reviewId={r.reviewId} note={r.note} question={question} trace={state.trace} />;
   if (r.source === "ai" || r.source === "library") {
     return (
       <div>
@@ -155,6 +156,77 @@ export function GeneratedLab({ question }: { question: string }) {
           </div>
         )}
       </Card>
+    </div>
+  );
+}
+
+type ReviewState = { status: "pending" | "approved" | "rejected"; note?: string; spec?: import("@/lib/sim/spec").SimSpec };
+
+/** Human in the loop, student side: wait for the lecturer, then open the approved (maybe edited) experiment. */
+function PendingReview({ reviewId, note, question, trace }: { reviewId: string; note: string; question: string; trace: Trace[] }) {
+  const [state, setState] = useState<ReviewState>({ status: "pending" });
+  useEffect(() => {
+    if (state.status !== "pending") return;
+    let active = true;
+    const check = async () => {
+      try {
+        const res = await fetch(`/api/sim/review/${reviewId}`, { headers: apiHeaders() });
+        if (res.ok && active) {
+          const data = (await res.json()) as ReviewState;
+          if (data.status !== "pending") setState(data);
+        }
+      } catch {}
+    };
+    void check();
+    const t = window.setInterval(() => void check(), 3000);
+    return () => {
+      active = false;
+      window.clearInterval(t);
+    };
+  }, [reviewId, state.status]);
+
+  if (state.status === "approved" && state.spec) {
+    return (
+      <div>
+        <p role="status" className="mx-auto mb-6 flex max-w-3xl items-start gap-3 rounded-2xl bg-accent-soft px-5 py-3 text-[15px]">
+          <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
+          <span>
+            <span className="font-medium">Approved by your lecturer.</span> Built by the AI, checked by the engine and reviewed by a human.
+            {state.note ? ` Note: ${state.note}` : ""}
+          </span>
+        </p>
+        <SimLab spec={state.spec} />
+      </div>
+    );
+  }
+  return (
+    <div className="mx-auto max-w-3xl">
+      <BackLink />
+      <h1 className="mb-6 text-3xl font-light tracking-[-0.02em] sm:text-4xl">&ldquo;{question}&rdquo;</h1>
+      <Card className="p-6 sm:p-8" aria-live="polite">
+        {state.status === "rejected" ? (
+          <>
+            <p className="mb-2 text-lg font-medium">Your lecturer didn&rsquo;t approve this one.</p>
+            <p className="mb-6 text-ink/80">{state.note}</p>
+            <Button asChild>
+              <Link href="/lab">Try another experiment</Link>
+            </Button>
+          </>
+        ) : (
+          <>
+            <p className="mb-2 flex items-center gap-2 text-lg font-medium">
+              <Loader2 className="h-5 w-5 animate-spin text-accent motion-reduce:animate-none" aria-hidden /> Your lecturer is checking this experiment
+            </p>
+            <p className="mb-2 text-ink/80">{note}</p>
+            <p className="text-sm text-muted">It opens here automatically as soon as it&rsquo;s approved.</p>
+          </>
+        )}
+      </Card>
+      {trace.length > 0 && (
+        <Card className="mt-4">
+          <TraceList trace={trace} />
+        </Card>
+      )}
     </div>
   );
 }

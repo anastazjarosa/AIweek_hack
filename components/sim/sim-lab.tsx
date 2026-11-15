@@ -75,6 +75,7 @@ export function SimLab({ spec, backHref = "/lab" }: { spec: SimSpec; backHref?: 
       const data = (await res.json()) as FeedbackResponse;
       if (data.source === "ai") {
         setCoach({ status: "ai", text, feedback: data.feedback });
+        shareWithClass({ kind: "explanation", covered: data.feedback.ideas.filter(Boolean).length, possible: spec.keyIdeas.length });
         logExplanation(true, data.feedback.ideas.filter(Boolean).length);
       } else {
         setCoach({ status: "offline" });
@@ -88,6 +89,11 @@ export function SimLab({ spec, backHref = "/lab" }: { spec: SimSpec; backHref?: 
   const compare = () => {
     setRevealed(true);
     if (explain.trim()) void askCoach(explain.trim());
+  };
+  /** Anonymous class signal for the teacher's misconception view: no name, no session id. */
+  const shareWithClass = (data: Record<string, unknown>) => {
+    const ref = findSim(spec.id) ? { simId: spec.id } : { spec };
+    void fetch("/api/class/events", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ ...ref, ...data }) }).catch(() => {});
   };
   // Learning profile: what the student did in this experiment (stored only in this browser).
   const topic = topicForTemplate(spec.template);
@@ -204,6 +210,7 @@ export function SimLab({ spec, backHref = "/lab" }: { spec: SimSpec; backHref?: 
               <Button
                 onClick={() => {
                   if (outcome) logEvent({ t: "prediction", topic, sim: spec.id, correct: guess === outcome.answer });
+                  shareWithClass({ kind: "prediction", guess });
                   setStep("Run");
                 }}
               >

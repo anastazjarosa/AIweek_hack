@@ -6,6 +6,8 @@ import { clientKey, createLimiter } from "@/lib/ai/rate-limit";
 import { designSim, type TraceEvent } from "@/lib/ai/sim-agent";
 import { QUESTION_MAX, type GenerateResponse } from "@/lib/sim/api-types";
 import { closestSim } from "@/lib/sim/match";
+import { getSettings } from "@/lib/teacher/classroom";
+import { queueReview } from "@/lib/teacher/store";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
@@ -46,9 +48,15 @@ async function produce(q: string, client: string, emit: Emit): Promise<{ body: G
 
   try {
     const r = await designSim(q, askDesign, emit);
+    // Human in the loop: every AI experiment goes to the teacher's review queue.
+    const review = r.kind === "ai" ? queueReview(q, r.spec) : null;
+    const held = review && getSettings().requireApproval;
+    if (held) emit({ step: "result", ok: true, text: "Sent to your lecturer for approval before you see it" });
     const body: GenerateResponse =
-      r.kind === "ai"
-        ? { source: "ai", spec: r.spec }
+      r.kind === "ai" && review
+        ? held
+          ? { source: "pending", reviewId: review.id, note: "Your lecturer reviews AI-built experiments before the class uses them." }
+          : { source: "ai", spec: r.spec, reviewId: review.id }
         : r.kind === "none"
           ? { source: "none", reason: r.reason, suggestion: closestSim(q) }
           : offline(q, "The AI couldn't build that one, so here is the closest ready-made experiment.", emit);
