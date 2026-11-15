@@ -4,6 +4,7 @@ import { ConceptPreview } from "@/components/concept-preview";
 import { LearningLoop } from "@/components/home/learning-loop";
 import { DropTest } from "@/components/landing/drop-test";
 import { LearnerShowcase } from "@/components/landing/learner-showcase";
+import { RotatingWord } from "@/components/landing/rotating-word";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import type { LoopStage } from "@/lib/home";
@@ -66,20 +67,23 @@ export default function Landing() {
 
       <main className="flex-1">
         {/* Hero: the product proves itself in the first ten seconds. */}
-        <section className="relative mx-auto grid max-w-[1180px] items-center gap-12 px-5 pt-8 pb-20 sm:px-6 lg:grid-cols-12 lg:pt-16">
+        <section className="relative mx-auto grid max-w-[1180px] items-start gap-12 px-5 pt-8 pb-20 sm:px-6 lg:grid-cols-12 lg:pt-16">
           <div aria-hidden className="pointer-events-none absolute -top-10 right-0 -z-10 h-[520px] w-[520px] rounded-full bg-glow/30 blur-3xl" />
-          <div className="lg:col-span-5">
+          <div className="lg:col-span-5 lg:pt-10">
             <p className="mb-5 inline-flex items-center gap-2 rounded-full bg-surface/70 px-3 py-1.5 text-sm text-ink ring-1 ring-line">
               <Sparkles className="h-3.5 w-3.5 text-accent" aria-hidden /> No labels. No quiz about your brain.
             </p>
-            <h1 className="mb-6 text-[44px] leading-[1.03] font-light tracking-[-0.035em] sm:text-6xl">
-              It learns how you learn.
+            <h1 className="mb-6 text-[44px] leading-[1.05] font-light tracking-[-0.035em] sm:text-6xl">
+              Every lesson,
               <br />
-              <span className="text-accent">Then teaches that way.</span>
+              shaped for
+              <br />
+              <RotatingWord words={["deep divers.", "quick learners.", "listeners.", "hands-on minds.", "you."]} />
             </h1>
             <p className="mb-8 max-w-md text-lg leading-relaxed text-ink/75">
-              Deep diver or quick answers, hands-on or listener: Mosaic notices from what you do, then reshapes every lesson,
-              experiment and study plan to fit. Try a lesson on the right.
+              Mosaic notices how you learn from what you do, then reshapes every lesson, experiment and study plan to fit.
+              Start with Galileo&rsquo;s famous question <span className="hidden lg:inline">on the right</span>
+              <span className="lg:hidden">below</span>.
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <Button asChild size="lg">

@@ -3,16 +3,16 @@ import { expect, test } from "@playwright/test";
 // The redesigned front door and home: one clear next step, the loop, grouped navigation.
 test("the landing hero is a working experiment: no air, then with air", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /It learns how you learn\.\s*Then teaches that way\./ })).toBeVisible();
-  await page.getByRole("radio", { name: "The heavy one" }).click();
+  await expect(page.getByRole("heading", { name: /Every lesson,\s*shaped for/ })).toBeVisible();
+  await page.getByRole("radio", { name: "Bowling ball" }).click();
   await page.getByRole("button", { name: /Drop them/ }).click();
   await expect(page.getByText("Surprised? Most people are. They land together.")).toBeVisible({ timeout: 10_000 });
   await expect(page.getByText(/Both take 2\.02 s/)).toBeVisible();
 
   await page.getByRole("button", { name: /Now add air/ }).click();
-  await page.getByRole("radio", { name: "The heavy one" }).click();
+  await page.getByRole("radio", { name: "Bowling ball" }).click();
   await page.getByRole("button", { name: /Drop them/ }).click();
-  await expect(page.getByText("You called it. The heavy ball wins.")).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByText("You called it. The bowling ball wins.")).toBeVisible({ timeout: 10_000 });
   await expect(page.getByRole("link", { name: /Build one for your own question/ })).toHaveAttribute("href", "/lab");
 });
 
