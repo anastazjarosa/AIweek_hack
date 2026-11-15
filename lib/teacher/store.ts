@@ -2,8 +2,34 @@
 // waiting for review. In memory, per server instance (a database in production).
 
 import type { SimSpec } from "@/lib/sim/spec";
+import type { CoachMode, Tone, Turn } from "@/lib/coach/coach";
+import type { CoachContext } from "@/lib/coach/sources";
+import type { PatternId } from "@/lib/learner/patterns";
 
-export type Escalation = { id: string; at: number; session: string; question: string; context: string; status: "open" | "answered"; answer?: string };
+export type EscalationTrigger = "high_stakes" | "ambiguous" | "circular" | "low_confidence" | "agent_requested";
+export type EscalationCheckpoint = {
+  history: Turn[];
+  contextData: CoachContext;
+  mode: CoachMode;
+  tone: Tone;
+  patterns: PatternId[];
+  sources: { id: string; title: string }[];
+  confidence: number;
+  draft?: string;
+};
+export type Escalation = {
+  id: string;
+  at: number;
+  session: string;
+  question: string;
+  context: string;
+  trigger: EscalationTrigger;
+  reason: string;
+  checkpoint: EscalationCheckpoint;
+  status: "open" | "answered";
+  answer?: string;
+  resolution?: { action: "answer" | "override" | "resume"; text: string; guidance?: string; at: number };
+};
 export type Review = { id: string; at: number; question: string; spec: SimSpec; status: "pending" | "approved" | "rejected"; note?: string };
 
 const escalations: Escalation[] = [];
@@ -18,12 +44,26 @@ export function escalate(e: Omit<Escalation, "id" | "at" | "status">): Escalatio
   return item;
 }
 
-export function answerEscalation(eid: string, answer: string): Escalation | null {
+export function getEscalation(eid: string): Escalation | null {
+  return escalations.find((x) => x.id === eid) ?? null;
+}
+
+export function resolveEscalation(
+  eid: string,
+  action: NonNullable<Escalation["resolution"]>["action"],
+  text: string,
+  guidance?: string,
+): Escalation | null {
   const e = escalations.find((x) => x.id === eid);
-  if (!e) return null;
+  if (!e || e.status !== "open") return null;
   e.status = "answered";
-  e.answer = answer;
+  e.answer = text;
+  e.resolution = { action, text, guidance, at: Date.now() };
   return e;
+}
+
+export function answerEscalation(eid: string, answer: string): Escalation | null {
+  return resolveEscalation(eid, "answer", answer);
 }
 
 export function listEscalations(session?: string): Escalation[] {

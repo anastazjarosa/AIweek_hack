@@ -38,6 +38,11 @@ describe("prompt", () => {
     expect(r).toMatch(/short, to-the-point/);
     expect(r).toContain("<student_message>\nwhy?\n</student_message>");
   });
+
+  it("adds reviewer guidance as a separate trusted context on resume", () => {
+    const r = coachRequest("why?", simSources.slice(0, 2), "ask", [], "friendly", "Explain the evidence about mass.");
+    expect(r).toContain("<teacher_guidance>\nExplain the evidence about mass.\n</teacher_guidance>");
+  });
 });
 
 describe("output guard", () => {

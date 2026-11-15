@@ -247,10 +247,17 @@ consent collected by the school, a data processing agreement with the AI provide
 (`lib/coach/sources.ts`, word overlap plus a small synonym list) → Claude streams a reply
 (`streamCoach`, effort low) or the offline coach answers from the best source → output guard
 (`checkReply`: drops invented citations, catches `[[ASK_TEACHER]]`, replaces any diagnosis talk) →
-escalation to the teacher queue (`lib/teacher/store.ts`). Every step is written to the agent log
-(`lib/ai/log.ts`) with the tab's session id (`x-mosaic-session`). The coach is Pip (the team's
-character): the button waves on hover, the face reacts, and three tones (friendly, funny, quest
-with XP) change delivery only; the rules sit in the fixed system prompt.
+escalation to the teacher queue (`lib/teacher/store.ts`). Escalations checkpoint the conversation,
+retrieval evidence and any unsent coach draft, and pause on unsupported or ambiguous questions,
+high-stakes grading/flagging requests, repeated questions, low retrieval confidence or the coach's
+own escalation marker. `/teacher` lets a human inspect that evidence, answer or override the coach,
+or add guidance and resume the turn; high-stakes decisions must be answered or overridden directly
+by the human. The student receives the reviewed response in the open coach.
+The demo queue is in memory and its reviewer surface is not role-authenticated; production needs
+durable storage and school authentication. Every step is written to the agent log (`lib/ai/log.ts`)
+with the tab's session id (`x-mosaic-session`). The coach is Pip (the team's character): the button
+waves on hover, the face reacts, and three tones (friendly, funny, quest with XP) change delivery
+only; the rules sit in the fixed system prompt.
 **Why:** Level 2 asks for a live loop, streaming, guardrails against hallucination and injection,
 and session tracking; the brief's own example is a coach that hints and cites without giving
 answers. Grounding plus citation checks make answers verifiable; offline mode covers outages before

@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, BarChart3, BookOpen, CalendarDays, FlaskConical, Home, Shirt, ShieldCheck, SlidersHorizontal, Timer } from "lucide-react";
+import { Activity, BarChart3, BookOpen, CalendarDays, FlaskConical, Home, MessagesSquare, Shirt, ShieldCheck, SlidersHorizontal, Timer } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ConsentGate } from "@/components/consent-gate";
@@ -41,6 +41,7 @@ const groups: { label: string | null; items: Item[] }[] = [
   },
 ];
 const extras: Item[] = [
+  { href: "/teacher", label: "Teacher review", icon: MessagesSquare, match: (p) => p === "/teacher" },
   { href: "/wardrobe", label: "Pip’s wardrobe", icon: Shirt, match: (p) => p === "/wardrobe" },
   { href: "/privacy", label: "Privacy", icon: ShieldCheck, match: (p) => p === "/privacy" },
 ];

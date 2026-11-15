@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowUp, BookOpen, Lightbulb, SearchCheck, X } from "lucide-react";
+import Link from "next/link";
 import { PipFigure, type PipFace } from "@/components/pip/pip-figure";
 import { useProfile } from "@/lib/profile";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -38,6 +39,8 @@ type Msg = {
   escalated?: boolean;
   offline?: boolean;
   pending?: boolean;
+  escalationId?: string;
+  humanReviewed?: boolean;
 };
 
 export type CoachTarget = { kind: "lecture" } | { kind: "sim"; spec: SimSpec; libraryId?: string };
@@ -101,6 +104,33 @@ function CoachDrawer({ target, onClose }: { target: CoachTarget; onClose: () => 
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
   }, [msgs]);
   useEffect(() => {
+    const waiting = msgs.filter((m) => m.role === "assistant" && m.escalationId && !m.humanReviewed).map((m) => m.escalationId!);
+    if (!waiting.length) return;
+    let active = true;
+    const poll = async () => {
+      for (const id of waiting) {
+        try {
+          const response = await fetch(`/api/teacher/escalations/${id}`, { headers: apiHeaders() });
+          if (!response.ok) continue;
+          const result = (await response.json()) as { status: string; answer?: string };
+          if (active && result.status === "answered" && result.answer) {
+            setMsgs((current) => current.map((message) => message.escalationId === id
+              ? { ...message, content: result.answer!, humanReviewed: true, pending: false }
+              : message));
+          }
+        } catch (error) {
+          console.error("[coach] Could not check human review status", error);
+        }
+      }
+    };
+    void poll();
+    const timer = window.setInterval(() => void poll(), 3000);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
+  }, [msgs]);
+  useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -136,7 +166,15 @@ function CoachDrawer({ target, onClose }: { target: CoachTarget; onClose: () => 
             const f = data as { text: string; citations: string[]; escalated: boolean; offline: boolean };
             patch({ content: f.text, citations: f.citations, escalated: f.escalated, offline: f.offline, pending: false });
             if (tone === "quest") setXp((v) => v + (mode === "check" ? 15 : mode === "hint" ? 5 : 10));
-          } else if (event === "escalated") patch({ escalated: true });
+          } else if (event === "interrupt") {
+            const interrupt = data as { id: string };
+            patch({
+              content: "Paused for human review. Your lecturer will review the question and the course evidence before the coach continues.",
+              escalated: true,
+              escalationId: interrupt.id,
+              pending: false,
+            });
+          }
         });
       }
     } catch {
@@ -250,7 +288,9 @@ function CoachDrawer({ target, onClose }: { target: CoachTarget; onClose: () => 
                 )}
                 {m.escalated && (
                   <p className="mt-2 rounded-2xl bg-mark/60 px-3 py-2 text-sm">
-                    <span className="font-medium">Sent to your lecturer.</span> This isn&rsquo;t covered in the material, so a human will answer it.
+                    <span className="font-medium">{m.humanReviewed ? "Reviewed by your lecturer." : "Paused for your lecturer."}</span>{" "}
+                    {m.humanReviewed ? "The human-reviewed response is shown above." : "A human reviewer can inspect the evidence and guide or override the coach."}{" "}
+                    {!m.humanReviewed && <Link href="/teacher" className="font-medium text-accent underline underline-offset-2">Open review queue</Link>}
                   </p>
                 )}
                 {m.offline && !m.pending && <p className="mt-1 text-xs text-muted">Offline coach: answered straight from the material.</p>}
