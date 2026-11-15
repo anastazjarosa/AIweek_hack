@@ -75,6 +75,7 @@ don't **know you**, and they can make things up.
 | Document | What's in it |
 |---|---|
 | [Pitch deck (PowerPoint)](docs/pitch-deck/Mosaic-pitch-deck.pptx) · [open in a browser](docs/pitch-deck/index.html) | The 12-slide, 5-minute pitch with speaker notes |
+| [Story gallery](docs/gallery/) | 12 images (3000×2000): the whole story on one image, then 11 chapters |
 | [Demo script](docs/demo-script.md) | The 3-minute live demo, step by step, with answers to likely judge questions |
 | [Decision log](docs/DECISIONS.md) | Every architecture and product decision: what we chose, why, what we rejected, and how to undo it |
 | [Architecture](docs/architecture.md) | The learning loop, the agents and guardrails, where data lives, and how it fails safely |
