@@ -1,148 +1,140 @@
+<div align="center">
+
 # Mosaic
 
-Hackathon demo: a study app that turns lecture slides and textbooks into notes, flashcards,
-quizzes and concept maps shaped around four learning needs: **Focus**, **Processing**,
-**Planning** and **Structure**. Any mix is allowed and adaptations stack. No labels.
+### Every lesson, shaped for the way you learn.
 
-No auth and no database. The Simulation Lab has two server routes that call Claude
-(`/api/sim/generate`, `/api/sim/feedback`); everything else runs in the browser. The demo module
-lives in `lib/seed/biol0104-history-of-life.json`; other mock data is in `lib/data.ts`. Lecture
-loading states are faked.
+**An AI study companion that teaches by doing, learns how you study from what you actually do,
+and plans your path to the exam, with teachers kept in the loop.**
+
+Built for **Reply Student Tech Clash 2026 · AI on Campus (London)**
+
+![Next.js](https://img.shields.io/badge/Next.js_16-black?logo=nextdotjs)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![Claude](https://img.shields.io/badge/Claude_Opus_5.5-D97757)
+![MCP](https://img.shields.io/badge/MCP_server-included-4B5563)
+![Tests](https://img.shields.io/badge/tests-183_unit_·_44_e2e-2E7D32)
+
+![Mosaic landing page: Galileo's tower drop, live](docs/screenshots/landing.png)
+
+</div>
+
+---
+
+## The problem
+
+Every student learns differently. Some need the *why*, some need the gist, some only get it once
+they've tried it, some would rather listen. Most study tools still teach everyone the same way,
+from the same wall of text, and nobody notices a misconception until the exam does.
+
+AI tools made this faster, not better: they summarise your notes, but they don't **teach**, they
+don't **know you**, and they can make things up.
+
+## What Mosaic does
+
+| | |
+|---|---|
+| 🧪 **Learn by doing** | Ask any science question and an AI agent builds an experiment for it: predict, run, explain. Six tested physics, chemistry and biology models with live canvas scenes: a cannon game on the Moon, a particle chamber, a predator–prey meadow. |
+| 🌱 **Knows you, without labels** | Mosaic watches what you *do* (focus span, skimming, depth, practice, weak topics) and finds your learning mix: deep diver, quick answers, hands-on, listener… Every finding shows its evidence. It never diagnoses. |
+| 🐣 **Pip, the Socratic coach** | Answers only from your lecture, cites the slide, gives hints instead of answers, and pauses for your lecturer when it isn't sure. Friendly, funny or 🎮 quest mode. |
+| 📅 **Plans your path** | Add exam dates; get a plan sized to your real focus span with extra time on weak topics, a 2-minute "tiny first step" for procrastinators, and a weekly check-in. |
+| 👩‍🏫 **Teacher Studio** | Anonymous class misconceptions ("64% predicted the heavy ball lands first"), questions Pip escalated, and a review queue to approve, edit or reject AI-built experiments before students see them. |
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/lab-cannon.png" alt="Cannon game on the Moon"><br><sub>Drag to aim. Physics from a tested model, on any planet.</sub></td>
+<td width="50%"><img src="docs/screenshots/lab-particles.png" alt="Particle chamber with a catalyst"><br><sub>Collision success follows the real Arrhenius equation.</sub></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/pip.png" alt="Pip the coach in quest mode"><br><sub>Pip cites the slide, hints instead of answering, earns XP.</sub></td>
+<td><img src="docs/screenshots/teacher-class.png" alt="Teacher Studio class misconceptions"><br><sub>Anonymous misconceptions; groups under 5 hidden.</sub></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/home.png" alt="Home: one next step and the learning loop"><br><sub>One next step, and the loop that connects everything.</sub></td>
+<td><img src="docs/screenshots/learners.png" alt="One lesson, every kind of learner"><br><sub>The same lesson, shaped for seven learning patterns.</sub></td>
+</tr>
+</table>
+
+## How it meets the brief
+
+| Brief asks for | In Mosaic |
+|---|---|
+| A real learning problem, "start with the problem" | One-size-fits-all teaching, and misconceptions found too late |
+| **L2** Live interaction loop, domain logic, state | Predict → run → explain on tested models; profile → lesson → results → plan loop |
+| **L2** Real-time streaming UI | Pip streams replies; the experiment builder streams each agent step live (SSE) |
+| **L2** Guardrails against hallucination and prompt injection | Input guard; retrieval grounding with citation checks; the engine verifies every AI answer key; output guard; "student text is data" |
+| **L2** Session tracking, clear API contracts, modular backend | Per-tab session ids, agent log, [documented API](docs/api.md), small modules with tests |
+| **L2** Production-minded | Error handling and offline fallbacks everywhere, rate limits, `.env.example`, 183 unit + 44 browser tests |
+| **L3** Multi-agent | Designer agent → engine verifier (sends work back) → teacher; coach agent with its own guards; MCP server |
+| **L3** Dynamic adaptation | Learning patterns reshape explanations ("key ideas first" vs "go deeper"), plans and Pip's replies |
+| **L3** Human-in-the-loop | Checkpointed pauses on high-stakes, ambiguous, circular or low-confidence questions; teachers answer, override or resume; approval gate for AI experiments |
+| Name the risks | Data stays on the device (export/delete), consent for under-18s, offline mode for outages before exams, no diagnosis ever |
+
+More: [architecture and guardrails](docs/architecture.md) · [API contract](docs/api.md) ·
+[decision log](docs/DECISIONS.md) · [3-minute demo script](docs/demo-script.md) ·
+[feature notes](docs/features.md)
+
+## Architecture
+
+```mermaid
+flowchart LR
+  S[Student] --> UI[Next.js app]
+  UI -->|question| G{Input guard}
+  G --> D["Designer agent<br/>(Claude, structured output)"]
+  D --> V{"Engine verifier<br/>6 tested models"}
+  V -- wrong answer key --> D
+  V --> RQ[Teacher review queue] --> UI
+  UI -->|ask Pip| C["Coach agent<br/>retrieval + citations"] --> OG{Output guard} --> UI
+  C -- not sure --> HQ[Escalation queue] --> T[Teacher Studio]
+  UI -. anonymous counts .-> T
+  D -. no key / API down .-> OFF[Offline fallbacks]
+```
 
 ## Run it
 
 ```bash
 npm install
-cp .env.example .env.local   # optional: add ANTHROPIC_API_KEY for live AI
-npm run dev
+cp .env.example .env.local    # optional: ANTHROPIC_API_KEY=… for live AI
+npm run dev                   # http://localhost:3000
 ```
 
-Open http://localhost:3000. Unit tests: `npm test`. Browser tests: `npm run test:e2e`.
+Without a key everything still works offline: experiments fall back to the closest ready-made
+one and Pip answers straight from the slides. Set `MOSAIC_AI=off` to force offline mode on stage.
 
-**AI and offline mode.** With `ANTHROPIC_API_KEY` set, "Ask for any experiment" on `/lab` has
-Claude (`claude-opus-5-5`) design a new simulation and gives AI feedback on explanations. Without a
-key, or with `MOSAIC_AI=off`, the app opens the closest ready-made experiment and uses a self-check
-instead. API failures fall back the same way, so the demo never gets stuck.
+| Command | What it does |
+|---|---|
+| `npm run check` | Typecheck, lint and unit tests |
+| `npm run test:e2e` | 44 browser journeys (Playwright) |
+| `npm run mcp` | The Simulation Lab as an MCP server (stdio) |
 
-**MCP server.** `npm run mcp` starts the Simulation Lab as an MCP server on stdio with four tools:
-`list_simulations`, `create_simulation` (question → experiment, via Claude when a key is set),
-`run_simulation` and `check_prediction`. Each experiment comes with an `open_url`
-(`/lab/s?d=…`) that opens it in the app. Claude Code picks it up from `.mcp.json`. For Claude
-Desktop, add to `claude_desktop_config.json` (use the absolute path to this folder):
+## Project layout
 
-```json
-{
-  "mcpServers": {
-    "mosaic-simulation-lab": {
-      "command": "npx",
-      "args": ["tsx", "C:/path/to/AIweek_hack/mcp/server.ts"],
-      "env": { "ANTHROPIC_API_KEY": "…", "MOSAIC_URL": "http://localhost:3000" }
-    }
-  }
-}
+```
+app/                 pages and API routes (api/sim, api/coach, api/teacher, api/class)
+components/          UI: sim/ (lab + live scenes), coach/ (Pip), teacher/, home/, landing/, lecture/, pip/
+lib/
+  sim/               simulation engine: templates (models), spec checks, library, share links
+  ai/                designer agent, prompts, input guard, Claude client, agent log, rate limit
+  coach/             Pip's retrieval, prompt, output guard
+  learner/           event log, behaviour-based profile, learning patterns
+  planner/           exam planner, habit coach, weekly check-in
+  teacher/           class insights, review and escalation stores, human-review triggers
+mcp/                 MCP server
+e2e/                 Playwright journeys
+docs/                architecture, API, decisions, design, demo script, screenshots
 ```
 
-Then ask Claude: "Build me an experiment about why heavier things don't fall faster, then check
-my guess that the heavy one lands first."
+## Privacy and safety
 
-## Demo click path (about 3 minutes)
+- **Never diagnoses.** No condition labels anywhere; every AI prompt carries the rule, and an output guard replaces any reply that breaks it.
+- **The student owns their data.** Profile, events and plans live in the browser; `/privacy` downloads or deletes everything.
+- **Consent first.** Under-18s confirm a parent or guardian agrees before using the app.
+- **Only what's needed reaches the AI:** the question, the retrieved course text, and the student's explanation. Never names, profiles or plans.
+- **Teachers see the class, not the child.** Counts only, and groups under 5 are hidden.
 
-The first app page asks for consent once (age band; under-18s confirm a parent or guardian
-agrees). `/privacy` shows what's stored, downloads it and deletes it.
+> Demo limits: teacher routes aren't role-authenticated and teacher data lives in server memory.
+> Production needs school sign-in and a database.
 
+## Team
 
-1. **Landing** (`/`): in the hero, click Sprints → Listen → Structured → Standard. The same slide
-   reshapes live. Then **Set up my layout**.
-2. **Sign in** (`/signin`): click **Sign in** or **Continue with Google**. No validation.
-3. **Onboarding** (`/onboarding`): **Rate 8 statements** on a 0–4 scale ("Not like me" to
-   "Very like me"). Two statements per need are averaged. Or **Set it myself** for sliders.
-4. **Dashboard** (`/dashboard`): your four need scores and live difficulty signals.
-5. **Upload**: drop any file on "Add course material" and watch the 3 processing steps.
-6. **Lecture** (BIOL0104 Lecture 3, "The story of life on Earth"): switch **Layout**:
-   - **Sprints**: timed cards, one idea each, a quick check with instant feedback.
-   - **Listen**: pale blue page, larger text, play button per section, key terms explained.
-   - **Structured**: fixed numbered layout, what you'll learn and what's next, interest examples.
-   - **Standard**: key ideas, notes, flashcards, quiz, concept map, references.
-   - **Skim to see it adapt**: in Standard → Notes, scroll quickly past 3 or more sections. A card
-     says what it noticed ("about 3 s on sections that take about 24 s to read") and offers
-     **Try Sprints** or **No thanks**. It never switches on its own.
-7. **Moth lab** (`/lecture/history-of-life/lab`, "Try it" card at the top of every layout):
-   predict how many peppered moths will be dark after 50 generations on sooty bark, run it
-   (bark darkness, birds on or off), then explain why. Sooty bark: 2% → 99% dark. No birds: stays 2%.
-   **Simulation Lab** (`/lab`, in the sidebar): 11 more experiments across physics, chemistry and
-   biology, all predict → run → explain. Try "Heavy ball, light ball": guess that the heavy ball
-   lands first, run 1 kg then **Set it for me** (10 kg), and both land at 2.02 s.
-   **Ask Pip** (on every lecture and experiment): Pip coaches with hints and cites the slide; try
-   "Give me a hint", the 🎮 Quest tone, or an off-topic question to see it go to the lecturer.
-   **Ask for any experiment** (top of `/lab`): type "Why don't heavier things fall faster?" and the
-   agent builds a new experiment. Write an explanation at the end for AI feedback.
-8. **What works for me** (`/profile`): the learning profile, built from behaviour (experiments,
-   quiz answers, reading speed, focus blocks). Click **Load a demo week** for a full profile:
-   focus about 10 minutes, learns by doing, weak on forces, practice improving. **Use this** applies
-   a suggestion; nothing changes on its own.
-9. **Study planner** (`/planner`): **Load demo exams and a demo week**. The plan sizes sessions to
-   the focus span and gives forces extra time; **Start with 2 minutes** is the procrastination
-   coach's tiny first step; the weekly check-in shows what improved and what's next.
-10. **How I like to learn** (`/preferences`): edit the four sliders, format (audio/visual/text),
-   voice input and calm theme, or load a demo persona.
-
-## How needs drive the app
-
-- Levels: 0–1 low, 2 medium, 3–4 high.
-- Lecture layout: the student's format setting wins; otherwise the highest "high" need picks
-  the layout (Focus → Sprints, Processing → Listen, Structure → Structured). Ties go to the
-  calmer layout (Structured, then Listen, then Sprints).
-- Stacking: high Processing adds audio to the Sprints and Structured layouts; screen-time rules
-  combine all four needs.
-
-## Adaptive screen time
-
-Focus blocks with breaks, off-screen tasks and a recall check. Rules live in
-`lib/screentime/screentime_rules.json`; decisions are in `DECISIONS.md`.
-
-### Test it with Persona A (high focus + high structure)
-
-1. **How I like to learn** → Demo personas → **Persona A**. (Or the Persona A button in the
-   session setup dialog.)
-2. Open the lecture and click **Start focus session**. Check: Focus high, Structure high;
-   10-minute blocks; heads-up at 5 min, 2 min and 30 s; the full schedule is shown. Keep
-   **Demo 20×** and start.
-3. The ring bottom-right counts down (30 real seconds), with heads-up toasts.
-4. Struggle triggers (any one): **I'm overloaded**; 3 wrong quiz answers in a row; no mouse
-   or keyboard for 6 s twice; or playing the same Listen section 3 times. Snooze once, then
-   **Take a break**.
-5. Break: the task is **Move and recall** (from the module's off-screen tasks). Switch to
-   **Walk and listen** to see the screen dim. Later breaks keep the task you chose.
-6. **I'm back** → 2-question recall quiz. Get one wrong: the next block is 5 minutes and
-   simpler wording turns on.
-7. **End session** → **Screen time**: screen vs off-screen time and the session log.
-
-## Stack
-
-Next.js (App Router), TypeScript, Tailwind CSS v4, shadcn/ui-style components
-(`components/ui`), lucide-react, Framer Motion, Vitest. Lexend font. Motion respects
-`prefers-reduced-motion` and the calm theme.
-
-## Where things are
-
-- `lib/seed/biol0104-history-of-life.json`: the demo module (slides, notes, quiz, map, tasks, references).
-- `lib/dimensions.ts`: the four needs, levels, onboarding statements, layout choice, personas.
-- `lib/data.ts`: other mock data and the adapter from the seed to the lecture views.
-- `components/lecture/`: the four lecture layouts.
-- `lib/lab/selection.ts`: the moth lab's illustrative natural-selection model and explanation word check.
-- `lib/sim/`: Simulation Lab. `templates.ts` holds six tested models (projectile, free fall, spring,
-  reaction rate, population growth, predators and prey); `spec.ts` validates a simulation spec and
-  works out the right answer to its prediction; `library.ts` holds the ready-made simulations;
-  `match.ts` is the offline question matcher. `components/sim/` renders any spec.
-- `lib/ai/`: the simulation agent. `prompts.ts` (built from the templates), `sim-agent.ts` (ask,
-  check, retry; unit tested with a fake model), `claude.ts` (the real API calls, server only).
-- `lib/learner/`: the event log (`events.ts`, browser only) and the behaviour-based profile
-  (`profile.ts`: focus, format, depth, pace, practice, weak topics, suggested changes).
-- `lib/planner/`: `plan.ts` (exam plan, habit detection, first steps, weekly check-in) and the
-  planner store.
-- `mcp/server.ts` + `lib/mcp/tools.ts`: the MCP server and its tools; `lib/sim/share.ts` builds
-  the `/lab/s?d=…` links.
-- `lib/adapt.ts`: the skim signal (reading time vs text length) behind the Sprints suggestion.
-- `lib/screentime/`: screen-time rules (JSON), engine and tests, break planner, session store.
-- `components/session/`: focus ring, setup dialog, break overlay, recall screen.
-- `DESIGN.md`: the design plan. `DECISIONS.md`: what was decided and why.
+Built at AI on Campus London 2026 by Abhinav Nair, Ana, Jasmine Barry and team.

@@ -141,12 +141,15 @@ function Preview({ id }: { id: PatternId }) {
             </div>
             <span className="w-14 text-right tabular-nums">10 kg</span>
           </div>
-          <svg viewBox="0 0 300 90" className="w-full" aria-label="Two identical fall curves: 1 kg and 10 kg land together at 2.02 seconds">
-            <path d="M10 10 Q 160 12 290 80" fill="none" strokeWidth="2" strokeDasharray="5 4" className="stroke-ink/30" />
-            <path d="M10 10 Q 160 12 290 80" fill="none" strokeWidth="3" className="stroke-accent" />
-            <circle cx="290" cy="80" r="5" className="fill-accent" />
-            <text x="286" y="68" textAnchor="end" fontSize="11" className="fill-accent">both land at 2.02 s</text>
-          </svg>
+          {/* The label sits in HTML so it stays readable at any width. */}
+          <div className="relative">
+            <svg viewBox="0 0 300 90" preserveAspectRatio="none" className="h-24 w-full" aria-label="Two identical fall curves: 1 kg and 10 kg land together at 2.02 seconds">
+              <path d="M10 10 Q 160 12 300 90" fill="none" strokeWidth="2" strokeDasharray="5 4" vectorEffect="non-scaling-stroke" className="stroke-ink/30" />
+              <path d="M10 10 Q 160 12 300 90" fill="none" strokeWidth="3" vectorEffect="non-scaling-stroke" className="stroke-accent" />
+            </svg>
+            <span className="absolute right-0 bottom-0 h-3 w-3 translate-x-1/2 translate-y-1/2 rounded-full bg-accent" aria-hidden />
+            <p className="absolute top-1 left-1 rounded-full bg-accent-soft px-3 py-1 text-sm font-medium text-accent">1 kg and 10 kg both land at 2.02 s</p>
+          </div>
         </div>
       );
     case "listener":

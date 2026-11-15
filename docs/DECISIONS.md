@@ -20,7 +20,7 @@
 - [arch] Consent gate (age band, guardian confirmation under 18) and a privacy page with export and delete; all data browser-only (2026-11-14)
 - [arch] Pip is the Socratic coach: retrieval-grounded, cites sources, hints not answers, escalates to the teacher; tones change delivery only (2026-11-15)
 - Demo clock runs 20× by default (2026-11-14)
-- Product renamed Mosaic; logo is a four-tile pinwheel (see DESIGN.md) (2026-11-14)
+- Product renamed Mosaic; logo is a four-tile pinwheel (see docs/DESIGN.md) (2026-11-14)
 - SimMind plan work continues on `feat/simmind` (branched from `feat/mosaic-demo` at the Simulation Lab commit); `feat/mosaic-demo` is left to its owner (2026-11-14)
 
 ---
