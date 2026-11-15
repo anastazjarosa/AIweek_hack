@@ -4,18 +4,20 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { PipFigure } from "@/components/pip/pip-figure";
 import { Button } from "@/components/ui/button";
-import { outfitLabel, type Colourway, type OutfitId, type PipMotion } from "@/lib/pip";
+import { outfitLabel, type Animal, type Colourway, type OutfitId, type PipMotion } from "@/lib/pip";
 
 /** Blind-box opening for an outfit earned by finishing a whole off-screen break. */
 export function OutfitReveal({
   outfit,
   colour,
+  animal,
   motion: level,
   onWear,
   onLater,
 }: {
   outfit: OutfitId;
   colour: Colourway;
+  animal: Animal;
   motion: PipMotion;
   onWear: () => void;
   onLater: () => void;
@@ -43,7 +45,7 @@ export function OutfitReveal({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.45, ease: [0.2, 0.9, 0.3, 1.2] }}
             >
-              <PipFigure colour={colour} outfit={outfit} face="joy" motion={level} size={140} />
+              <PipFigure colour={colour} animal={animal} outfit={outfit} face="joy" motion={level} size={140} />
             </motion.div>
           ) : (
             <motion.div
