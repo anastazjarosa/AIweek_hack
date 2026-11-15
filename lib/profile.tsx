@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import type { Interest } from "@/lib/data";
-import { DEFAULT_PIP, type PipPrefs } from "@/lib/pip";
+import { DEFAULT_PIP, normalisePip, type PipPrefs } from "@/lib/pip";
 import { DEFAULT_PREFS, ZERO, defaultView, needsFromScores, type Prefs, type Scores, type ViewId } from "@/lib/dimensions";
 
 /** scores drive every adaptation; view is the lecture layout (the student can override it). */
@@ -28,7 +28,7 @@ function read(): State {
       ...saved,
       scores: { ...DEFAULT.scores, ...saved.scores },
       prefs: { ...DEFAULT.prefs, ...saved.prefs },
-      pip: { ...DEFAULT_PIP, ...saved.pip },
+      pip: normalisePip(saved.pip),
     };
   } catch {
     state = DEFAULT;
