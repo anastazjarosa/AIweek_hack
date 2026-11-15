@@ -1,4 +1,4 @@
-import { Activity, ArrowRight, CalendarDays, Check, FlaskConical, Lock, ShieldCheck, Sparkles, X } from "lucide-react";
+import { Activity, ArrowRight, CalendarDays, Check, FlaskConical, Lock, Sparkles, X } from "lucide-react";
 import Link from "next/link";
 import { ConceptPreview } from "@/components/concept-preview";
 import { LearningLoop } from "@/components/home/learning-loop";
@@ -96,9 +96,6 @@ export default function Landing() {
               </a>
             </div>
             <ul className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted">
-              <li className="flex items-center gap-1.5">
-                <ShieldCheck className="h-4 w-4 text-accent" aria-hidden /> Never diagnoses
-              </li>
               <li className="flex items-center gap-1.5">
                 <Lock className="h-4 w-4 text-accent" aria-hidden /> Your data stays on your device
               </li>
