@@ -9,6 +9,8 @@ and plans your path to the exam, with teachers kept in the loop.**
 
 Built for **Reply Student Tech Clash 2026 · AI on Campus (London)**
 
+Demo Video: https://youtu.be/PVmlB1nq-j4
+
 ![Next.js](https://img.shields.io/badge/Next.js_16-black?logo=nextdotjs)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
 ![Claude](https://img.shields.io/badge/Claude_Opus_5.5-D97757)
