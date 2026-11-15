@@ -5,7 +5,22 @@ import { useReducedMotion } from "framer-motion";
 import { useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { PipFigure } from "@/components/pip/pip-figure";
-import { colourways, outfits, pipMotion, type Colourway, type OutfitId } from "@/lib/pip";
+import {
+  OFFERED_ANIMALS,
+  animalForYear,
+  animalLabel,
+  SWATCHES,
+  SWATCH_IDS,
+  colourways,
+  isCustomisable,
+  outfitSwatch,
+  outfits,
+  pipMotion,
+  type Animal,
+  type Colourway,
+  type OutfitId,
+  type SwatchId,
+} from "@/lib/pip";
 import { useHydrated, useProfile } from "@/lib/profile";
 import { cn } from "@/lib/utils";
 
@@ -31,7 +46,9 @@ export default function WardrobePage() {
             {hydrated && (
               <PipFigure
                 colour={pip.colour}
+                animal={pip.animal}
                 outfit={preview === "pip" ? pip.outfit : null}
+                outfitColour={outfitSwatch(pip, pip.outfit)}
                 mode={preview}
                 face="happy"
                 motion={motion}
@@ -63,6 +80,50 @@ export default function WardrobePage() {
         </section>
 
         <div className="space-y-10">
+          {OFFERED_ANIMALS.length > 1 && (
+          <section>
+            <h2 className="mb-1 text-lg font-medium">Animal</h2>
+            <p className="mb-4 max-w-[60ch] text-sm text-muted">
+              Pip is the animal from your birth year, like the zodiac. Type a year, or just pick any animal.
+            </p>
+            <label className="mb-4 flex items-center gap-3 text-[15px]">
+              Birth year
+              <input
+                type="number"
+                inputMode="numeric"
+                min={1900}
+                max={2100}
+                placeholder="e.g. 2003"
+                value={hydrated && pip.birthYear ? pip.birthYear : ""}
+                onChange={(e) => {
+                  const y = Number(e.target.value);
+                  if (Number.isInteger(y) && y >= 1900 && y <= 2100) setPip({ birthYear: y, animal: animalForYear(y) });
+                  else if (e.target.value === "") setPip({ birthYear: null });
+                }}
+                className="h-10 w-32 rounded-full bg-surface px-4 ring-1 ring-line focus-visible:ring-2 focus-visible:ring-accent"
+              />
+            </label>
+            <div role="radiogroup" aria-label="Pip's animal" className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6">
+              {OFFERED_ANIMALS.map((a: Animal) => (
+                <button
+                  key={a}
+                  role="radio"
+                  aria-checked={hydrated && pip.animal === a}
+                  onClick={() => setPip({ animal: a })}
+                  className={cn(
+                    "flex flex-col items-center gap-1 rounded-2xl bg-surface p-2 text-sm ring-1",
+                    hydrated && pip.animal === a ? "font-medium ring-2 ring-accent" : "ring-line hover:ring-ink/30",
+                  )}
+                >
+                  <PipFigure colour={pip.colour} animal={a} motion="none" size={56} />
+                  {animalLabel(a)}
+                </button>
+              ))}
+            </div>
+          </section>
+          )}
+
+          {Object.keys(colourways).length > 1 && (
           <section>
             <h2 className="mb-4 text-lg font-medium">Colour</h2>
             <div role="radiogroup" aria-label="Pip's colour" className="flex flex-wrap gap-3">
@@ -83,6 +144,7 @@ export default function WardrobePage() {
               ))}
             </div>
           </section>
+          )}
 
           <section>
             <h2 className="mb-4 text-lg font-medium">Outfits</h2>
@@ -92,6 +154,7 @@ export default function WardrobePage() {
                 selected={hydrated && pip.outfit === null}
                 onSelect={() => setPip({ outfit: null })}
                 colour={pip.colour}
+                animal={pip.animal}
                 outfit={null}
               />
               {outfits.map((o) =>
@@ -102,6 +165,8 @@ export default function WardrobePage() {
                     selected={pip.outfit === o.id}
                     onSelect={() => setPip({ outfit: o.id })}
                     colour={pip.colour}
+                    animal={pip.animal}
+                    swatch={outfitSwatch(pip, o.id)}
                     outfit={o.id}
                   />
                 ) : (
@@ -118,7 +183,30 @@ export default function WardrobePage() {
                 ),
               )}
             </div>
-          </section>
+            {hydrated && isCustomisable(pip.outfit) && (
+              <div className="mt-6">
+                <h3 className="mb-3 text-[15px] font-medium">
+                  Colour of the {outfits.find((o) => o.id === pip.outfit)!.label.toLowerCase()}
+                </h3>
+                <div role="radiogroup" aria-label="Outfit colour" className="flex flex-wrap gap-3">
+                  {SWATCH_IDS.map((id: SwatchId) => (
+                    <button
+                      key={id}
+                      role="radio"
+                      aria-checked={outfitSwatch(pip, pip.outfit) === id}
+                      aria-label={SWATCHES[id].label}
+                      title={SWATCHES[id].label}
+                      onClick={() => setPip({ outfitColours: { ...pip.outfitColours, [pip.outfit as OutfitId]: id } })}
+                      className={cn(
+                        "h-10 w-10 rounded-full ring-1 ring-black/10",
+                        outfitSwatch(pip, pip.outfit) === id && "ring-2 ring-offset-2 ring-offset-canvas ring-accent",
+                      )}
+                      style={{ background: SWATCHES[id].fill }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}          </section>
 
           <section>
             <h2 className="mb-2 text-lg font-medium">Pip in the corner</h2>
@@ -146,12 +234,16 @@ function OutfitTile({
   selected,
   onSelect,
   colour,
+  animal,
+  swatch,
   outfit,
 }: {
   label: string;
   selected: boolean;
   onSelect: () => void;
   colour: Colourway;
+  animal: Animal;
+  swatch?: SwatchId;
   outfit: OutfitId | null;
 }) {
   return (
@@ -164,8 +256,9 @@ function OutfitTile({
         selected ? "font-medium ring-2 ring-accent" : "ring-line hover:ring-ink/30",
       )}
     >
-      <PipFigure colour={colour} outfit={outfit} motion="none" size={76} />
+      <PipFigure colour={colour} animal={animal} outfit={outfit} outfitColour={swatch} motion="none" size={76} />
       {label}
     </button>
   );
 }
+
