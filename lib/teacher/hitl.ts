@@ -15,6 +15,8 @@ export function escalationDecision(input: {
   history: Turn[];
   sources: Source[];
   agentRequested?: boolean;
+  /** "hint" and "check" deliberately re-send the last question, so they never count as going in circles. */
+  mode?: "ask" | "hint" | "check";
 }): EscalationDecision {
   const hits = retrieve(input.sources, input.message, 3);
   const confidence = Math.min(1, (hits[0]?.score ?? 0) / 6);
@@ -27,7 +29,7 @@ export function escalationDecision(input: {
   }
 
   const current = normalise(input.message);
-  const repeated = current.length >= 12 && input.history
+  const repeated = (input.mode ?? "ask") === "ask" && current.length >= 12 && input.history
     .filter((turn) => turn.role === "user")
     .slice(-8)
     .some((turn) => normalise(turn.content) === current);

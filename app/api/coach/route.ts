@@ -91,7 +91,7 @@ export async function POST(req: Request) {
       if (!screen.ok) return finish(screen.reason, { blocked: true });
       if (!limit(clientKey(req.headers))) return finish("Lots of questions in a minute! Take a breath and try again shortly.");
 
-      const preflight = escalationDecision({ message: input.message, history: input.history, sources });
+      const preflight = escalationDecision({ message: input.message, history: input.history, sources, mode: input.mode });
       if (preflight) {
         const evidence = retrieve(sources, input.message, 3).map(({ source }) => ({ id: source.id, title: source.title }));
         interrupt(preflight, "", evidence);
@@ -118,7 +118,7 @@ export async function POST(req: Request) {
           },
         );
         log({ session, agent: "coach", event: `${input.mode}${live ? "" : " (offline)"}: ${checked.citations.length} citations${checked.dropped.length ? `, ${checked.dropped.length} invented dropped` : ""}${checked.replaced ? ", reply replaced by guard" : ""}`, detail: input.message.slice(0, 120) });
-        const decision = escalationDecision({ message: input.message, history: input.history, sources, agentRequested: checked.escalated });
+        const decision = escalationDecision({ message: input.message, history: input.history, sources, agentRequested: checked.escalated, mode: input.mode });
         if (decision) {
           interrupt(decision, draft, selectedSources);
         } else {

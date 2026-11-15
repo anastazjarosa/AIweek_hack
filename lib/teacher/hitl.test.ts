@@ -19,6 +19,12 @@ describe("human review triggers", () => {
     expect(escalationDecision({ message: "How do I repair a bicycle?", history: [], sources })?.trigger).toBe("low_confidence");
   });
 
+  it("doesn't treat the hint ladder as going in circles", () => {
+    const history = [{ role: "user" as const, content: "Why doesn't mass change the result?" }];
+    expect(escalationDecision({ message: "Why doesn't mass change the result?", history, sources, mode: "hint" })).toBeNull();
+    expect(escalationDecision({ message: "Why doesn't mass change the result?", history, sources, mode: "check" })).toBeNull();
+  });
+
   it("lets a grounded, ordinary learning question proceed", () => {
     expect(escalationDecision({ message: "Why doesn't mass change the result?", history: [], sources })).toBeNull();
   });
