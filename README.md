@@ -72,6 +72,7 @@ don't **know you**, and they can make things up.
 
 More: [architecture and guardrails](docs/architecture.md) · [API contract](docs/api.md) ·
 [decision log](docs/DECISIONS.md) · [3-minute demo script](docs/demo-script.md) ·
+[pitch deck (PowerPoint)](docs/pitch-deck/Mosaic-pitch-deck.pptx) · [pitch deck (open in a browser)](docs/pitch-deck/index.html) ·
 [feature notes](docs/features.md)
 
 ## Architecture

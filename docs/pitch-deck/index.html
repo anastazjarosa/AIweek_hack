@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mosaic pitch deck</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300..700&display=swap">
+<style>
+html, body { margin: 0; height: 100%; background: #14110e; overflow: hidden; }
+#stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: center; }
+#stage > section { position: absolute; inset: 0; width: 1920px; height: 1080px; display: none; }
+#stage > section.on { display: flex; }
+section aside { display: none; }
+h1, h2, h3, p { margin: 0; }
+ul { margin: 0; }
+table { border-collapse: collapse; }
+th, td { text-align: left; padding: 0.35em 0.6em; border-bottom: 1px solid rgba(154,71,16,0.25); }
+th { font-weight: 600; color: #2b2b2b; }
+.icon { display: inline-block; flex: none; width: 22px; height: 22px; margin-top: 10px; border-radius: 50%; background: currentColor; }
+.point .icon { color: #9a4710; }
+.step .icon { color: #e07a2e; width: 44px; height: 44px; }
+svg.arrow { flex: none; width: 40px; height: 20px; fill: #9a4710; }
+.loop svg.arrow { width: 56px; height: 28px; fill: #e07a2e; }
+#notes { position: fixed; left: 0; right: 0; bottom: 0; max-height: 30vh; overflow: auto; margin: 0; padding: 16px 24px;
+  background: rgba(20,17,14,0.92); color: #fff4ea; font: 18px/1.5 Lexend, Arial, sans-serif; display: none; }
+#hint { position: fixed; right: 16px; bottom: 12px; color: rgba(255,244,234,0.6); font: 14px Lexend, Arial, sans-serif; }
+:root {
+  --cream: #ffe8d6;
+  --paper: #fff6ee;
+  --ink: #2b2b2b;
+  --text: #4a3a2e;
+  --muted: #6e5847;
+  --accent: #9a4710;
+  --brand: #e07a2e;
+  --line: #f0cdb2;
+  --night: #221c17;
+  --night-text: #fff4ea;
+  --night-body: #e9d5c4;
+  --glow: #f7b27a;
+}
+
+/* Type scale: 120 / 72 / 32 / 28 / 24 */
+section {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Lexend', Arial, sans-serif;
+  padding: 128px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+section.paper { background: var(--paper); }
+section.dark { background: var(--night); color: var(--night-text); }
+
+.eyebrow { font-size: 24px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); }
+.dark .eyebrow { color: var(--glow); }
+
+h1 { font-size: 72px; font-weight: 500; line-height: 1.08; letter-spacing: -1.5px; color: var(--ink); }
+h2 { font-size: 72px; font-weight: 400; line-height: 1.1; letter-spacing: -1.5px; color: var(--ink); }
+.dark h1, .dark h2 { color: var(--night-text); }
+h3 { font-size: 32px; font-weight: 600; line-height: 1.2; color: var(--ink); }
+
+p { font-size: 32px; line-height: 1.4; color: var(--text); }
+.dark p { color: var(--night-body); }
+p.small { font-size: 24px; color: var(--muted); }
+.dark p.small { color: var(--night-body); }
+p.accentline { color: var(--glow); }
+.huge { font-size: 120px; font-weight: 400; line-height: 1.05; letter-spacing: -3px; }
+
+/* Text on one side, a screenshot on the other */
+.split { display: flex; gap: 72px; align-items: center; flex: 1; }
+.split-text { width: 690px; display: flex; flex-direction: column; gap: 28px; }
+.shot { border-radius: 24px; object-fit: contain; background: var(--paper); box-shadow: 0 30px 80px rgba(154, 71, 16, 0.28); }
+
+.points { display: flex; flex-direction: column; gap: 22px; }
+.point { display: flex; gap: 18px; align-items: flex-start; }
+.point x-icon { color: var(--accent); width: 36px; height: 36px; }
+.point p { width: 630px; }
+.dark .point x-icon { color: var(--glow); }
+
+.pills { display: flex; flex-wrap: wrap; gap: 12px; }
+.pill { font-size: 24px; font-weight: 500; padding: 10px 22px; border-radius: 40px; background: var(--paper); color: var(--accent); border: 2px solid var(--line); }
+
+/* Persona cards */
+.cards { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 24px; }
+.card { background: var(--paper); border-radius: 28px; padding: 36px; display: flex; flex-direction: column; gap: 14px; border: 2px solid var(--line); }
+.card .who { font-size: 24px; color: var(--muted); }
+.card .quote { font-size: 32px; line-height: 1.3; color: var(--ink); }
+.card.teacher { background: var(--ink); border-color: var(--ink); }
+.card.teacher h3 { color: var(--night-text); }
+.card.teacher .who { color: var(--night-body); }
+.card.teacher .quote { color: var(--glow); }
+
+/* The learning loop */
+.loop { display: flex; align-items: center; gap: 18px; }
+.step { width: 340px; box-sizing: border-box; background: var(--paper); border-radius: 28px; padding: 34px; display: flex; flex-direction: column; gap: 14px; border: 2px solid var(--line); }
+.step x-icon { color: var(--brand); width: 52px; height: 52px; }
+.step .what { font-size: 24px; color: var(--muted); }
+.loop x-shape { width: 56px; height: 28px; background: var(--brand); }
+
+/* Pipeline diagram */
+.flowrow { display: flex; flex-direction: column; gap: 16px; }
+.flow { display: flex; align-items: center; gap: 10px; }
+.node { width: 218px; box-sizing: border-box; background: var(--paper); border: 2px solid var(--line); border-radius: 20px; padding: 18px 20px; }
+.node p { font-size: 24px; line-height: 1.25; color: var(--ink); }
+.node.ai { background: var(--brand); border-color: var(--brand); }
+.node.guard { background: var(--ink); border-color: var(--ink); }
+.node.guard p { color: var(--night-text); }
+.flow x-shape { width: 40px; height: 20px; background: var(--accent); }
+.flowlabel { font-size: 24px; font-weight: 600; color: var(--accent); }
+.callout { background: var(--paper); border-radius: 24px; padding: 24px 32px; border: 2px solid var(--line); }
+.callout p { font-size: 28px; }
+
+/* Brief table */
+table.fit { font-size: 28px; color: var(--text); width: 1664px; }
+
+/* Arrival motion */
+.rise { animation: rise 600ms ease-out both; animation-delay: calc(var(--i, 0) * 120ms); }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(24px); }
+}
+
+</style>
+</head>
+<body>
+<div id="stage">
+<section id="cover" data-transition="fade">
+<div class="split">
+<div class="split-text">
+<p class="eyebrow">Reply Student Tech Clash 2026 · AI on Campus London</p>
+<h1 class="rise">Every lesson, shaped for the way you learn.</h1>
+<p class="rise" style="--i:1">Mosaic teaches by doing, learns how you study from what you actually do, and plans your path to the exam, with teachers kept in the loop.</p>
+<p class="small rise" style="--i:2">Mosaic · Abhinav Nair, Ana, Jasmine Barry and team</p>
+</div>
+<img class="shot rise" style="--i:2; width:900px; height:562px" src="../screenshots/landing.png" alt="Mosaic’s landing page: a bowling ball and a football falling from a tower, with a live stopwatch">
+</div>
+<aside>Hi, we’re team Mosaic. (Pause on the screenshot.) This is Galileo’s question, live on our landing page: which lands first, a bowling ball or a football? Most people get it wrong. In the next five minutes: why one-size-fits-all teaching fails, and how Mosaic fixes it.</aside>
+</section>
+<section id="problem" class="dark" style="justify-content:center">
+<p class="eyebrow">The problem</p>
+<h2 class="rise" style="width:1500px">Everyone learns differently. Most study tools still teach everyone the same way.</h2>
+<p class="accentline rise" style="--i:2; font-size:32px; width:1300px">And nobody spots a misconception until the exam does.</p>
+<p class="small rise" style="--i:3; width:1300px">AI made studying faster, not better: today’s tools summarise your notes, but they don’t teach, they don’t know you, and they can make things up.</p>
+<aside>Some students need the why. Some need the gist. Some only get it once they’ve tried it, some would rather listen. Yet almost every tool, AI or not, hands everyone the same wall of text. And a teacher only finds out what the class misunderstood when the exam marks come back.</aside>
+</section>
+<section id="people" class="paper">
+<p class="eyebrow">Who we designed for</p>
+<h2>Four people, four ways of learning</h2>
+<div class="cards">
+<div class="card rise"><h3>Amira</h3><p class="who">First-year biology · deep diver</p><p class="quote">“I need the why, at 11pm, without feeling stupid.”</p></div>
+<div class="card rise" style="--i:1"><h3>Jake</h3><p class="who">Leaves it late · quick answers</p><p class="quote">“Just tell me what I don’t know.”</p></div>
+<div class="card rise" style="--i:2"><h3>Priya</h3><p class="who">90-minute commute · listener</p><p class="quote">“Long text takes me ages. Let me hear it.”</p></div>
+<div class="card teacher rise" style="--i:3"><h3>Dr Okafor</h3><p class="who">Lecturer · 200 students</p><p class="quote">“I find out what they misunderstood in the exam. Too late.”</p></div>
+</div>
+<aside>These are our design personas. Amira is a deep diver studying in her second language. Jake wants the gist and leaves revision late. Priya would rather listen on her commute. And Dr Okafor, a lecturer with 200 students, only discovers misconceptions at exam time. Mosaic is built for all four at once.</aside>
+</section>
+<section id="idea">
+<p class="eyebrow">The idea</p>
+<h2>One loop that teaches, gets to know you, and plans</h2>
+<div class="loop">
+<div class="step rise"><span class="icon" aria-hidden="true"></span><h3>Knows you</h3><p class="what">Learns how you study from what you do. No labels.</p></div>
+<svg class="arrow" viewBox="0 0 40 20" aria-hidden="true"><path d="M0 6h26V0l14 10-14 10v-6H0z"/></svg>
+<div class="step rise" style="--i:1"><span class="icon" aria-hidden="true"></span><h3>Learn by doing</h3><p class="what">Experiments, lectures in your shape, and Pip the coach.</p></div>
+<svg class="arrow" viewBox="0 0 40 20" aria-hidden="true"><path d="M0 6h26V0l14 10-14 10v-6H0z"/></svg>
+<div class="step rise" style="--i:2"><span class="icon" aria-hidden="true"></span><h3>Shows weak spots</h3><p class="what">Predictions and answers reveal what didn’t click.</p></div>
+<svg class="arrow" viewBox="0 0 40 20" aria-hidden="true"><path d="M0 6h26V0l14 10-14 10v-6H0z"/></svg>
+<div class="step rise" style="--i:3"><span class="icon" aria-hidden="true"></span><h3>Plans your path</h3><p class="what">Exam plan sized to your focus, weak topics first.</p></div>
+</div>
+<p class="rise" style="--i:4">Every answer feeds back into the profile, so the next lesson fits a little better. Teachers see the class, never the child.</p>
+<aside>Mosaic is one loop. It gets to know you from behaviour, teaches by doing, shows what didn’t click, and plans your path to the exam. Then every result feeds back in. That loop is what makes it different from a tool you open once to summarise notes.</aside>
+</section>
+<section id="lab" class="paper" style="gap:28px">
+<p class="eyebrow">Learn by doing</p>
+<h2>Ask any science question. Get an experiment.</h2>
+<p style="width:1500px">The AI designs the experiment; a tested physics, chemistry or biology engine does the maths and checks the AI’s answer before you see it.</p>
+<div style="display:flex; gap:32px">
+<img class="shot rise" style="width:816px; height:470px" src="../screenshots/lab-cannon.png" alt="Cannon game on the Moon: a ball’s path from a cannon across a starry sky, landing at 250 metres">
+<img class="shot rise" style="--i:1; width:816px; height:470px; background:#221c17" src="../screenshots/lab-particles.png" alt="Particle chamber with a catalyst: particles colliding and 63% reacted">
+</div>
+<aside>Ask Mosaic any science question and an agent builds a predict, run, explain experiment for it. The trick: the AI never writes the physics. It chooses one of six tested models and the engine computes the answer, so a wrong answer key gets caught and sent back. Every model has a live scene. Left: drag to aim a cannon on the Moon. Right: a particle chamber where collisions follow the real Arrhenius equation.</aside>
+</section>
+<section id="knows">
+<div class="split">
+<div class="split-text">
+<p class="eyebrow">Knows you, without labels</p>
+<h2 class="rise">It learns how you learn from what you do.</h2>
+<p class="rise" style="--i:1">Focus span, skimming, depth, practice and weak topics become your learning mix. Every finding shows its evidence, and you can disagree.</p>
+<div class="pills rise" style="--i:2">
+<p class="pill">Deep diver</p><p class="pill">Quick answers</p><p class="pill">Hands-on</p><p class="pill">Listener</p><p class="pill">Fast mover</p><p class="pill">Practice-lover</p><p class="pill">Short bursts</p>
+</div>
+</div>
+<img class="shot rise" style="--i:1; width:880px; height:536px" src="../screenshots/learners.png" alt="The same lesson shaped for a hands-on learner: predict first, a slider, and the result">
+</div>
+<aside>No quiz about your brain. Mosaic watches what you actually do and finds your learning mix: a deep diver gets the full why and a challenge; a quick-answers person gets the key ideas first. Learning styles as fixed types aren’t supported by research, so we adapt to behaviour and results, show the evidence, and let students disagree.</aside>
+</section>
+<section id="pip" class="paper">
+<div class="split">
+<img class="shot rise" style="width:880px; height:550px" src="../screenshots/pip.png" alt="Pip the coach in quest mode, answering with a slide citation and a hint">
+<div class="split-text">
+<p class="eyebrow">Pip, the Socratic coach</p>
+<h2 class="rise">Hints, not answers.</h2>
+<div class="points">
+<div class="point rise" style="--i:1"><span class="icon" aria-hidden="true"></span><p>Answers only from your lecture and cites the slide</p></div>
+<div class="point rise" style="--i:2"><span class="icon" aria-hidden="true"></span><p>Guides with hints instead of giving the answer</p></div>
+<div class="point rise" style="--i:3"><span class="icon" aria-hidden="true"></span><p>Pauses for your lecturer when it isn’t sure</p></div>
+<div class="point rise" style="--i:4"><span class="icon" aria-hidden="true"></span><p>Friendly, funny or quest mode, with XP</p></div>
+</div>
+</div>
+</div>
+<aside>Meet Pip. Pip only answers from your own lecture, and every fact links to the slide it came from, so students can check. It gives hints, not answers. If a question isn’t covered, or it’s high stakes like grading, Pip pauses and hands it to the lecturer with a checkpoint. And students pick the tone: friendly, funny, or quest mode with XP.</aside>
+</section>
+<section id="plan">
+<div class="split">
+<div class="split-text">
+<p class="eyebrow">Plans your path</p>
+<h2 class="rise">Add exam dates. Get a plan that fits you.</h2>
+<div class="points">
+<div class="point rise" style="--i:1"><span class="icon" aria-hidden="true"></span><p>Sessions sized to your real focus span</p></div>
+<div class="point rise" style="--i:2"><span class="icon" aria-hidden="true"></span><p>Extra time on weak topics, review before each exam</p></div>
+<div class="point rise" style="--i:3"><span class="icon" aria-hidden="true"></span><p>A 2-minute first step for when starting is the hard part</p></div>
+<div class="point rise" style="--i:4"><span class="icon" aria-hidden="true"></span><p>Weekly check-in: what improved, what’s next</p></div>
+</div>
+</div>
+<img class="shot rise" style="--i:1; width:880px; height:550px" src="../screenshots/planner.png" alt="The study planner: a tiny first step, a weekly check-in and a plan by day">
+</div>
+<aside>Students add their exam dates and get a plan built around how long they actually focus, about ten minutes for this student, with extra sessions on the topic they keep missing. For procrastinators, the first step is just two minutes. And every week a check-in shows what improved and what’s next.</aside>
+</section>
+<section id="teacher" class="paper">
+<div class="split">
+<img class="shot rise" style="width:880px; height:550px" src="../screenshots/teacher-class.png" alt="Teacher Studio: class misconceptions, with 64% predicting the heavy ball lands first">
+<div class="split-text">
+<p class="eyebrow">Teacher Studio · human in the loop</p>
+<h2 class="rise">Teachers see the class, never the child.</h2>
+<div class="points">
+<div class="point rise" style="--i:1"><span class="icon" aria-hidden="true"></span><p>“64% predicted the heavy ball lands first”: fix it before the exam</p></div>
+<div class="point rise" style="--i:2"><span class="icon" aria-hidden="true"></span><p>Counts only; groups under 5 are hidden</p></div>
+<div class="point rise" style="--i:3"><span class="icon" aria-hidden="true"></span><p>Approve, edit or reject every AI-built experiment</p></div>
+<div class="point rise" style="--i:4"><span class="icon" aria-hidden="true"></span><p>Answer, override or resume the questions Pip paused</p></div>
+</div>
+</div>
+</div>
+<aside>This is Dr Okafor’s view. Before the lecture he sees that 64% of the class predicted the heavy ball lands first, so he can run that experiment live. It’s anonymous: counts only, and any group under five is hidden. He also reviews every AI-built experiment before students use it, and answers the questions Pip paused for a human.</aside>
+</section>
+<section id="guardrails" style="gap:32px">
+<p class="eyebrow">How it stays trustworthy</p>
+<h2>Built so the AI can’t quietly be wrong</h2>
+<div class="flowrow rise">
+<p class="flowlabel">Building an experiment</p>
+<div class="flow">
+<div class="node"><p>Student question</p></div><svg class="arrow" viewBox="0 0 40 20" aria-hidden="true"><path d="M0 6h26V0l14 10-14 10v-6H0z"/></svg>
+<div class="node guard"><p>Input guard: injection blocked</p></div><svg class="arrow" viewBox="0 0 40 20" aria-hidden="true"><path d="M0 6h26V0l14 10-14 10v-6H0z"/></svg>
+<div class="node ai"><p>Designer agent writes a spec, never code</p></div><svg class="arrow" viewBox="0 0 40 20" aria-hidden="true"><path d="M0 6h26V0l14 10-14 10v-6H0z"/></svg>
+<div class="node guard"><p>Engine verifier: fair test, sends wrong work back</p></div><svg class="arrow" viewBox="0 0 40 20" aria-hidden="true"><path d="M0 6h26V0l14 10-14 10v-6H0z"/></svg>
+<div class="node"><p>Teacher review (optional gate)</p></div><svg class="arrow" viewBox="0 0 40 20" aria-hidden="true"><path d="M0 6h26V0l14 10-14 10v-6H0z"/></svg>
+<div class="node"><p>Student runs it</p></div>
+</div>
+</div>
+<div class="flowrow rise" style="--i:1">
+<p class="flowlabel">Asking Pip</p>
+<div class="flow">
+<div class="node"><p>Student question</p></div><svg class="arrow" viewBox="0 0 40 20" aria-hidden="true"><path d="M0 6h26V0l14 10-14 10v-6H0z"/></svg>
+<div class="node guard"><p>Human-review triggers: high stakes, unsure</p></div><svg class="arrow" viewBox="0 0 40 20" aria-hidden="true"><path d="M0 6h26V0l14 10-14 10v-6H0z"/></svg>
+<div class="node"><p>Retrieval: only the right slides</p></div><svg class="arrow" viewBox="0 0 40 20" aria-hidden="true"><path d="M0 6h26V0l14 10-14 10v-6H0z"/></svg>
+<div class="node ai"><p>Coach streams a hint</p></div><svg class="arrow" viewBox="0 0 40 20" aria-hidden="true"><path d="M0 6h26V0l14 10-14 10v-6H0z"/></svg>
+<div class="node guard"><p>Output guard: fake citations removed</p></div><svg class="arrow" viewBox="0 0 40 20" aria-hidden="true"><path d="M0 6h26V0l14 10-14 10v-6H0z"/></svg>
+<div class="node"><p>Reply with sources</p></div>
+</div>
+</div>
+<div class="callout rise" style="--i:2"><p><b>No key, or the API is down before an exam?</b> Offline mode: the closest ready-made experiment, and coaching straight from the slides.</p></div>
+<aside>Here’s why judges can trust it. When an experiment is built, an input guard blocks injection, the designer agent writes a spec rather than code, and the physics engine runs a fair test: if the AI’s explanation disagrees with the real result, it’s sent back. With Pip, retrieval keeps answers to the lecture, high-stakes or uncertain questions go to a human, and invented citations are stripped. And if the AI is down the night before an exam, it still works offline.</aside>
+</section>
+<section id="brief" class="paper" style="gap:32px">
+<p class="eyebrow">How it meets the brief</p>
+<h2>Built for Level 2, with the Level 3 bonus</h2>
+<table class="fit">
+<tr><th style="width:32%">The brief asks for</th><th style="width:68%">Mosaic</th></tr>
+<tr><td>Live loop, domain logic, state</td><td>Predict, run, explain on tested models; profile → lesson → results → plan</td></tr>
+<tr><td>Real-time streaming</td><td>Pip streams replies; the experiment builder streams each agent step</td></tr>
+<tr><td>Guardrails</td><td>Input guard, slide-grounded answers, engine-checked answer keys, output guard</td></tr>
+<tr><td>Sessions and API contracts</td><td>Per-tab sessions, an agent log, a documented API, 183 unit and 44 browser tests</td></tr>
+<tr><td>L3 · Multi-agent</td><td>Designer → engine verifier → teacher; a coach agent; an MCP server</td></tr>
+<tr><td>L3 · Dynamic adaptation</td><td>Learning patterns reshape explanations, plans and Pip’s replies</td></tr>
+<tr><td>L3 · Human in the loop</td><td>Checkpointed pauses: answer, override or resume; approval for AI experiments</td></tr>
+<tr><td>Risks named</td><td>Data on the device, consent for under-18s, offline mode, no labels</td></tr>
+</table>
+<aside>Against the brief: a live loop with real domain logic, streaming, a guardrail pipeline, sessions and a documented API, tested end to end. And for the bonus: agents that check each other, adaptation to how each student learns, and a human in the loop with checkpoints. We also named the risks the brief asked for: who owns the data, outages before exams, and students under 18.</aside>
+</section>
+<section id="close" class="dark">
+<div class="split">
+<div style="width:1180px; display:flex; flex-direction:column; gap:36px">
+<p class="eyebrow">Mosaic</p>
+<h2 class="huge rise">Not another tool that summarises your notes.</h2>
+<p class="accentline rise" style="--i:1">It teaches by doing, gets to know you, and plans your path, with teachers in the loop.</p>
+<p class="small rise" style="--i:2">Live demo now · Abhinav Nair, Ana, Jasmine Barry and team</p>
+</div>
+<img class="rise" style="--i:1; width:300px; height:650px; border-radius:36px; object-fit:cover" src="../screenshots/phone.png" alt="Mosaic on a phone">
+</div>
+<aside>So: not another tool that summarises your notes. Mosaic teaches by doing, gets to know each student from what they do, plans their path, and keeps teachers in the loop. Let us show you it live. (Switch to the demo: the landing drop, then Pip, then the Teacher Studio.)</aside>
+</section>
+</div>
+<p id="notes"></p>
+<p id="hint">← → to move · N notes · F fullscreen</p>
+<script>
+const slides = [...document.querySelectorAll("#stage > section")];
+const stage = document.getElementById("stage");
+const notes = document.getElementById("notes");
+let i = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.replace("#slide-", ""), 10) || 1) - 1));
+function fit() {
+  const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+  stage.style.transform = `translate(-50%, -50%) scale(${s})`;
+}
+function show(n) {
+  i = Math.max(0, Math.min(slides.length - 1, n));
+  slides.forEach((el, k) => el.classList.toggle("on", k === i));
+  notes.textContent = slides[i].querySelector("aside")?.textContent ?? "";
+  history.replaceState(null, "", `#slide-${i + 1}`);
+}
+addEventListener("resize", fit);
+addEventListener("hashchange", () => { const n = parseInt(location.hash.replace("#slide-", ""), 10); if (n && n - 1 !== i) show(n - 1); });
+addEventListener("keydown", (e) => {
+  if (["ArrowRight", "PageDown", " "].includes(e.key)) show(i + 1);
+  else if (["ArrowLeft", "PageUp"].includes(e.key)) show(i - 1);
+  else if (e.key === "Home") show(0);
+  else if (e.key === "End") show(slides.length - 1);
+  else if (e.key === "n" || e.key === "N") notes.style.display = notes.style.display === "block" ? "none" : "block";
+  else if (e.key === "f" || e.key === "F") document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+});
+addEventListener("click", (e) => show(i + (e.clientX > innerWidth / 3 ? 1 : -1)));
+fit();
+show(i);
+</script>
+</body>
+</html>
