@@ -20,25 +20,45 @@ export type DesignOutcome =
 
 export const MAX_ATTEMPTS = 3;
 
+/** A step in the agent pipeline, streamed to the student so the guardrails are visible. */
+export type TraceEvent =
+  | { step: "designer"; attempt: number; text: string }
+  | { step: "proposal"; text: string }
+  | { step: "verifier"; ok: boolean; text: string }
+  | { step: "result"; ok: boolean; text: string };
+
 /** Designs a simulation for a student's question, retrying with the checker's errors. */
-export async function designSim(question: string, ask: Ask<AiResult>): Promise<DesignOutcome> {
+export async function designSim(question: string, ask: Ask<AiResult>, trace: (e: TraceEvent) => void = () => {}): Promise<DesignOutcome> {
   const messages: Message[] = [{ role: "user", content: designRequest(question) }];
   let errors: string[] = [];
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    trace({ step: "designer", attempt, text: attempt === 1 ? "Designer agent is choosing a tested model" : `Designer agent is fixing the spec (try ${attempt})` });
     const r = await ask(messages);
-    if (r.refused) return { kind: "none", reason: "That isn't something the lab can help with." };
+    if (r.refused) {
+      trace({ step: "result", ok: false, text: "Declined by the safety system" });
+      return { kind: "none", reason: "That isn't something the lab can help with." };
+    }
     if (!r.parsed) {
       errors = ["the response was not valid JSON for the schema"];
+      trace({ step: "verifier", ok: false, text: "Output didn't match the schema, sent back" });
     } else if (!r.parsed.fits || !r.parsed.spec) {
+      trace({ step: "result", ok: false, text: "No tested model fits this question" });
       return { kind: "none", reason: r.parsed.reason };
     } else {
+      trace({ step: "proposal", text: `Proposed “${r.parsed.spec.title}” on the ${r.parsed.spec.template} model` });
       const check = checkSpec(toSimSpec(r.parsed.spec));
       if (!check.ok) {
         errors = check.errors;
+        trace({ step: "verifier", ok: false, text: `Spec check failed: ${check.errors[0]}${check.errors.length > 1 ? ` (+${check.errors.length - 1} more)` : ""}` });
       } else {
         const spec = check.spec;
         const outcome = predictionOutcome(spec)!;
-        if (outcome.answer === r.parsed.spec.expectedAnswer) return { kind: "ai", spec, attempts: attempt };
+        if (outcome.answer === r.parsed.spec.expectedAnswer) {
+          trace({ step: "verifier", ok: true, text: "Engine ran the fair test and agrees with the explanation" });
+          trace({ step: "result", ok: true, text: "Experiment ready" });
+          return { kind: "ai", spec, attempts: attempt };
+        }
+        trace({ step: "verifier", ok: false, text: `Engine disagrees: expected “${r.parsed.spec.expectedAnswer}”, the model shows “${outcome.answer}”. Sent back` });
         const metric = templateOf(spec).metrics.find((m) => m.id === spec.prediction.metric)!;
         errors = [`expectedAnswer ${r.parsed.spec.expectedAnswer} but the model shows ${outcome.answer}`];
         messages.push(

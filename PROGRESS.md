@@ -47,6 +47,17 @@
   Verified: 128 unit tests, 25 e2e (consent for under-18s and adults, privacy export and delete,
   dashboard plan, phone navigation without overflow).
 
+- Live scenes (2026-11-15): every model has an animated canvas scene driven by the same model output:
+  cannon game (drag to aim, targets, planet skies), drop tower race, spring with trace, particle
+  chamber (Arrhenius-scaled collisions), petri dish, predator-prey meadow.
+- Streaming agent pipeline: `/api/sim/generate?stream=1` sends input guard, designer, verifier and
+  result steps as server-sent events; the build screen shows them live. Prompt-injection screen
+  (`lib/ai/guard.ts`) runs before any model call.
+- UX redesign around learning patterns (deep diver, quick answers, hands-on, listener, fast mover,
+  practice-lover, short bursts): landing showcase, learning mix, adaptive explain step, one next
+  step on home, live learning loop, grouped navigation.
+  Verified: 149 unit tests, 35 e2e.
+
 **Verified (2026-11-14, simulation agent):** 98 unit tests (agent logic with a scripted fake
 model: retry on checker errors, retry on answer mismatch, give up after 3, refusal, off-topic,
 unparseable; offline matcher; rate limiter; prompts list every template and carry the guardrail),

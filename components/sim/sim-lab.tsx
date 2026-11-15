@@ -3,6 +3,7 @@
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, Equal, Loader2, MessageCircle, Play, RotateCcw, Wand2 } from "lucide-react";
 import Link from "next/link";
 import { useId, useMemo, useState } from "react";
+import { LiveScene } from "@/components/sim/scenes/live-scene";
 import { SimChart } from "@/components/sim/sim-chart";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -104,9 +105,20 @@ export function SimLab({ spec, backHref = "/lab" }: { spec: SimSpec; backHref?: 
   // A fair test changes only the prediction's parameter.
   const unfair = visible.some((p) => p.id !== pred.param && values[p.id] !== base[p.id]);
 
-  const run = () => {
-    setRuns((rs) => [...rs.slice(-1), { key: (rs.at(-1)?.key ?? 0) + 1, values: { ...values }, result: runSpec(spec, values) }]);
+  const run = (override?: Values) => {
+    const v = override ?? values;
+    setRuns((rs) => [...rs.slice(-1), { key: (rs.at(-1)?.key ?? 0) + 1, values: { ...v }, result: runSpec(spec, v) }]);
     logEvent({ t: "experiment_run", topic, sim: spec.id });
+  };
+  /** Game input from the live scene (e.g. aiming the cannon): move the sliders, and fire. */
+  const aim = (patch: Values, fire: boolean) => {
+    const next = { ...values };
+    for (const [k, v] of Object.entries(patch)) {
+      const p = visible.find((x) => x.id === k);
+      if (p) next[k] = Math.min(p.max, Math.max(p.min, Math.round(v / p.step) * p.step));
+    }
+    setValues(next);
+    if (fire) run(next);
   };
   const set = (id: string, v: number) => setValues((vs) => ({ ...vs, [id]: v }));
 
@@ -240,14 +252,27 @@ export function SimLab({ spec, backHref = "/lab" }: { spec: SimSpec; backHref?: 
             </p>
           )}
 
-          <Button onClick={run}>
+          <Button onClick={() => run()}>
             <Play /> {current ? "Run again" : "Run"}
           </Button>
 
           {current && (
             <div className={cn("mt-8 transition-opacity duration-150", stale && "opacity-50")}>
               {stale && <p className="mb-2 text-sm font-medium text-accent">Settings changed. Press Run again to update.</p>}
-              <SimChart template={template} result={current.result} previous={previous?.result} runKey={current.key} description={description} />
+              <LiveScene
+                template={template.id}
+                current={current}
+                previous={previous}
+                runKey={current.key}
+                onAim={template.id === "projectile" && visible.some((p) => p.id === "angle") ? aim : undefined}
+              />
+              <details className="group mt-4" open>
+                <summary className="mb-2 cursor-pointer list-none text-sm font-medium text-muted hover:text-ink">
+                  <span className="group-open:hidden">Show the graph</span>
+                  <span className="hidden group-open:inline">The graph</span>
+                </summary>
+                <SimChart template={template} result={current.result} previous={previous?.result} runKey={current.key} description={description} />
+              </details>
               <dl className="mt-6 grid gap-3 sm:grid-cols-3" aria-live="polite">
                 {template.metrics.map((m) => {
                   const now = current.result.metrics[m.id];
