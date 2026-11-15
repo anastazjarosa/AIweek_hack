@@ -3,7 +3,9 @@
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Check, Equal, Loader2, MessageCircle, Play, RotateCcw, Wand2 } from "lucide-react";
 import Link from "next/link";
 import { useId, useMemo, useState } from "react";
+import { CoachButton } from "@/components/coach/coach-panel";
 import { LiveScene } from "@/components/sim/scenes/live-scene";
+import { findSim } from "@/lib/sim/library";
 import { SimChart } from "@/components/sim/sim-chart";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -19,6 +21,7 @@ import {
   type Direction,
   type SimSpec,
 } from "@/lib/sim/spec";
+import { apiHeaders } from "@/lib/client-api";
 import { logEvent, useEvents } from "@/lib/learner/events";
 import { detectPatterns, explainMode } from "@/lib/learner/patterns";
 import { computeProfile } from "@/lib/learner/profile";
@@ -66,7 +69,7 @@ export function SimLab({ spec, backHref = "/lab" }: { spec: SimSpec; backHref?: 
     try {
       const res = await fetch("/api/sim/feedback", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: apiHeaders(),
         body: JSON.stringify({ spec, guess, explanation: text }),
       });
       const data = (await res.json()) as FeedbackResponse;
@@ -142,7 +145,10 @@ export function SimLab({ spec, backHref = "/lab" }: { spec: SimSpec; backHref?: 
         {subjectLabel[template.subject]} · {template.name} · {spec.minutes} minutes
       </p>
       <h1 className="mb-3 text-4xl font-light tracking-[-0.02em]">{spec.title}</h1>
-      <p className="mb-8 max-w-[60ch] text-ink/75">{spec.intro}</p>
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <p className="max-w-[60ch] text-ink/75">{spec.intro}</p>
+        <CoachButton target={{ kind: "sim", spec, libraryId: findSim(spec.id) ? spec.id : undefined }} label="Stuck? Ask Pip" />
+      </div>
 
       <ol className="mb-8 flex gap-2" aria-label="Lab steps">
         {steps.map((s, i) => {

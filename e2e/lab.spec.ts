@@ -3,7 +3,12 @@ import { expect, test } from "@playwright/test";
 // Simulation Lab: gallery → one simulation through predict, run (fair test) and explain.
 test("gallery lists all three subjects and links to the moth lab", async ({ page }) => {
   await page.goto("/dashboard");
-  await page.getByRole("link", { name: "Simulation Lab" }).click();
+  // Wait for the dashboard to hydrate (the greeting needs the client clock) before navigating.
+  await expect(page.getByRole("heading", { level: 1 })).toContainText(/Good (morning|afternoon|evening)/);
+  await Promise.all([
+    page.waitForURL("**/lab", { timeout: 20_000 }),
+    page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "Simulation Lab", exact: true }).click(),
+  ]);
   await expect(page.getByRole("heading", { name: "Simulation Lab", level: 1 })).toBeVisible();
   for (const subject of ["Physics", "Chemistry", "Biology"]) {
     await expect(page.getByRole("heading", { name: subject })).toBeVisible();

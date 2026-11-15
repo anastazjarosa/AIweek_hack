@@ -18,6 +18,7 @@
 - [arch] Learning profile computed from a browser-only event log; every finding shows its evidence; suggestions apply only when the student accepts (2026-11-14)
 - [arch] Planner is a deterministic function of exams, profile and habit; procrastination coach is the full one, the others are tips (2026-11-14)
 - [arch] Consent gate (age band, guardian confirmation under 18) and a privacy page with export and delete; all data browser-only (2026-11-14)
+- [arch] Pip is the Socratic coach: retrieval-grounded, cites sources, hints not answers, escalates to the teacher; tones change delivery only (2026-11-15)
 - Demo clock runs 20× by default (2026-11-14)
 - Product renamed Mosaic; logo is a four-tile pinwheel (see DESIGN.md) (2026-11-14)
 - SimMind plan work continues on `feat/simmind` (branched from `feat/mosaic-demo` at the Simulation Lab commit); `feat/mosaic-demo` is left to its owner (2026-11-14)
@@ -239,6 +240,25 @@ pre-consented state (`e2e/consented-state.json`); `e2e/privacy.spec.ts` tests th
 **To undo:** Remove `<ConsentGate />` from the app shell. Rethink for a school rollout: signed
 consent collected by the school, a data processing agreement with the AI provider, retention rules.
 **By:** agent
+
+### [arch] Pip, the Socratic coach
+**Decision:** `/api/coach` (server-sent events) runs a five-step pipeline: input guard
+(`lib/ai/guard.ts`) → retrieval of the 3 best lecture slides, or the whole experiment
+(`lib/coach/sources.ts`, word overlap plus a small synonym list) → Claude streams a reply
+(`streamCoach`, effort low) or the offline coach answers from the best source → output guard
+(`checkReply`: drops invented citations, catches `[[ASK_TEACHER]]`, replaces any diagnosis talk) →
+escalation to the teacher queue (`lib/teacher/store.ts`). Every step is written to the agent log
+(`lib/ai/log.ts`) with the tab's session id (`x-mosaic-session`). The coach is Pip (the team's
+character): the button waves on hover, the face reacts, and three tones (friendly, funny, quest
+with XP) change delivery only; the rules sit in the fixed system prompt.
+**Why:** Level 2 asks for a live loop, streaming, guardrails against hallucination and injection,
+and session tracking; the brief's own example is a coach that hints and cites without giving
+answers. Grounding plus citation checks make answers verifiable; offline mode covers outages before
+exams.
+**Instead of:** A general chatbot (ungrounded), or embeddings (more infrastructure than 9 slides need).
+**To undo:** Remove the coach buttons; nothing else depends on it. Rethink retrieval (embeddings)
+when a course has hundreds of pages.
+**By:** owner request (Pip as coach, tones), implemented by agent
 
 ### Demo clock runs 20× by default
 A 10-minute block takes 30 seconds, a 5-minute break 15 seconds; idle is 6 real seconds in demo

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { SimLab } from "@/components/sim/sim-lab";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { apiHeaders, readSSE } from "@/lib/client-api";
 import type { GenerateResponse } from "@/lib/sim/api-types";
 import { cn } from "@/lib/utils";
 
@@ -15,26 +16,6 @@ type State = { status: "loading"; trace: Trace[] } | { status: "done"; result: G
 
 const stepIcon = { guard: ShieldCheck, designer: Bot, proposal: Sparkles, verifier: Cpu, result: Check } as const;
 const stepName = { guard: "Input guard", designer: "Designer agent", proposal: "Proposal", verifier: "Engine verifier", result: "Result" } as const;
-
-/** Reads a server-sent event stream: calls onEvent for each `event:`/`data:` pair. */
-async function readSSE(res: Response, onEvent: (event: string, data: unknown) => void) {
-  const reader = res.body!.getReader();
-  const dec = new TextDecoder();
-  let buf = "";
-  for (;;) {
-    const { value, done } = await reader.read();
-    if (done) break;
-    buf += dec.decode(value, { stream: true });
-    let i: number;
-    while ((i = buf.indexOf("\n\n")) >= 0) {
-      const chunk = buf.slice(0, i);
-      buf = buf.slice(i + 2);
-      const event = chunk.match(/^event: (.*)$/m)?.[1] ?? "message";
-      const data = chunk.match(/^data: (.*)$/m)?.[1];
-      if (data) onEvent(event, JSON.parse(data));
-    }
-  }
-}
 
 export function GeneratedLab({ question }: { question: string }) {
   const [state, setState] = useState<State>({ status: "loading", trace: [] });
@@ -48,7 +29,7 @@ export function GeneratedLab({ question }: { question: string }) {
       try {
         const res = await fetch("/api/sim/generate?stream=1", {
           method: "POST",
-          headers: { "content-type": "application/json", accept: "text/event-stream" },
+          headers: apiHeaders({ accept: "text/event-stream" }),
           body: JSON.stringify({ question }),
           signal: ctrl.signal,
         });

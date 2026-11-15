@@ -72,6 +72,8 @@ agrees). `/privacy` shows what's stored, downloads it and deletes it.
    **Simulation Lab** (`/lab`, in the sidebar): 11 more experiments across physics, chemistry and
    biology, all predict → run → explain. Try "Heavy ball, light ball": guess that the heavy ball
    lands first, run 1 kg then **Set it for me** (10 kg), and both land at 2.02 s.
+   **Ask Pip** (on every lecture and experiment): Pip coaches with hints and cites the slide; try
+   "Give me a hint", the 🎮 Quest tone, or an off-topic question to see it go to the lecturer.
    **Ask for any experiment** (top of `/lab`): type "Why don't heavier things fall faster?" and the
    agent builds a new experiment. Write an explanation at the end for AI feedback.
 8. **What works for me** (`/profile`): the learning profile, built from behaviour (experiments,

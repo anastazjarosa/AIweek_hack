@@ -47,6 +47,10 @@
   Verified: 128 unit tests, 25 e2e (consent for under-18s and adults, privacy export and delete,
   dashboard plan, phone navigation without overflow).
 
+- Pip, the Socratic coach (2026-11-15): "Ask Pip" on lectures and experiments. Grounded in the
+  slides or the experiment, cites sources as clickable chips, hint ladder, check my thinking,
+  escalates uncovered questions to the teacher, input and output guards, tones (friendly, funny,
+  quest with XP), offline mode. Verified: 166 unit tests, 40 e2e.
 - Live scenes (2026-11-15): every model has an animated canvas scene driven by the same model output:
   cannon game (drag to aim, targets, planet skies), drop tower race, spring with trace, particle
   chamber (Arrhenius-scaled collisions), petri dish, predator-prey meadow.

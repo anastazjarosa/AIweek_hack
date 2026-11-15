@@ -6,6 +6,7 @@ import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import type { z } from "zod";
 import { DESIGN_SYSTEM, FEEDBACK_SYSTEM } from "@/lib/ai/prompts";
 import type { Ask } from "@/lib/ai/sim-agent";
+import type { StreamFn } from "@/lib/coach/coach";
 import { aiResultSchema, feedbackSchema, type AiResult, type Feedback } from "@/lib/sim/ai-spec";
 
 export const MODEL = "claude-opus-5-5";
@@ -46,3 +47,21 @@ function makeAsk<T>(system: string, schema: z.ZodType<T>, effort: "low" | "mediu
 
 export const askDesign: Ask<AiResult> = makeAsk(DESIGN_SYSTEM, aiResultSchema, "medium");
 export const askFeedback: Ask<Feedback> = makeAsk(FEEDBACK_SYSTEM, feedbackSchema, "low");
+
+/** The coach's model call, streamed token by token. Refusals end with a polite line instead. */
+export const streamCoach: StreamFn = async function* (system, messages) {
+  const stream = getClient().beta.messages.stream({
+    model: MODEL,
+    max_tokens: 8000,
+    betas: ["server-side-fallback-2026-07-01"],
+    fallbacks: "default",
+    system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
+    messages,
+    output_config: { effort: "low" },
+  });
+  for await (const event of stream) {
+    if (event.type === "content_block_delta" && event.delta.type === "text_delta") yield event.delta.text;
+  }
+  const final = await stream.finalMessage();
+  if (final.stop_reason === "refusal") yield "\n\nI can't help with that one, but your lecturer can.";
+};

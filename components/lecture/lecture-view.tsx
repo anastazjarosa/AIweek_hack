@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
+import { CoachButton } from "@/components/coach/coach-panel";
 import { ListenView } from "@/components/lecture/listen-view";
 import { SprintsView } from "@/components/lecture/sprints-view";
 import { StructuredView } from "@/components/lecture/structured-view";
@@ -26,6 +27,9 @@ export function LectureView() {
         </span>
       }
     >
+      <div className="mb-2 flex justify-end">
+        <CoachButton target={{ kind: "lecture" }} label="Ask Pip about this lecture" />
+      </div>
       {!hydrated ? (
         <div className="min-h-[60vh]" />
       ) : (
