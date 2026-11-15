@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowUp, BookOpen, Lightbulb, SearchCheck, X } from "lucide-react";
 import Link from "next/link";
 import { PipFigure, type PipFace } from "@/components/pip/pip-figure";
+import { outfitSwatch } from "@/lib/pip";
 import { useProfile } from "@/lib/profile";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { apiHeaders, readSSE } from "@/lib/client-api";
@@ -70,7 +71,7 @@ export function CoachButton({ target, label = "Ask Pip", className }: { target: 
       >
         <span className="grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-surface/95">
           {/* A new key on each hover replays the wave. */}
-          <PipFigure key={hover} colour={pip.colour} outfit={pip.outfit} size={34} face={hover ? "joy" : "happy"} move={hover ? "wave" : null} motion={reduce ? "none" : "full"} breathe />
+          <PipFigure key={hover} colour={pip.colour} animal={pip.animal} outfit={pip.outfit} outfitColour={outfitSwatch(pip, pip.outfit)} size={34} face={hover ? "joy" : "happy"} move={hover ? "wave" : null} motion={reduce ? "none" : "full"} breathe />
         </span>
         {label}
       </button>
@@ -205,7 +206,7 @@ function CoachDrawer({ target, onClose }: { target: CoachTarget; onClose: () => 
         <header className="border-b border-line bg-surface px-5 pt-4 pb-3">
           <div className="flex items-start gap-3">
             <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-accent-soft">
-              <PipFigure colour={pip.colour} outfit={pip.outfit} size={48} face={face} move={!busy && last?.role === "assistant" && !last.pending ? "hop" : null} motion={reduce ? "none" : "full"} breathe />
+              <PipFigure colour={pip.colour} animal={pip.animal} outfit={pip.outfit} outfitColour={outfitSwatch(pip, pip.outfit)} size={48} face={face} move={!busy && last?.role === "assistant" && !last.pending ? "hop" : null} motion={reduce ? "none" : "full"} breathe />
             </span>
             <div className="min-w-0 flex-1">
               <p className="font-medium">Pip</p>
@@ -264,7 +265,7 @@ function CoachDrawer({ target, onClose }: { target: CoachTarget; onClose: () => 
             ) : (
               <div key={i} className="mr-6 flex gap-2">
                 <span className="mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-accent-soft">
-                  <PipFigure colour={pip.colour} outfit={pip.outfit} size={26} face={m.escalated ? "worried" : "happy"} motion="none" />
+                  <PipFigure colour={pip.colour} animal={pip.animal} outfit={pip.outfit} outfitColour={outfitSwatch(pip, pip.outfit)} size={26} face={m.escalated ? "worried" : "happy"} motion="none" />
                 </span>
                 <div className="min-w-0 flex-1">
                 <div className="rounded-2xl rounded-bl-md bg-surface px-4 py-3 text-[15px] leading-relaxed ring-1 ring-line" aria-live="polite">

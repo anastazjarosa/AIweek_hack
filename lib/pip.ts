@@ -3,33 +3,120 @@
 import { levelFor, type Scores } from "./dimensions";
 import type { StruggleReason } from "./screentime/engine";
 
-export type Colourway = "matcha" | "peach" | "lavender";
-export type OutfitId = "scarf" | "beret" | "headphones" | "backpack" | "party_hat";
+export type Colourway = "peach";
+export type OutfitId = "scarf" | "beret" | "headphones" | "sprout" | "wings";
+
+/** The zodiac animals Pip can be, in birth-year order. Snake, horse, dog and pig are not offered. */
+export const ANIMALS = ["rat", "ox", "tiger", "rabbit", "dragon", "goat", "monkey", "rooster"] as const;
+export type Animal = (typeof ANIMALS)[number];
+
+/** The animals Pip can actually be right now. All the drawings are kept, so adding one back is one word. */
+export const OFFERED_ANIMALS: readonly Animal[] = ANIMALS;
+
+export const animalLabel = (a: Animal) => a[0].toUpperCase() + a.slice(1);
+
+/** Full zodiac cycle, starting from the rat. */
+const ZODIAC = ["rat", "ox", "tiger", "rabbit", "dragon", "snake", "horse", "goat", "monkey", "rooster", "dog", "pig"] as const;
+/** Zodiac years whose animal is not offered get the neighbouring animal instead. */
+const STAND_IN: Record<string, Animal> = { snake: "dragon", horse: "goat", dog: "rooster", pig: "rat" };
+
+/** Zodiac animal for a birth year (calendar year; the lunar new year boundary is ignored). 2020 is the rat. */
+export function zodiacAnimal(year: number): Animal {
+  const z = ZODIAC[(((Math.trunc(year) - 4) % 12) + 12) % 12];
+  return z in STAND_IN ? STAND_IN[z] : (z as Animal);
+}
+
+/** Pip's animal for a birth year, limited to the animals on offer. */
+export function animalForYear(year: number): Animal {
+  const a = zodiacAnimal(year);
+  return OFFERED_ANIMALS.includes(a) ? a : OFFERED_ANIMALS[0];
+}
 
 export type PipPrefs = {
   colour: Colourway;
+  animal: Animal;
+  /** Set when the student typed a birth year; the animal follows it until they pick one by hand. */
+  birthYear: number | null;
   outfit: OutfitId | null;
   unlocked: OutfitId[];
   /** Unlocked but not yet opened in the blind-box reveal. */
   pendingReveal: OutfitId | null;
   hidden: boolean;
+  /** Chosen colour per outfit. Missing means the outfit's default. */
+  outfitColours: Partial<Record<OutfitId, SwatchId>>;
 };
 
-export const DEFAULT_PIP: PipPrefs = { colour: "matcha", outfit: null, unlocked: [], pendingReveal: null, hidden: false };
+export const DEFAULT_PIP: PipPrefs = {
+  colour: "peach",
+  animal: "rabbit",
+  birthYear: null,
+  outfit: null,
+  unlocked: [],
+  pendingReveal: null,
+  hidden: false,
+  outfitColours: {},
+};
 
 export const colourways: Record<Colourway, { label: string; body: string; shade: string; belly: string; line: string }> = {
-  matcha: { label: "Matcha", body: "#A9CB8C", shade: "#8DB46E", belly: "#CFE3BC", line: "#3D5A2A" },
   peach: { label: "Peach", body: "#F7BE9B", shade: "#EDA27A", belly: "#FCDCC6", line: "#7A3F1E" },
-  lavender: { label: "Lavender", body: "#C9B8E6", shade: "#B09BD8", belly: "#E4DAF4", line: "#4A3770" },
 };
 
 export const outfits: { id: OutfitId; label: string }[] = [
   { id: "scarf", label: "Cosy scarf" },
   { id: "beret", label: "Beret" },
   { id: "headphones", label: "Headphones" },
-  { id: "backpack", label: "Tiny backpack" },
-  { id: "party_hat", label: "Party hat" },
+  { id: "sprout", label: "Sprout" },
+  { id: "wings", label: "Little wings" },
 ];
+
+/** Colours an outfit can be worn in. `alt` is a lighter tone for second leaves, highlights and stripes. */
+export const SWATCHES = {
+  black: { label: "Black", fill: "#2B2B2B", stroke: "#111111", alt: "#555555", light: "#8A8A8A" },
+  white: { label: "White", fill: "#F4F1EC", stroke: "#9A948A", alt: "#FFFFFF", light: "#B9B2A6" },
+  red: { label: "Red", fill: "#D9483B", stroke: "#8E2A21", alt: "#EE6A5C", light: "#F6E3C8" },
+  blue: { label: "Blue", fill: "#4F76D9", stroke: "#2B3F8F", alt: "#6F93F0", light: "#D6E2FF" },
+  green: { label: "Green", fill: "#7DB35A", stroke: "#4E7F35", alt: "#8FC46A", light: "#DDF0D6" },
+  pink: { label: "Pink", fill: "#E58AA8", stroke: "#A04A68", alt: "#F0A3BB", light: "#FBE0EA" },
+  purple: { label: "Purple", fill: "#8B6FD0", stroke: "#4F3C8A", alt: "#A38BE0", light: "#E6DDFA" },
+  yellow: { label: "Yellow", fill: "#E8B53A", stroke: "#8A6410", alt: "#F2C95C", light: "#FFF0C2" },
+} as const;
+export type SwatchId = keyof typeof SWATCHES;
+export const SWATCH_IDS = Object.keys(SWATCHES) as SwatchId[];
+
+/** Outfits whose colour the student can change. The wings stay white. */
+export const DEFAULT_OUTFIT_COLOUR: Partial<Record<OutfitId, SwatchId>> = {
+  scarf: "black",
+  headphones: "black",
+  beret: "blue",
+  sprout: "green",
+};
+export const isCustomisable = (id: OutfitId | null): id is OutfitId => !!id && id in DEFAULT_OUTFIT_COLOUR;
+
+/** The swatch an outfit is currently worn in. */
+export function outfitSwatch(pip: Pick<PipPrefs, "outfitColours">, id: OutfitId | null): SwatchId | undefined {
+  if (!isCustomisable(id)) return undefined;
+  const chosen = pip.outfitColours?.[id];
+  return chosen && chosen in SWATCHES ? chosen : DEFAULT_OUTFIT_COLOUR[id];
+}
+/**
+ * Saved profiles from earlier builds can hold things that no longer exist (matcha, the backpack,
+ * the snake...). Anything unknown falls back to the default, so the wardrobe never renders blank.
+ */
+export function normalisePip(saved: Partial<PipPrefs> | undefined): PipPrefs {
+  const s = { ...DEFAULT_PIP, ...saved };
+  const outfitIds = outfits.map((o) => o.id);
+  return {
+    ...s,
+    colour: s.colour in colourways ? s.colour : DEFAULT_PIP.colour,
+    animal: OFFERED_ANIMALS.includes(s.animal) ? s.animal : DEFAULT_PIP.animal,
+    outfit: s.outfit && outfitIds.includes(s.outfit) ? s.outfit : null,
+    unlocked: (s.unlocked ?? []).filter((id) => outfitIds.includes(id)),
+    pendingReveal: s.pendingReveal && outfitIds.includes(s.pendingReveal) ? s.pendingReveal : null,
+    outfitColours: Object.fromEntries(
+      Object.entries(s.outfitColours ?? {}).filter(([id, sw]) => isCustomisable(id as OutfitId) && (sw as string) in SWATCHES),
+    ),
+  };
+}
 
 export const outfitLabel = (id: OutfitId) => outfits.find((o) => o.id === id)!.label;
 
@@ -99,3 +186,4 @@ export const pipLines = {
   returnEarly: "Welcome back! Finish a whole break next time for a surprise.",
   idle: "Hi, I'm Pip. Tap me any time. I stay quiet while you focus.",
 };
+

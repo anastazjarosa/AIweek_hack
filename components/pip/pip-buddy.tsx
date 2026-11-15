@@ -9,6 +9,7 @@ import { PipFigure, type PipFace, type PipMove, type PipPose } from "@/component
 import { lecture, type Section } from "@/lib/data";
 import {
   earnedUnlock,
+  outfitSwatch,
   pickUnlock,
   pipLines,
   pipMotion,
@@ -242,6 +243,7 @@ export function PipBuddy() {
         <OutfitReveal
           outfit={pip.pendingReveal}
           colour={pip.colour}
+          animal={pip.animal}
           motion={motionLevel}
           onWear={() => setPip({ outfit: pip.pendingReveal, pendingReveal: null })}
           onLater={() => setPip({ pendingReveal: null })}
@@ -285,7 +287,9 @@ export function PipBuddy() {
               <PipFigure
                 key={move.key}
                 colour={pip.colour}
+                animal={pip.animal}
                 outfit={pip.outfit}
+                outfitColour={outfitSwatch(pip, pip.outfit)}
                 pose={pose}
                 face={face}
                 move={move.m}
@@ -303,7 +307,7 @@ export function PipBuddy() {
                   transition={{ duration: 0.25 }}
                   aria-hidden
                 >
-                  <PipFigure colour={pip.colour} mode="pop" motion={motionLevel} size={54} />
+                  <PipFigure colour={pip.colour} animal={pip.animal} mode="pop" motion={motionLevel} size={54} />
                 </motion.div>
               )}
             </AnimatePresence>
