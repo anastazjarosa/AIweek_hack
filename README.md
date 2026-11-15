@@ -70,10 +70,18 @@ don't **know you**, and they can make things up.
 | **L3** Human-in-the-loop | Checkpointed pauses on high-stakes, ambiguous, circular or low-confidence questions; teachers answer, override or resume; approval gate for AI experiments |
 | Name the risks | Data stays on the device (export/delete), consent for under-18s, offline mode for outages before exams, no diagnosis ever |
 
-More: [architecture and guardrails](docs/architecture.md) · [API contract](docs/api.md) ·
-[decision log](docs/DECISIONS.md) · [3-minute demo script](docs/demo-script.md) ·
-[pitch deck (PowerPoint)](docs/pitch-deck/Mosaic-pitch-deck.pptx) · [pitch deck (open in a browser)](docs/pitch-deck/index.html) ·
-[feature notes](docs/features.md)
+## Documentation
+
+| Document | What's in it |
+|---|---|
+| [Pitch deck (PowerPoint)](docs/pitch-deck/Mosaic-pitch-deck.pptx) · [open in a browser](docs/pitch-deck/index.html) | The 12-slide, 5-minute pitch with speaker notes |
+| [Demo script](docs/demo-script.md) | The 3-minute live demo, step by step, with answers to likely judge questions |
+| [Decision log](docs/DECISIONS.md) | Every architecture and product decision: what we chose, why, what we rejected, and how to undo it |
+| [Architecture](docs/architecture.md) | The learning loop, the agents and guardrails, where data lives, and how it fails safely |
+| [API contract](docs/api.md) | Every route: request, response, streaming events, validation and rate limits |
+| [Design plan](docs/DESIGN.md) | Audience, palette, typography and motion |
+| [Feature notes](docs/features.md) | Lecture layouts, learning needs and focus sessions in detail |
+| [Progress log](docs/PROGRESS.md) | What was built, when, and how it was verified |
 
 ## Architecture
 
